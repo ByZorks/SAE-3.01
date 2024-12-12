@@ -1,0 +1,102 @@
+@startuml
+interface Sujet {
+    + enregistrerObservateur(Observateur)
+    + supprimerObservateur(Observateur)
+    + notifierObservateurs()
+}
+
+interface Observateur {
+    + actualiser()
+}
+
+class VueArborescence {
+    + actualiser()
+}
+
+class VueDiagramme {
+    + actualiser()
+}
+
+class ModelArborescence {
+    + ModelArborescence()
+    + enregistrerObservateur(Observateur)
+    + supprimerObservateur(Observateur)
+    + notifierObservateurs()
+}
+
+class ModelDiagramme {
+    + ModelDiagramme()
+    + ajouterClasse(Classe)
+    + supprimerClasse(Classe)
+    + deplacerClasse(Classe)
+    + toggleAffichageClasse(Classe)
+    + toggleAffichageMethode(Classe, String)
+    + ajouterMethode(Classe, HashMap<String, int>)
+    + genererSquelette()
+    + enregistrerObservateur(Observateur)
+    + supprimerObservateur(Observateur)
+    + notifierObservateurs()
+}
+
+class ControllerArborescence {
+    - model : ModelArborescence
+    + ControllerArborescence()
+    + handle(MouseEvent)
+}
+
+class ControllerDiagramme {
+    - model : ModelDiagramme
+    + ControllerDiagramme()
+    + handle(MouseEvent)
+}
+
+class FileComposite {
+    # file : File
+    + FileComposite(File)
+}
+
+class Fichier {
+    # file : File
+    + FileComposite(File)
+}
+
+class Repertoire {
+    # file : File
+    + FileComposite(File)
+}
+
+class Classe {
+    - type : String
+    - nom: String
+    - package : String
+    - attributs : HashMap<String, int>
+    - methodes : HashMap<String, int>
+    - coordonnées : int[]
+    + Classe(String, String, String, ArrayList<String>, ArrayList<String>)
+    + getType() : String
+    + getNom() : String
+    + getPackage() : String
+    + getAttributs() : ArrayList<String>
+    + getMethodes() : ArrayList<String>
+    + getCoordonnées()
+    + setCoordonnées(int, int)
+}
+
+Sujet <|-- ModelArborescence
+Sujet <|-- ModelDiagramme
+
+Observateur <|.. VueArborescence
+Observateur <|.. VueDiagramme
+
+VBox <|-- VueArborescence
+Pane <|-- VueDiagramme
+
+FileComposite <|-- Fichier
+FileComposite <|-- Repertoire
+
+ModelDiagramme "1" <-- "0..*" Classe : classes
+ModelArborescence "1" <-- "1..*" FileComposite : arborescence
+
+EventHandler <|.. ControllerArborescence
+EventHandler <|.. ControllerDiagramme
+@enduml
