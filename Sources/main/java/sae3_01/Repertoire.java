@@ -19,4 +19,9 @@ public class Repertoire extends FileComposite {
             }
         }
     }
+
+    @Override
+    public void afficher(String s) {
+
+    }
 }

@@ -10,4 +10,5 @@ public abstract class FileComposite {
         this.file = file;
     }
 
+    public abstract void afficher(String s);
 }
