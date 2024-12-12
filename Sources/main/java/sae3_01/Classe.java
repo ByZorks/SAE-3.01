@@ -26,6 +26,15 @@ public class Classe {
         this.methodes = new HashMap<>();
     }
 
+    public Classe(String classe1) {
+        this.type = classe1;
+        this.nom = classe1;
+        this.Package = classe1;
+        this.attributs = new HashMap<>();
+        this.methodes = new HashMap<>();
+
+    }
+
 
     //Getter
     public String getType(){
