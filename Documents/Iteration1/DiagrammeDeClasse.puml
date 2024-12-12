@@ -18,21 +18,18 @@ class VueDiagramme {
 }
 
 class ModelArborescence {
-    + ModelArborescence()
+    - observateurs : ArrayList<Observateur>
+    + ModelArborescence(FileComposite)
     + enregistrerObservateur(Observateur)
     + supprimerObservateur(Observateur)
     + notifierObservateurs()
 }
 
 class ModelDiagramme {
+    - observateurs : ArrayList<Observateur>
     + ModelDiagramme()
     + ajouterClasse(Classe)
     + supprimerClasse(Classe)
-    + deplacerClasse(Classe)
-    + toggleAffichageClasse(Classe)
-    + toggleAffichageMethode(Classe, String)
-    + ajouterMethode(Classe, HashMap<String, int>)
-    + genererSquelette()
     + enregistrerObservateur(Observateur)
     + supprimerObservateur(Observateur)
     + notifierObservateurs()
