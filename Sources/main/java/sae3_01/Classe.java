@@ -9,54 +9,47 @@ public class Classe {
     private String type;
     private String nom;
     private String Package;
-
-    private HashMap<String, Integer> attributs;
-
-    private HashMap<String, Integer> methodes;
+    private ArrayList<String> attributs;
+    private ArrayList<String> methodes;
     private int[] coordonnees;
 
-
     //Constructeur
-    public Classe(String type, String nom, String Package, ArrayList<String> attributs, ArrayList<String> methodes, int[] coordonnees){
+    public Classe(String type, String nom, String Package, ArrayList<String> attributs, ArrayList<String> methodes, int[] coordonnees) {
         this.type = type;
         this.nom = nom;
         this.Package = Package;
         this.coordonnees = coordonnees;
-        this.attributs = new HashMap<>();
-        this.methodes = new HashMap<>();
+        this.attributs = attributs;
+        this.methodes = methodes;
     }
 
-
-
-
     //Getter
-    public String getType(){
+    public String getType() {
         return type;
     }
 
-    public String getNom(){
+    public String getNom() {
         return nom;
     }
 
-    public String getPackage(){
+    public String getPackage() {
         return Package;
     }
 
-    public ArrayList<String> getAttributs(){
-        return new ArrayList<>(attributs.keySet());
+    public ArrayList<String> getAttributs() {
+        return attributs;
     }
 
     public ArrayList<String> getMethodes() {
-        return new ArrayList<>(methodes.keySet());
+        return methodes;
     }
 
-    public int[] getCoordonnees(){
+    public int[] getCoordonnees() {
         return coordonnees;
     }
 
-
     //Setter
-    public void SetCoordonnees(int x, int y){
+    public void SetCoordonnees(int x, int y) {
         this.coordonnees[0] = x;
         this.coordonnees[1] = y;
     }

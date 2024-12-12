@@ -5,11 +5,22 @@ import java.util.ArrayList;
 public class ModelDiagramme implements Sujet {
 
     private ArrayList<Classe> classes;
+    private Analyseur analyseur;
     private ArrayList<Observateur> observateurs;
 
     public ModelDiagramme() {
         this.classes = new ArrayList<>();
         this.observateurs = new ArrayList<>();
+    }
+
+    public Classe analyserClasse(String nomClasse) {
+        Classe c = null;
+        try {
+            c = Analyseur.analyseClasse(nomClasse);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Classe non trouvée");
+        }
+        return c;
     }
 
     public void ajouterClasse(Classe classe) {
