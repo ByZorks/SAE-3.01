@@ -7,7 +7,9 @@ public abstract class FileComposite {
      public FileComposite(File file) {
          this.file = file;
      }
-      // public abstract void afficher(String s){
+
+    public abstract void afficher(String s);
+
 
      }
 
