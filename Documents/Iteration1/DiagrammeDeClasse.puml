@@ -79,6 +79,15 @@ class Classe {
     + setCoordonnées(int, int)
 }
 
+class Analyseur {
+    + Analyseur()
+    + analyseClasse(String)
+    - getHeader(Class<?>)
+    - getConstructors(Class<?>)
+    - getMethods(Class<?>)
+    - getModifiers(int)
+}
+
 Sujet <|-- ModelArborescence
 Sujet <|-- ModelDiagramme
 
