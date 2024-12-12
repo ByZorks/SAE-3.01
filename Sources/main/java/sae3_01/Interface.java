@@ -18,10 +18,6 @@ public class Interface extends Application {
         stage.setTitle("SAE3-01");
         HBox root = new HBox();
 
-        // Création des classes
-        Classe c1 = new Classe("Classe1");
-        Classe c2 = new Classe("Classe2");
-
         Repertoire r1 = new Repertoire(new File("C:/"));
 
         // Création des modèles
