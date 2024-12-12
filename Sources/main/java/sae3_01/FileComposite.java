@@ -11,4 +11,8 @@ public abstract class FileComposite {
     }
 
     public abstract void afficher(String s);
+
+    public void actualiser() {
+
+    }
 }

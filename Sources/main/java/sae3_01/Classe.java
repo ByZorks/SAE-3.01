@@ -27,6 +27,8 @@ public class Classe {
     }
 
 
+
+
     //Getter
     public String getType(){
         return type;
