@@ -18,14 +18,17 @@ class VueDiagramme {
 }
 
 class ModelArborescence {
+    - arborescence : FileComposite
     - observateurs : ArrayList<Observateur>
     + ModelArborescence(FileComposite)
+    + updateArborescence()
     + enregistrerObservateur(Observateur)
     + supprimerObservateur(Observateur)
     + notifierObservateurs()
 }
 
 class ModelDiagramme {
+    - classes : ArrayList<Classe>
     - observateurs : ArrayList<Observateur>
     + ModelDiagramme()
     + ajouterClasse(Classe)
@@ -49,17 +52,27 @@ class ControllerDiagramme {
 
 class FileComposite {
     # file : File
-    + FileComposite(File)
+    + {abstract} FileComposite(File)
+    + {abstract} actualiser()
+    + {abstract} getContenu() : List<FileComposite>
+    + {abstract} isDirectory() : boolean
+    + toString() : String
 }
 
 class Fichier {
     # file : File
     + FileComposite(File)
+    + actualiser()
+    + getContenu() : List<FileComposite>
+    + isDirectory() : boolean
 }
 
 class Repertoire {
     # file : File
     + FileComposite(File)
+    + actualiser()
+    + getContenu() : List<FileComposite>
+    + isDirectory() : boolean
 }
 
 class Classe {
@@ -88,8 +101,8 @@ class Analyseur {
     - getModifiers(int)
 }
 
-Sujet <|-- ModelArborescence
-Sujet <|-- ModelDiagramme
+Sujet <|.. ModelArborescence
+Sujet <|.. ModelDiagramme
 
 Observateur <|.. VueArborescence
 Observateur <|.. VueDiagramme
@@ -100,9 +113,10 @@ Pane <|-- VueDiagramme
 FileComposite <|-- Fichier
 FileComposite <|-- Repertoire
 
-ModelDiagramme "1" <-- "0..*" Classe : classes
-ModelArborescence "1" <-- "1..*" FileComposite : arborescence
+ModelDiagramme "1" --> "0..*" Classe : classes
+ModelArborescence "1" --> "1..*" FileComposite : arborescence
+ModelDiagramme "1" --> "1" Analyseur : analyseur
 
-EventHandler <|.. ControllerArborescence
-EventHandler <|.. ControllerDiagramme
+EventHandler <|-- ControllerArborescence
+EventHandler <|-- ControllerDiagramme
 @enduml
