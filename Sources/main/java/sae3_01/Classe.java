@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Classe {
 
-    // Attributs
+    // Attributs de la classe Classe
     private String type;
     private String nom;
     private String Package;
@@ -25,7 +25,6 @@ public class Classe {
         this.attributs = new HashMap<>();
         this.methodes = new HashMap<>();
     }
-
 
 
 
@@ -54,7 +53,7 @@ public class Classe {
         return coordonnees;
     }
 
-
+    //Setter magique
     //Setter
     public void SetCoordonnees(int x, int y){
         this.coordonnees[0] = x;
