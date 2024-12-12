@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Repertoire extends FileComposite {
 
-    private List<FileComposite> contenu =  new ArrayList<FileComposite>();
+    private List<FileComposite> contenu =  new ArrayList<>();
 
     public Repertoire(File f) {
         super(f);
@@ -21,7 +21,16 @@ public class Repertoire extends FileComposite {
     }
 
     @Override
-    public void afficher(String s) {
+    public void actualiser() {
 
+    }
+
+    public List<FileComposite> getContenu() {
+        return this.contenu;
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return true;
     }
 }

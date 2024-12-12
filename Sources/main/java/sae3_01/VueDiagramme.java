@@ -5,7 +5,7 @@ import javafx.scene.layout.Pane;
 public class VueDiagramme extends Pane implements Observateur {
 
     @Override
-    public void actualiser() {
+    public void actualiser(Sujet s) {
 
     }
 }

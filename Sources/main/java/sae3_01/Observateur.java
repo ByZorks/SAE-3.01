@@ -2,6 +2,6 @@ package sae3_01;
 
 public interface Observateur {
 
-    void actualiser();
+    void actualiser(Sujet s);
 
 }

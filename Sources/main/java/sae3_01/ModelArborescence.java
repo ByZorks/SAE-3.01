@@ -14,6 +14,11 @@ public class ModelArborescence implements Sujet {
 
     public void updateArborescence() {
         this.arborescence.actualiser();
+        notifierObservateurs();
+    }
+
+    public FileComposite getArborescence() {
+        return this.arborescence;
     }
 
     @Override
@@ -28,6 +33,6 @@ public class ModelArborescence implements Sujet {
 
     @Override
     public void notifierObservateurs() {
-        for (Observateur o : this.observateurs) o.actualiser();
+        for (Observateur o : this.observateurs) o.actualiser(this);
     }
 }

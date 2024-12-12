@@ -1,14 +1,27 @@
 package sae3_01;
 
 import java.io.File;
+import java.util.List;
 
 public class Fichier extends FileComposite{
 
     public Fichier(File file) {
         super(file);
     }
+
     @Override
-    public void afficher(String s) {
-        System.out.println(s + "|> " + this.file.getName() + " (" + this.file.length() + " bytes)");
+    public List<FileComposite> getContenu() {
+        return null;
     }
+
+    @Override
+    public void actualiser() {
+
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return false;
+    }
+
 }

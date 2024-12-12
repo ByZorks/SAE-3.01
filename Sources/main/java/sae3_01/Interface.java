@@ -1,6 +1,7 @@
 package sae3_01;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -18,21 +19,26 @@ public class Interface extends Application {
         stage.setTitle("SAE3-01");
         HBox root = new HBox();
 
-        Repertoire r1 = new Repertoire(new File("C:/"));
+        Repertoire rootDir = new Repertoire(new File("C:\\Users\\David\\Documents\\GitHub\\SAE-3.01"));
 
         // Création des modèles
         ModelDiagramme modelDiagramme = new ModelDiagramme();
-        ModelArborescence modelArborescence = new ModelArborescence(r1);
+        ModelArborescence modelArborescence = new ModelArborescence(rootDir);
 
         // Création des observateurs
         VueDiagramme vueDiagramme = new VueDiagramme();
-        VueArborescence vueArborescence = new VueArborescence();
+        VueArborescence vueArborescence = new VueArborescence(rootDir);
 
         // Enregistrement des observateurs
         modelDiagramme.enregistrerObservateur(vueDiagramme);
         modelArborescence.enregistrerObservateur(vueArborescence);
 
+        // tests
+        modelArborescence.updateArborescence();
+
         // Affichage
+        root.getChildren().addAll(vueArborescence);
+        stage.setScene(new Scene(root));
         stage.show();
     }
 }

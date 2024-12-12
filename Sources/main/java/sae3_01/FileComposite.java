@@ -1,6 +1,7 @@
 package sae3_01;
 
 import java.io.File;
+import java.util.List;
 
 public abstract class FileComposite {
 
@@ -10,9 +11,14 @@ public abstract class FileComposite {
         this.file = file;
     }
 
-    public abstract void afficher(String s);
-
-    public void actualiser() {
-
+    public String toString() {
+        return this.file.getName();
     }
+
+    public abstract void actualiser();
+
+    public abstract List<FileComposite> getContenu();
+
+    public abstract boolean isDirectory();
+
 }

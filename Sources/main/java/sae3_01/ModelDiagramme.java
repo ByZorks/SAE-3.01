@@ -34,6 +34,6 @@ public class ModelDiagramme implements Sujet {
 
     @Override
     public void notifierObservateurs() {
-        for (Observateur o : this.observateurs) o.actualiser();
+        for (Observateur o : this.observateurs) o.actualiser(this);
     }
 }
