@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Classe {
 
-    // Attributs
+    // Attributs de la classe Classe
     private String type;
     private String nom;
     private String Package;
