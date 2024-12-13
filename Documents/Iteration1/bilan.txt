@@ -1,0 +1,9 @@
+Bug(s):
+
+- L'arborescence se referme après avoir ouvert un fichier
+
+Validation:
+
+- L'introspection des fichiers est correcte
+- Le MVC n'est pas respecté entièrement sur le TreeView
+- Il est possible de selectionner un fichier dans l'arborescence et de l'inspecter
