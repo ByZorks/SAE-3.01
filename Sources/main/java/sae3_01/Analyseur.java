@@ -4,28 +4,17 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Classe permettant d'analyser une classe Java
+ */
 public class Analyseur {
 
-    public static void main(String[] args) {
-        try {
-            Classe c = analyseClasse("sae3_01.Fichier");
-            System.out.println("-- nom --");
-            System.out.println(c.getNom());
-            System.out.println("-- type --");
-            System.out.println(c.getType());
-            System.out.println("-- package --");
-            System.out.println(c.getPackage());
-            System.out.println("-- attributs --");
-            System.out.println(c.getAttributs());
-            System.out.println("-- methodes --");
-            System.out.println(c.getMethodes());
-            System.out.println("-- coordonnees --");
-            System.out.println(Arrays.toString(c.getCoordonnees()));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Analyse une classe Java et retourne un objet Classe
+     * @param nomClasse le nom de la classe à analyser
+     * @return un objet Classe
+     * @throws ClassNotFoundException si la classe n'existe pas
+     */
     public static Classe analyseClasse(String nomClasse) throws ClassNotFoundException {
         Class<?> c = Class.forName(nomClasse);
 
@@ -38,10 +27,20 @@ public class Analyseur {
         return new Classe(type, nom, packageName, attributs, methodes, new int[]{0, 0});
     }
 
+    /**
+     * Retourne le modificateur de la classe
+     * @param c la classe
+     * @return le modificateur de la classe
+     */
     private static String getClassModifier(Class<?> c) {
         return getModifierString(c.getModifiers());
     }
 
+    /**
+     * Retourne le nom de la classe avec ses interfaces et sa classe mère
+     * @param c la classe
+     * @return le nom de la classe
+     */
     private static String getNom(Class<?> c) {
         // Récupère le nom de la classe
         String[] classNameTab = c.getName().split("\\.");
@@ -73,10 +72,20 @@ public class Analyseur {
         return  className + superClassName + itfNames;
     }
 
+    /**
+     * Retourne le nom du package de la classe
+     * @param c la classe
+     * @return le nom du package de la classe
+     */
     private static String getPackage(Class<?> c) {
         return c.getPackage().getName();
     }
 
+    /**
+     * Retourne les attributs de la classe
+     * @param c la classe
+     * @return les attributs de la classe
+     */
     private static ArrayList<String> getAttributs(Class<?> c) {
         ArrayList<String> attributs = new ArrayList<>();
         Field[] fields = c.getDeclaredFields();
@@ -88,6 +97,11 @@ public class Analyseur {
         return attributs;
     }
 
+    /**
+     * Retourne les méthodes de la classe (constructeurs et méthodes)
+     * @param c la classe
+     * @return les méthodes de la classe
+     */
     private static ArrayList<String> getMethodes(Class<?> c) {
         // Constructeurs
         ArrayList<String> methodes = new ArrayList<>();
@@ -99,10 +113,20 @@ public class Analyseur {
 
             // Parametres
             Parameter[] parameters = con.getParameters();
+            String initParams = getModifierUMLSymbol(con.getModifiers()) + name + "(";
+            StringBuilder params = new StringBuilder(initParams);
             for (Parameter p : parameters) {
                 String typeName = p.getType().getSimpleName();
-                methodes.add(getModifierUMLSymbol(con.getModifiers()) + name + "(" + typeName + ")");
+                params.append(typeName).append(", ");
             }
+
+            // Empeche la suppression de la dernière virgule si il n'y a pas de paramètres
+            if (!params.toString().equals(initParams)) {
+                params.deleteCharAt(params.length() - 1); // Supprime l'espace
+                params.deleteCharAt(params.length() - 1); // Supprime la dernière virgule
+            }
+            params.append(")");
+            methodes.add(params.toString());
         }
 
         // Méthodes
@@ -117,15 +141,29 @@ public class Analyseur {
 
             // Parametres
             Parameter[] parameters = m.getParameters();
+            String initParams = getModifierUMLSymbol(m.getModifiers()) + name + "(";
+            StringBuilder params = new StringBuilder(initParams);
             for (Parameter p : parameters) {
-                String typeName = p.getType().getSimpleName();
-                methodes.add(getModifierUMLSymbol(m.getModifiers()) + name + "(" + typeName + ") : " + returnTypeName);
+                String argName = p.getType().getSimpleName();
+                params.append(argName).append(", ");
             }
+            // Empeche la suppression de la dernière virgule si il n'y a pas de paramètres
+            if (!params.toString().equals(initParams)) {
+                params.deleteCharAt(params.length() - 1); // Supprime l'espace
+                params.deleteCharAt(params.length() - 1); // Supprime la dernière virgule
+            }
+            params.append(")").append(" : ").append(returnTypeName);
+            methodes.add(params.toString());
         }
 
         return methodes;
     }
 
+    /**
+     * Retourne une chaine de caractères représentant les modificateurs de la classe
+     * @param modifiers les modificateurs
+     * @return une chaine de caractères représentant les modificateurs de la classe
+     */
     private static String getModifierString(int modifiers) {
         StringBuilder modifierString = new StringBuilder();
 
@@ -153,6 +191,11 @@ public class Analyseur {
         return modifierString.toString();
     }
 
+    /**
+     * Retourne le symbole UML du modificateur
+     * @param modifiers les modificateurs
+     * @return le symbole UML du modificateur
+     */
     public static String getModifierUMLSymbol(int modifiers) {
         if (Modifier.isPublic(modifiers)) {
             return "+ ";

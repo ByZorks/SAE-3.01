@@ -21,7 +21,7 @@ public class Interface extends Application {
         HBox root = new HBox();
         Pane diagramme = new Pane();
 
-        Repertoire rootDir = new Repertoire(new File("C:\\Users\\David\\Documents\\GitHub\\SAE-3.01"));
+        Repertoire rootDir = new Repertoire(new File("Target/"));
 
         // Création des modèles
         Model model = new Model(rootDir);

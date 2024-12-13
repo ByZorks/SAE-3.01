@@ -2,7 +2,6 @@ package sae3_01;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class Classe {
 
@@ -54,7 +53,7 @@ public class Classe {
         return "Classe {" +
                 "\ntype=" + type +
                 "\nnom=" + nom +
-                "\nPackage='" + Package +
+                "\nPackage=" + Package +
                 "\nattributs=" + attributs +
                 "\nmethodes=" + methodes +
                 "\ncoordonnees=" + Arrays.toString(coordonnees) +
