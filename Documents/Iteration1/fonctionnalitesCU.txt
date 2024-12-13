@@ -1,0 +1,6 @@
+Fonctionnalités faite pour la première itération :
+
+L'affichage de l'interface
+Le MVC
+L'affichage de l'arborescence des répertoires et des fichiers a gauche comme dans la maquette.
+L'introspection a été faite mais il reste quelque bug a résoudre .
