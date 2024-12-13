@@ -2,7 +2,6 @@ package sae3_01;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Classe permettant d'analyser une classe Java

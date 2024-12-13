@@ -29,7 +29,7 @@ public class Model implements Sujet {
         notifierObservateurs();
     }
 
-    public Repertoire getRootDir() {
+    public Repertoire getRootTreeView() {
         return root;
     }
 
@@ -59,10 +59,6 @@ public class Model implements Sujet {
 
     public ArrayList<Classe> getClasses() {
         return this.classes;
-    }
-
-    public FileComposite getRoot() {
-        return this.root;
     }
 
     @Override

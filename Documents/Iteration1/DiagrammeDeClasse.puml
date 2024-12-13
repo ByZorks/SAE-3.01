@@ -14,23 +14,21 @@ class VueArborescence {
 }
 
 class VueDiagramme {
-    + actualiser()
+    + actualiser(TreeView<FileComposite>)
+    - buildTree(TreeItem<FileComposite>, FileComposite)
 }
 
-class ModelArborescence {
-    - arborescence : FileComposite
-    - observateurs : ArrayList<Observateur>
-    + ModelArborescence(FileComposite)
-    + updateArborescence()
-    + enregistrerObservateur(Observateur)
-    + supprimerObservateur(Observateur)
-    + notifierObservateurs()
-}
-
-class ModelDiagramme {
+class Model {
     - classes : ArrayList<Classe>
+    - root : Repertoire
+    - treeView : TreeView<FileComposite>
     - observateurs : ArrayList<Observateur>
     + ModelDiagramme()
+    + setTreeView(TreeView<FileComposite>)
+    + setRootTreeView(
+    + getRootTreeView() : TreeView<FileComposite>
+    + getTreeView() : TreeView<FileComposite>
+    + analyserClasse(String)
     + ajouterClasse(Classe)
     + supprimerClasse(Classe)
     + enregistrerObservateur(Observateur)
@@ -39,38 +37,37 @@ class ModelDiagramme {
 }
 
 class ControllerArborescence {
-    - model : ModelArborescence
+    - model : Model
     + ControllerArborescence()
     + handle(MouseEvent)
 }
 
 class ControllerDiagramme {
-    - model : ModelDiagramme
+    - model : Model
     + ControllerDiagramme()
     + handle(MouseEvent)
 }
 
-class FileComposite {
+abstract FileComposite {
     # file : File
-    + {abstract} FileComposite(File)
-    + {abstract} actualiser()
+    + FileComposite(File)
+    + getParentFolderName() : String
+    + toString() : String
     + {abstract} getContenu() : List<FileComposite>
     + {abstract} isDirectory() : boolean
-    + toString() : String
 }
 
 class Fichier {
     # file : File
     + FileComposite(File)
-    + actualiser()
     + getContenu() : List<FileComposite>
     + isDirectory() : boolean
 }
 
 class Repertoire {
     # file : File
+    - contenu : List<FileComposite>
     + FileComposite(File)
-    + actualiser()
     + getContenu() : List<FileComposite>
     + isDirectory() : boolean
 }
@@ -79,10 +76,10 @@ class Classe {
     - type : String
     - nom: String
     - package : String
-    - attributs : HashMap<String, int>
-    - methodes : HashMap<String, int>
+    - attributs : ArrayList<String>
+    - methodes : ArrayList<String>
     - coordonnées : int[]
-    + Classe(String, String, String, ArrayList<String>, ArrayList<String>)
+    + Classe(String, String, String, ArrayList<String>, ArrayList<String>, int[])
     + getType() : String
     + getNom() : String
     + getPackage() : String
@@ -90,19 +87,21 @@ class Classe {
     + getMethodes() : ArrayList<String>
     + getCoordonnées()
     + setCoordonnées(int, int)
+    + toString() : String
 }
 
 class Analyseur {
-    + Analyseur()
-    + analyseClasse(String)
-    - getHeader(Class<?>)
-    - getConstructors(Class<?>)
-    - getMethods(Class<?>)
-    - getModifiers(int)
+    + {static} analyseClasse(String)
+    - {static} getClassModifier(Class<?>) : String
+    - {static} getNom(Class<?>) : String
+    - {static} getPackage(Class<?>) : String
+    - {static} getAttributs(Class<?>) : ArrayList<String>
+    - {static} getMethodes(Class<?>) : ArrayList<String>
+    - {static} getModifierString(int) : String
+    - {static} getModifierUMLSymbol(int) : String
 }
 
-Sujet <|.. ModelArborescence
-Sujet <|.. ModelDiagramme
+Sujet <|.. Model
 
 Observateur <|.. VueArborescence
 Observateur <|.. VueDiagramme
@@ -113,9 +112,12 @@ Pane <|-- VueDiagramme
 FileComposite <|-- Fichier
 FileComposite <|-- Repertoire
 
-ModelDiagramme "1" --> "0..*" Classe : classes
-ModelArborescence "1" --> "1..*" FileComposite : arborescence
-ModelDiagramme "1" --> "1" Analyseur : analyseur
+Model "1" --> "0..*" Classe : classes
+Model "1" --> "1" Repertoire : root
+Model "1" --> "0..*" Observateur : observateurs
+
+ControllerArborescence "1" --> "1" Model : model
+ControllerDiagramme "1" --> "1" Model : model
 
 EventHandler <|-- ControllerArborescence
 EventHandler <|-- ControllerDiagramme

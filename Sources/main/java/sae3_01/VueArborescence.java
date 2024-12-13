@@ -12,11 +12,11 @@ public class VueArborescence extends TreeView<FileComposite> implements Observat
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
-        if (model.getRootDir() == null) {
+        if (model.getRootTreeView() == null) {
             return;
         }
-        TreeItem<FileComposite> rootItem = new TreeItem<>(model.getRootDir());
-        buildTree(rootItem, model.getRootDir());
+        TreeItem<FileComposite> rootItem = new TreeItem<>(model.getRootTreeView());
+        buildTree(rootItem, model.getRootTreeView());
         this.setRoot(rootItem);
     }
 
