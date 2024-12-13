@@ -20,11 +20,6 @@ public class Repertoire extends FileComposite {
         }
     }
 
-    @Override
-    public void actualiser() {
-
-    }
-
     public List<FileComposite> getContenu() {
         return this.contenu;
     }

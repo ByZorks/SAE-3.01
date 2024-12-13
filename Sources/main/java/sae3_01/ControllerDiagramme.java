@@ -5,9 +5,9 @@ import javafx.event.EventHandler;
 
 public class ControllerDiagramme implements EventHandler {
 
-    private ModelDiagramme model;
+    private Model model;
 
-    public ControllerDiagramme(ModelDiagramme model) {
+    public ControllerDiagramme(Model model) {
         this.model = model;
     }
 

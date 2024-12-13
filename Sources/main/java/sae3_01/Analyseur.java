@@ -8,7 +8,7 @@ public class Analyseur {
 
     public static void main(String[] args) {
         try {
-            Classe c = analyseClasse("sae3_01.Classe");
+            Classe c = analyseClasse("sae3_01.Fichier");
             System.out.println("-- nom --");
             System.out.println(c.getNom());
             System.out.println("-- type --");

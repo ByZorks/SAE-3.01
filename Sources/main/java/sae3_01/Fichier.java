@@ -15,11 +15,6 @@ public class Fichier extends FileComposite{
     }
 
     @Override
-    public void actualiser() {
-
-    }
-
-    @Override
     public boolean isDirectory() {
         return false;
     }

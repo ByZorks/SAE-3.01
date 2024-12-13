@@ -5,16 +5,18 @@ import javafx.scene.control.TreeView;
 
 public class VueArborescence extends TreeView<FileComposite> implements Observateur {
 
-    public VueArborescence(Repertoire r) {
-        TreeItem<FileComposite> rootItem = new TreeItem<>(r);
-        this.setRoot(rootItem);
+    public VueArborescence(TreeView<FileComposite> treeView) {
+        super(treeView.getRoot());
     }
 
     @Override
     public void actualiser(Sujet s) {
-        ModelArborescence model = (ModelArborescence) s;
-        TreeItem<FileComposite> rootItem = new TreeItem<>(model.getArborescence());
-        buildTree(rootItem, model.getArborescence());
+        Model model = (Model) s;
+        if (model.getRootDir() == null) {
+            return;
+        }
+        TreeItem<FileComposite> rootItem = new TreeItem<>(model.getRootDir());
+        buildTree(rootItem, model.getRootDir());
         this.setRoot(rootItem);
     }
 

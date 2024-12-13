@@ -11,11 +11,18 @@ public abstract class FileComposite {
         this.file = file;
     }
 
+    public String getParentFolderName() {
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            return parentFile.getName();
+        } else {
+            return null;
+        }
+    }
+
     public String toString() {
         return this.file.getName();
     }
-
-    public abstract void actualiser();
 
     public abstract List<FileComposite> getContenu();
 
