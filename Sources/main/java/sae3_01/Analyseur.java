@@ -47,11 +47,12 @@ public class Analyseur {
 
         // Récupère le nom de la classe mère
         Class<?> superClass = c.getSuperclass();
-        String superClassName;
-        String[] superClassNameTab = superClass.getName().split("\\.");
-        superClassName = " extends " + superClassNameTab[superClassNameTab.length - 1];
-        if (superClassName.equals(" extends Object")) {
-            superClassName = "";
+        String superClassName = "";
+        if (superClass != null) { // null dans le cas d'une interface
+            if (!superClass.getName().contains("Object")) {
+                String[] superClassNameTab = superClass.getName().split("\\.");
+                superClassName = " extends " + superClassNameTab[superClassNameTab.length - 1];
+            }
         }
 
         // Récupère les noms des interfaces
