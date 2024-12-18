@@ -106,7 +106,7 @@ Sujet <|.. Model
 Observateur <|.. VueArborescence
 Observateur <|.. VueDiagramme
 
-VBox <|-- VueArborescence
+TreeView <|-- VueArborescence
 Pane <|-- VueDiagramme
 
 FileComposite <|-- Fichier
