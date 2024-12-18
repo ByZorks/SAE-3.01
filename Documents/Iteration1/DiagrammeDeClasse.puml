@@ -9,16 +9,16 @@ interface Observateur {
     + actualiser()
 }
 
-class VueArborescence {
+class VueArborescence extends TreeView implements Observateur {
     + actualiser()
 }
 
-class VueDiagramme {
+class VueDiagramme extends Pane implements Observateur {
     + actualiser(TreeView<FileComposite>)
     - buildTree(TreeItem<FileComposite>, FileComposite)
 }
 
-class Model {
+class Model implements Sujet {
     - classes : ArrayList<Classe>
     - root : Repertoire
     - treeView : TreeView<FileComposite>
@@ -36,13 +36,13 @@ class Model {
     + notifierObservateurs()
 }
 
-class ControllerArborescence {
+class ControllerArborescence extends EventHandler {
     - model : Model
     + ControllerArborescence()
     + handle(MouseEvent)
 }
 
-class ControllerDiagramme {
+class ControllerDiagramme extends EventHandler {
     - model : Model
     + ControllerDiagramme()
     + handle(MouseEvent)
@@ -57,14 +57,14 @@ abstract FileComposite {
     + {abstract} isDirectory() : boolean
 }
 
-class Fichier {
+class Fichier extends FileComposite {
     # file : File
     + FileComposite(File)
     + getContenu() : List<FileComposite>
     + isDirectory() : boolean
 }
 
-class Repertoire {
+class Repertoire extends FileComposite {
     # file : File
     - contenu : List<FileComposite>
     + FileComposite(File)
@@ -101,24 +101,10 @@ class Analyseur {
     - {static} getModifierUMLSymbol(int) : String
 }
 
-Sujet <|.. Model
-
-Observateur <|.. VueArborescence
-Observateur <|.. VueDiagramme
-
-TreeView <|-- VueArborescence
-Pane <|-- VueDiagramme
-
-FileComposite <|-- Fichier
-FileComposite <|-- Repertoire
-
 Model "1" --> "0..*" Classe : classes
 Model "1" --> "1" Repertoire : root
 Model "1" --> "0..*" Observateur : observateurs
 
 ControllerArborescence "1" --> "1" Model : model
 ControllerDiagramme "1" --> "1" Model : model
-
-EventHandler <|-- ControllerArborescence
-EventHandler <|-- ControllerDiagramme
 @enduml
