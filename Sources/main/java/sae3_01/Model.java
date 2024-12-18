@@ -57,6 +57,23 @@ public class Model implements Sujet {
         notifierObservateurs();
     }
 
+    public String genererPlantUML() {
+        StringBuilder plantUML = new StringBuilder();
+        plantUML.append("@startuml\n");
+        for (Classe c : classes) {
+            plantUML.append("class ").append(c.getNom()).append(" {\n");
+            for (String attribut : c.getAttributs()) {
+                plantUML.append(attribut).append("\n");
+            }
+            for (String methode : c.getMethodes()) {
+                plantUML.append(methode).append("\n");
+            }
+            plantUML.append("}\n");
+        }
+        plantUML.append("@enduml");
+        return plantUML.toString();
+    }
+
     public ArrayList<Classe> getClasses() {
         return this.classes;
     }

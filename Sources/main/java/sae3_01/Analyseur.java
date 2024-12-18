@@ -195,14 +195,28 @@ public class Analyseur {
      * @param modifiers les modificateurs
      * @return le symbole UML du modificateur
      */
-    public static String getModifierUMLSymbol(int modifiers) {
+    private static String getModifierUMLSymbol(int modifiers) {
+        String modifierString = "";
         if (Modifier.isPublic(modifiers)) {
-            return "+ ";
+            modifierString = "+ ";
         } else if (Modifier.isPrivate(modifiers)) {
-            return "- ";
+            modifierString = "- ";
         } else if (Modifier.isProtected(modifiers)) {
-            return "# ";
+            modifierString = "# ";
         }
-        return "";
+
+        if (Modifier.isStatic(modifiers)) {
+            modifierString += "{static} ";
+        }
+        if (Modifier.isAbstract(modifiers)) {
+            modifierString += "{abstract} ";
+        }
+        if (Modifier.isFinal(modifiers)) {
+            modifierString += "{final} ";
+        }
+        if (Modifier.isSynchronized(modifiers)) {
+            modifierString += "{synchronized} ";
+        }
+        return modifierString;
     }
 }

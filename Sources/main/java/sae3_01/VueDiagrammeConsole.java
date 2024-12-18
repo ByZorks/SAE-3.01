@@ -8,9 +8,6 @@ public class VueDiagrammeConsole implements Observateur {
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
-        System.out.println("Diagramme :");
-        for (Classe c : model.getClasses()) {
-            System.out.println(c);
-        }
+        System.out.println(model.genererPlantUML());
     }
 }
