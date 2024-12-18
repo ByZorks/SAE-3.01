@@ -2,6 +2,7 @@ package sae3_01;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -22,13 +23,14 @@ public class Interface extends Application {
         Pane diagramme = new Pane();
 
         Repertoire rootDir = new Repertoire(new File("Target/"));
+        TreeItem<FileComposite> treeRoot = new TreeItem<>(rootDir);
 
         // Création des modèles
         Model model = new Model(rootDir);
 
         // Création des observateurs
         VueDiagramme vueDiagramme = new VueDiagramme();
-        VueArborescence vueArborescence = new VueArborescence(model.getTreeView());
+        VueArborescence vueArborescence = new VueArborescence(treeRoot, rootDir);
         VueDiagrammeConsole vueDiagrammeConsole = new VueDiagrammeConsole();
 
         // Enregistrement des observateurs
@@ -40,10 +42,8 @@ public class Interface extends Application {
         ControllerDiagramme controllerDiagramme = new ControllerDiagramme(model);
         ControllerArborescence controllerArborescence = new ControllerArborescence(model);
 
-        // tests
-        model.setTreeView(vueArborescence);
-        model.setRootTreeView();
-        model.getTreeView().setOnMouseClicked(controllerArborescence);
+        // Assignation des contrôleurs
+        vueArborescence.setOnMouseClicked(controllerArborescence);
 
         // Affichage
         root.getChildren().addAll(vueArborescence, diagramme);

@@ -2,6 +2,7 @@ package sae3_01;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 
 public class ControllerArborescence implements EventHandler<MouseEvent> {
@@ -14,14 +15,15 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent mouseEvent) {
-            if (mouseEvent.getClickCount() == 2) {
-                TreeItem<FileComposite> selectedItem = model.getTreeView().getSelectionModel().getSelectedItem();
-                FileComposite file = selectedItem.getValue();
-                if (!selectedItem.getValue().isDirectory()) {
-                    String nomFichier = file.toString().substring(0, file.toString().length() - 6); // On enlève l'extension .class
-                    Classe c = model.analyserClasse(file.getParentFolderName() + "." + nomFichier); // On ajoute le package (nom du dossier parent)
-                    model.ajouterClasse(c);
-                }
+        TreeView<FileComposite> treeView = (TreeView<FileComposite>) mouseEvent.getSource();
+        if (mouseEvent.getClickCount() == 2) {
+            TreeItem<FileComposite> selectedItem = treeView.getSelectionModel().getSelectedItem();
+            FileComposite file = selectedItem.getValue();
+            if (!selectedItem.getValue().isDirectory()) {
+                String nomFichier = file.toString().substring(0, file.toString().length() - 6); // On enlève l'extension .class
+                Classe c = model.analyserClasse(file.getParentFolderName() + "." + nomFichier); // On ajoute le package (nom du dossier parent)
+                model.ajouterClasse(c);
             }
+        }
     }
 }
