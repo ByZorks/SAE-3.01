@@ -21,7 +21,8 @@ public class TestAnalyseur {
         // Préparation des données
         String nomClasse = "sae3_01.Repertoire";
         String type = "public ";
-        String nom = "Repertoire extends FileComposite";
+        String nomSimple = "Repertoire";
+        String nomExtended = "Repertoire extends FileComposite";
         String packageName = "sae3_01";
         ArrayList<String> attributs = new ArrayList<>();
         attributs.add("- contenu : List");
@@ -37,7 +38,8 @@ public class TestAnalyseur {
         // Vérification
         assertDoesNotThrow(() -> Analyseur.analyseClasse(nomClasse));
         assertEquals(type, c.getType());
-        assertEquals(nom, c.getNom());
+        assertEquals(nomSimple, c.getNomSimple());
+        assertEquals(nomExtended, c.getNomExtended());
         assertEquals(packageName, c.getPackage());
         assertEquals(1, c.getAttributs().size());
         assertEquals(attributs, c.getAttributs());

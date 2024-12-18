@@ -2,67 +2,135 @@ package sae3_01;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
+/**
+ * Classe permettant de représenter une classe Java
+ */
 public class Classe {
 
-    // Attributs de la classe Classe
+    /** Type de la classe */
     private String type;
-    private String nom;
+    /** Nom simple de la classe */
+    private String nomSimple;
+    /** Nom de la classe avec ses interfaces et sa classe mère */
+    private String nomExtended;
+    /** Package de la classe */
     private String Package;
+    /** Liste des attributs */
     private ArrayList<String> attributs;
+    /** Liste des méthodes */
     private ArrayList<String> methodes;
+    /** Coordonnées de la classe */
     private int[] coordonnees;
 
-    //Constructeur
-    public Classe(String type, String nom, String Package, ArrayList<String> attributs, ArrayList<String> methodes, int[] coordonnees) {
+    /**
+     * Constructeur
+     * @param type Type de la classe
+     * @param nomSimple Nom simple de la classe
+     * @param nomExtended Nom de la classe avec ses interfaces et sa classe mère
+     * @param Package Package de la classe
+     * @param attributs Liste des attributs
+     * @param methodes Liste des méthodes
+     * @param coordonnees Coordonnées de la classe
+     */
+    public Classe(String type, String nomSimple, String nomExtended, String Package, ArrayList<String> attributs, ArrayList<String> methodes, int[] coordonnees) {
         this.type = type;
-        this.nom = nom;
+        this.nomSimple = nomSimple;
+        this.nomExtended = nomExtended;
         this.Package = Package;
         this.coordonnees = coordonnees;
         this.attributs = attributs;
         this.methodes = methodes;
     }
 
-    //Getter
+    /**
+     * Retourne le type de la classe
+     * @return Type de la classe
+     */
     public String getType() {
         return type;
     }
 
-    public String getNom() {
-        return nom;
+    /**
+     * Retourne le nom simple de la classe
+     * @return Nom simple de la classe
+     */
+    public String getNomSimple() {
+        return nomSimple;
     }
 
+    /**
+     * Retourne le nom de la classe avec ses interfaces et sa classe mère
+     * @return Nom de la classe
+     */
+    public String getNomExtended() {
+        return nomExtended;
+    }
+
+    /**
+     * Retourne le package de la classe
+     * @return Package de la classe
+     */
     public String getPackage() {
         return Package;
     }
 
+    /**
+     * Retourne la liste des attributs
+     * @return Liste des attributs
+     */
     public ArrayList<String> getAttributs() {
         return attributs;
     }
 
+    /**
+     * Retourne la liste des méthodes
+     * @return Liste des méthodes
+     */
     public ArrayList<String> getMethodes() {
         return methodes;
     }
 
+    /**
+     * Retourne les coordonnées de la classe
+     * @return Coordonnées de la classe
+     */
     public int[] getCoordonnees() {
         return coordonnees;
+    }
+
+    /**
+     * Modifie les coordonnées de la classe
+     * @param x Coordonnée x
+     * @param y Coordonnée y
+     */
+    public void SetCoordonnees(int x, int y) {
+        this.coordonnees[0] = x;
+        this.coordonnees[1] = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Classe classe = (Classe) o;
+        return Objects.equals(nomSimple, classe.nomSimple);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nomSimple);
     }
 
     @Override
     public String toString() {
         return "Classe {" +
                 "\ntype=" + type +
-                "\nnom=" + nom +
+                "\nnom=" + nomExtended +
                 "\nPackage=" + Package +
                 "\nattributs=" + attributs +
                 "\nmethodes=" + methodes +
                 "\ncoordonnees=" + Arrays.toString(coordonnees) +
                 "\n}";
-    }
-
-    //Setter
-    public void SetCoordonnees(int x, int y) {
-        this.coordonnees[0] = x;
-        this.coordonnees[1] = y;
     }
 }

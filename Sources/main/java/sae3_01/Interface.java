@@ -26,7 +26,7 @@ public class Interface extends Application {
         TreeItem<FileComposite> treeRoot = new TreeItem<>(rootDir);
 
         // Création des modèles
-        Model model = new Model(rootDir);
+        Model model = new Model();
 
         // Création des observateurs
         VueDiagramme vueDiagramme = new VueDiagramme();

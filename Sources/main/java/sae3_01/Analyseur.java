@@ -18,12 +18,13 @@ public class Analyseur {
         Class<?> c = Class.forName(nomClasse);
 
         String type = getClassModifier(c);
-        String nom = getNom(c);
+        String nomSimple = c.getSimpleName();
+        String nomExtended = getNom(c);
         String packageName = getPackage(c);
         ArrayList<String> attributs = getAttributs(c);
         ArrayList<String> methodes = getMethodes(c);
 
-        return new Classe(type, nom, packageName, attributs, methodes, new int[]{0, 0});
+        return new Classe(type, nomSimple, nomExtended, packageName, attributs, methodes, new int[]{0, 0});
     }
 
     /**
@@ -157,6 +158,29 @@ public class Analyseur {
         }
 
         return methodes;
+    }
+
+    /**
+     * Retourne le type de l'attribut
+     * @param c le nom de la classe
+     * @return le type de l'attribut en entier
+     */
+    public static String[] getDetailledFieldType(String c) {
+        Class<?> cl;
+        String[] types = null;
+        try {
+            cl = Class.forName(c);
+            Field[] fields = cl.getDeclaredFields();
+            types = new String[fields.length];
+            for (int i = 0; i < fields.length; i++) {
+                AnnotatedType type = fields[i].getAnnotatedType(); // Récupère le type complet de l'attribut
+                types[i] = type.getType().getTypeName();
+            }
+        } catch (ClassNotFoundException e) {
+            // Ne devrait jamais arriver car la classe a déjà été chargée une fois avant d'appeler cette méthode
+        }
+
+        return types;
     }
 
     /**
