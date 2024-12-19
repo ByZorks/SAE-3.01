@@ -52,7 +52,7 @@ public class TestAnalyseur {
     @Test
     public void test_getDetailledFieldType() {
         // Préparation des données
-        String[] expected = new String[]{"java.util.List<sae3_01.FileComposite>"};
+        String[] expected = new String[]{"java.util.List<sae3_01.FileComposite> contenu"};
 
         // Exécution de la méthode à tester
         String[] result = Analyseur.getDetailledFieldType("sae3_01.Repertoire");

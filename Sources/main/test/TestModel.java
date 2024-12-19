@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import sae3_01.Classe;
 import sae3_01.Model;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Classe de test de la classe Model
@@ -31,10 +31,23 @@ public class TestModel {
         Classe c2 = model.analyserClasse("sae3_01.FileComposite");
 
         // Exécution de la méthode à tester
-        boolean result = this.model.checkAssociation(c1, c2);
+        String result = this.model.checkAssociation(c1, c2);
 
         // Vérification
-        assertTrue(result);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void test_checkAssociationNull() {
+        // Prépartion des données
+        Classe c1 = model.analyserClasse("sae3_01.Repertoire");
+        Classe c2 = model.analyserClasse("sae3_01.Classe");
+
+        // Exécution de la méthode à tester
+        String result = this.model.checkAssociation(c1, c2);
+
+        // Vérification
+        assertNull(result);
     }
 
     /**
@@ -59,7 +72,6 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
-            System.out.println(s);
             assertTrue(result.contains(s));
         }
     }
@@ -81,7 +93,6 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
-            System.out.println(s);
             assertTrue(result.contains(s));
         }
     }
@@ -110,7 +121,7 @@ public class TestModel {
                 "\t+ isDirectory() : boolean\n",
                 "\t+ getContenu() : List\n",
                 "}\n",
-                "Repertoire --> FileComposite\n",
+                "Repertoire --> FileComposite : contenu\n",
                 "\n@enduml"};
 
         // Exécution de la méthode à tester
@@ -118,7 +129,6 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
-            System.out.println(s);
             assertTrue(result.contains(s));
         }
     }

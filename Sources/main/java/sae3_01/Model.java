@@ -86,8 +86,9 @@ public class Model implements Sujet {
 
             // Associations
             for (Classe c2 : classes) {
-                if (checkAssociation(c1, c2)) {
-                    associations.append(c1.getNomSimple()).append(" --> ").append(c2.getNomSimple()).append("\n");
+                String association = checkAssociation(c1, c2);
+                if (association != null) {
+                    associations.append(c1.getNomSimple()).append(" --> ").append(c2.getNomSimple()).append(" : ").append(association).append("\n");
                 }
             }
         }
@@ -101,13 +102,17 @@ public class Model implements Sujet {
      * @param c2 Classe 2
      * @return Vrai si une association existe, faux sinon
      */
-    public boolean checkAssociation(Classe c1, Classe c2) {
-        if (c1.equals(c2)) return false;
+    public String checkAssociation(Classe c1, Classe c2) {
+        if (c1.equals(c2)) return null;
         String[] attributs = Analyseur.getDetailledFieldType(c1.getPackage() + "." + c1.getNomSimple());
         for (String attribut : attributs) {
-            if (attribut.contains(c2.getNomSimple())) return true;
+            if (attribut.contains(c2.getNomSimple())) {
+                System.out.println(attribut);
+                attribut = attribut.split(" ")[1];
+                return attribut;
+            }
         }
-        return false;
+        return null;
     }
 
     @Override

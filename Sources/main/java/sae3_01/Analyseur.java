@@ -174,7 +174,8 @@ public class Analyseur {
             types = new String[fields.length];
             for (int i = 0; i < fields.length; i++) {
                 AnnotatedType type = fields[i].getAnnotatedType(); // Récupère le type complet de l'attribut
-                types[i] = type.getType().getTypeName();
+                String name = fields[i].getName();
+                types[i] = type.getType().getTypeName() + " " + name;
             }
         } catch (ClassNotFoundException e) {
             // Ne devrait jamais arriver car la classe a déjà été chargée une fois avant d'appeler cette méthode
