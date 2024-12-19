@@ -205,6 +205,9 @@ public class Analyseur {
         if (Modifier.isAbstract(modifiers)) {
             modifierString.append("abstract ");
         }
+        if (Modifier.isInterface(modifiers)) {
+            modifierString.append("interface ");
+        }
         if (Modifier.isFinal(modifiers)) {
             modifierString.append("final ");
         }

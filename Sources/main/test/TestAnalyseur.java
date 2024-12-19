@@ -48,4 +48,16 @@ public class TestAnalyseur {
         assertEquals(coordonnees[0], c.getCoordonnees()[0]);
         assertEquals(coordonnees[1], c.getCoordonnees()[1]);
     }
+
+    @Test
+    public void test_getDetailledFieldType() {
+        // Préparation des données
+        String[] expected = new String[]{"java.util.List<sae3_01.FileComposite>"};
+
+        // Exécution de la méthode à tester
+        String[] result = Analyseur.getDetailledFieldType("sae3_01.Repertoire");
+
+        // Vérification
+        assertEquals(expected[0], result[0]);
+    }
 }
