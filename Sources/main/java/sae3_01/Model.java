@@ -107,7 +107,6 @@ public class Model implements Sujet {
         String[] attributs = Analyseur.getDetailledFieldType(c1.getPackage() + "." + c1.getNomSimple());
         for (String attribut : attributs) {
             if (attribut.contains(c2.getNomSimple())) {
-                System.out.println(attribut);
                 attribut = attribut.split(" ")[1];
                 return attribut;
             }
