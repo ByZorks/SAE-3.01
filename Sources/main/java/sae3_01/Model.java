@@ -64,15 +64,23 @@ public class Model implements Sujet {
         StringBuilder associations = new StringBuilder();
         plantUML.append("@startuml\n");
         for (Classe c1 : classes) {
-            plantUML.append("class ").append(c1.getNomExtended()).append(" {\n");
+            if (c1.getType().contains("interface")) {
+                plantUML.append("interface ");
+            } else if (c1.getType().contains("abstract")) {
+                plantUML.append("abstract ");
+            } else {
+                plantUML.append("class ");
+            }
+            plantUML.append(c1.getNomExtended()).append(" {\n");
+
             // Attributs
             for (String attribut : c1.getAttributs()) {
-                plantUML.append(attribut).append("\n");
+                plantUML.append("\t").append(attribut).append("\n");
             }
 
             // Methodes
             for (String methode : c1.getMethodes()) {
-                plantUML.append(methode).append("\n");
+                plantUML.append("\t").append(methode).append("\n");
             }
             plantUML.append("}\n");
 
@@ -83,7 +91,7 @@ public class Model implements Sujet {
                 }
             }
         }
-        plantUML.append(associations).append("@enduml");
+        plantUML.append("\n").append(associations).append("@enduml");
         return plantUML.toString();
     }
 
