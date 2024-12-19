@@ -3,3 +3,7 @@
 out/
 *.iml
 target/
+
+# Autres projets
+Logo/
+img/
