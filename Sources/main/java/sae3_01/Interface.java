@@ -11,16 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import javax.swing.text.Element;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import static jdk.xml.internal.SecuritySupport.getResourceAsStream;
 
 public class Interface extends Application {
 
