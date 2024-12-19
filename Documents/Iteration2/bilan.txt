@@ -1,0 +1,8 @@
+Bug(s):
+
+- Pas d'association entre les classes qui extends des types comme des List (ex: TreeView<FileComposite> et FileComposite)
+- Pas de cardinalité sur les associations
+
+Validation:
+
+- Il est possible de générer le code valide d'un diagramme de classe

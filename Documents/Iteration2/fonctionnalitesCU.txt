@@ -1,0 +1,3 @@
+Fonctionnalités faites pour la première itération :
+
+- Génération du code plantUML d'un diagramme entier

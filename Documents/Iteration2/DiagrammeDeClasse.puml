@@ -1,0 +1,111 @@
+@startuml
+abstract FileComposite {
+	# file : File
+	+ FileComposite(File)
+	+ toString() : String
+	+ {abstract} isDirectory() : boolean
+	+ getParentFolderName() : String
+	+ {abstract} getContenu() : List
+}
+class Repertoire extends FileComposite {
+	- contenu : List
+	+ Repertoire(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List
+}
+class VueArborescence extends TreeView implements Observateur {
+	+ VueArborescence(TreeItem, FileComposite)
+	- buildTree(TreeItem, FileComposite) : void
+	+ actualiser(Sujet) : void
+}
+class Fichier extends FileComposite {
+	+ Fichier(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List
+}
+class VueDiagramme extends Pane implements Observateur {
+	+ VueDiagramme()
+	+ actualiser(Sujet) : void
+}
+class VueDiagrammeConsole implements Observateur {
+	+ VueDiagrammeConsole()
+	+ actualiser(Sujet) : void
+}
+class ControllerArborescence implements EventHandler {
+	- model : Model
+	+ ControllerArborescence(Model)
+	+ handle(MouseEvent) : void
+	+ handle(Event) : void
+}
+interface Observateur {
+	+ {abstract} actualiser(Sujet) : void
+}
+class Analyseur {
+	+ Analyseur()
+	- {static} getPackage(Class) : String
+	+ {static} getDetailledFieldType(String) : String[]
+	+ {static} analyseClasse(String) : Classe
+	- {static} getAttributs(Class) : ArrayList
+	- {static} getMethodes(Class) : ArrayList
+	- {static} getClassModifier(Class) : String
+	- {static} getModifierString(int) : String
+	- {static} getNom(Class) : String
+	- {static} getModifierUMLSymbol(int) : String
+}
+class Model implements Sujet {
+	- classes : Set
+	- observateurs : ArrayList
+	+ Model()
+	+ enregistrerObservateur(Observateur) : void
+	+ notifierObservateurs() : void
+	+ supprimerObservateur(Observateur) : void
+	+ checkAssociation(Classe, Classe) : String
+	+ genererPlantUML() : String
+	+ supprimerClasse(Classe) : void
+	+ ajouterClasse(Classe) : void
+	+ analyserClasse(String) : Classe
+}
+class Classe {
+	- type : String
+	- nomSimple : String
+	- nomExtended : String
+	- Package : String
+	- attributs : ArrayList
+	- methodes : ArrayList
+	- coordonnees : int[]
+	+ Classe(String, String, String, String, ArrayList, ArrayList, int[])
+	+ equals(Object) : boolean
+	+ toString() : String
+	+ hashCode() : int
+	+ getPackage() : String
+	+ getType() : String
+	+ getAttributs() : ArrayList
+	+ getNomSimple() : String
+	+ getNomExtended() : String
+	+ getMethodes() : ArrayList
+	+ SetCoordonnees(int, int) : void
+	+ getCoordonnees() : int[]
+}
+class ControllerDiagramme implements EventHandler {
+	- model : Model
+	+ ControllerDiagramme(Model)
+	+ handle(Event) : void
+}
+class Interface extends Application {
+	+ Interface()
+	+ {static} main(String[]) : void
+	+ start(Stage) : void
+}
+interface Sujet {
+	+ {abstract} enregistrerObservateur(Observateur) : void
+	+ {abstract} notifierObservateurs() : void
+	+ {abstract} supprimerObservateur(Observateur) : void
+}
+
+Repertoire --> FileComposite : file
+ControllerArborescence "1" --> "1" Model : model
+Model "1" --> "*" Observateur : observateurs
+Model "1" --> "*" Classe : classes
+ControllerDiagramme "1" --> "1" Model : model
+TreeView "1" --> "*" FileComposite
+@enduml
