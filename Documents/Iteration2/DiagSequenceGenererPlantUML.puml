@@ -1,0 +1,47 @@
+@startuml
+VueDiagrammeConsole -> Model : genererPlantUML
+loop classes c1
+    Model -> Model : new StringBuilder() : plantUML
+    note left: contient le code plantUML
+    Model -> Model : new StringBuilder() : associations
+    note left: contient les associations
+
+
+    alt c1.getType().contains("interface")
+        Model -> Model : plantUML.append("interface ")
+    else (c1.getType().contains("abstract")
+        Model -> Model : plantUML.append("abstract ")
+    else else
+        Model -> Model : plantUML.append("class ")
+    end
+    note left: verifie le type de classe
+
+    Model -> Model : plantUML.append(c1.getNomExtended()).append(" {\n")
+
+    loop attributs
+      Model -> Model : plantUML.append("\t").append(attribut).append("\n")
+    end
+    note left: ajoute les attributs
+
+    loop methodes
+        Mode -> Model : plantUML.append("\t").append(methode).append("\n")
+    end
+    note left: ajoute les méthodes
+
+    Model -> Model : plantUML.append("}\n");
+
+    loop classes c2
+        Model -> Model : checkAssociation(c1, c2)
+        alt association != null
+            Model -> Model : associations.append(c1.getNomSimple()).append(" --> ").append(c2.getNomSimple()).append(" : ").append(association).append("\n")
+        end
+    end
+    note left: ajoute les associations
+
+    Model -> Model : plantUML.append("\n").append(associations).append("enduml")
+
+end
+
+Model -> VueDiagrammeConsole : plantUML.toString()
+
+@enduml
