@@ -100,7 +100,7 @@ public class Model implements Sujet {
      * Vérifie si une association existe entre deux classes
      * @param c1 Classe 1
      * @param c2 Classe 2
-     * @return Vrai si une association existe, faux sinon
+     * @return Nom de l'attribut
      */
     public String checkAssociation(Classe c1, Classe c2) {
         if (c1.equals(c2)) return null;

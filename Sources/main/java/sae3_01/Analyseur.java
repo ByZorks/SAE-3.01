@@ -163,7 +163,7 @@ public class Analyseur {
     /**
      * Retourne le type de l'attribut
      * @param c le nom de la classe
-     * @return le type de l'attribut en entier
+     * @return le type de l'attribut en entier et son nom sous la forme "type nom"
      */
     public static String[] getDetailledFieldType(String c) {
         Class<?> cl;
