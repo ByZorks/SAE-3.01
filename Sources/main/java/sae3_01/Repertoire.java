@@ -4,10 +4,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Représente un répertoire.
+ */
 public class Repertoire extends FileComposite {
 
+    /**
+     * Contenu du répertoire.
+     */
     private List<FileComposite> contenu =  new ArrayList<>();
 
+    /**
+     * Constructeur.
+     * @param f Répertoire à représenter.
+     */
     public Repertoire(File f) {
         super(f);
         File[] files = this.file.listFiles();

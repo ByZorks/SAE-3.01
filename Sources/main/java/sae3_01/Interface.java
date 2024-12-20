@@ -12,6 +12,10 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
+/**
+ * Classe Interface
+ * Classe principale de l'application, elle gère l'interface graphique
+ */
 public class Interface extends Application {
 
     public static void main(String[] args) {

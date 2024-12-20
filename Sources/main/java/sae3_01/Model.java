@@ -114,10 +114,11 @@ public class Model implements Sujet {
         return null;
     }
 
-    public Set<Classe> getClasses() {
-        return classes;
-    }
-
+    /**
+     * Retourne la classe correspondant au nom
+     * @param nom Nom de la classe
+     * @return Classe
+     */
     public Classe getClasse(String nom) {
         for (Classe c : classes) {
             if (c.getNomSimple().equals(nom)) return c;

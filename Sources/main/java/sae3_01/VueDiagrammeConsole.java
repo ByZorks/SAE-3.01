@@ -1,7 +1,13 @@
 package sae3_01;
 
+/**
+ * Vue du diagramme de classes en console.
+ */
 public class VueDiagrammeConsole implements Observateur {
 
+    /**
+     * Constructeur.
+     */
     public VueDiagrammeConsole() {
     }
 

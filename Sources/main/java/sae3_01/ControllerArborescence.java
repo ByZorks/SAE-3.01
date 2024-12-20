@@ -6,11 +6,21 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * Contrôleur de l'arborescence
+ */
 public class ControllerArborescence implements EventHandler<MouseEvent> {
 
+    /** Modèle */
     private Model model;
+    /** Vue diagramme */
     private VueDiagramme vueDiagramme;
 
+    /**
+     * Constructeur
+     * @param model Modèle
+     * @param vueDiagramme Vue diagramme
+     */
     public ControllerArborescence(Model model, VueDiagramme vueDiagramme) {
         this.model = model;
         this.vueDiagramme = vueDiagramme;
