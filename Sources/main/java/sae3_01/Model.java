@@ -42,6 +42,9 @@ public class Model implements Sujet {
      * @param classe Classe
      */
     public void ajouterClasse(Classe classe) {
+        double x = Math.random() * 500;
+        double y = Math.random() * 500;
+        classe.setCoordonnees(x, y);
         this.classes.add(classe);
         notifierObservateurs();
     }
@@ -110,6 +113,17 @@ public class Model implements Sujet {
                 attribut = attribut.split(" ")[1];
                 return attribut;
             }
+        }
+        return null;
+    }
+
+    public Set<Classe> getClasses() {
+        return classes;
+    }
+
+    public Classe getClasse(String nom) {
+        for (Classe c : classes) {
+            if (c.getNomSimple().equals(nom)) return c;
         }
         return null;
     }

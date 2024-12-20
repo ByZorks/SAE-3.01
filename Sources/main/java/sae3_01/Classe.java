@@ -22,7 +22,7 @@ public class Classe {
     /** Liste des méthodes */
     private ArrayList<String> methodes;
     /** Coordonnées de la classe */
-    private int[] coordonnees;
+    private double[] coordonnees;
 
     /**
      * Constructeur
@@ -34,7 +34,7 @@ public class Classe {
      * @param methodes Liste des méthodes
      * @param coordonnees Coordonnées de la classe
      */
-    public Classe(String type, String nomSimple, String nomExtended, String Package, ArrayList<String> attributs, ArrayList<String> methodes, int[] coordonnees) {
+    public Classe(String type, String nomSimple, String nomExtended, String Package, ArrayList<String> attributs, ArrayList<String> methodes, double[] coordonnees) {
         this.type = type;
         this.nomSimple = nomSimple;
         this.nomExtended = nomExtended;
@@ -96,7 +96,7 @@ public class Classe {
      * Retourne les coordonnées de la classe
      * @return Coordonnées de la classe
      */
-    public int[] getCoordonnees() {
+    public double[] getCoordonnees() {
         return coordonnees;
     }
 
@@ -105,7 +105,7 @@ public class Classe {
      * @param x Coordonnée x
      * @param y Coordonnée y
      */
-    public void SetCoordonnees(int x, int y) {
+    public void setCoordonnees(double x, double y) {
         this.coordonnees[0] = x;
         this.coordonnees[1] = y;
     }

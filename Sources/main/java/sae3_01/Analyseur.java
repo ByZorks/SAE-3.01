@@ -24,7 +24,7 @@ public class Analyseur {
         ArrayList<String> attributs = getAttributs(c);
         ArrayList<String> methodes = getMethodes(c);
 
-        return new Classe(type, nomSimple, nomExtended, packageName, attributs, methodes, new int[]{0, 0});
+        return new Classe(type, nomSimple, nomExtended, packageName, attributs, methodes, new double[]{0, 0});
     }
 
     /**
