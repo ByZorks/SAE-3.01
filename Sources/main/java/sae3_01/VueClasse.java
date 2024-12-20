@@ -21,7 +21,6 @@ public class VueClasse extends VBox implements Observateur {
     private double y;
 
     public VueClasse() {
-        this.setPrefSize(200, 200);
         this.setStyle("-fx-background-color: yellow; -fx-border-color: black;");
         this.nom = new Label();
         this.header = new VBox();
@@ -90,8 +89,26 @@ public class VueClasse extends VBox implements Observateur {
         });
 
         node.setOnMouseDragged(e -> {
-            this.setLayoutX(e.getSceneX() - x);
-            this.setLayoutY(e.getSceneY() - y);
+            double newX = e.getSceneX() - x;
+            double newY = e.getSceneY() - y;
+
+            // Dimensions du parent
+            double parentMaxX = getParent().getLayoutBounds().getWidth();
+            double parentMaxY = getParent().getLayoutBounds().getHeight();
+
+            // Dimensions de la VBox (this)
+            double nodeWidth = this.getBoundsInLocal().getWidth();
+            double nodeHeight = this.getBoundsInLocal().getHeight();
+
+            boolean xValide = (newX >= 0) && (newX + nodeWidth <= parentMaxX);
+            boolean yValide = (newY >= 0) && (newY + nodeHeight <= parentMaxY);
+
+            if (xValide) {
+                this.setLayoutX(newX);
+            }
+            if (yValide) {
+                this.setLayoutY(newY);
+            }
         });
     }
 }

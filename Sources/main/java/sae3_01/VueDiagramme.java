@@ -40,6 +40,6 @@ public class VueDiagramme extends Pane implements Observateur {
 
     @Override
     public void actualiser(Sujet s) {
-        // Mise à jour si nécessaire
+        // Rien à faire
     }
 }

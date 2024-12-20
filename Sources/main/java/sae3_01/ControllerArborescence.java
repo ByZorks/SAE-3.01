@@ -24,8 +24,8 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
             FileComposite file = selectedItem.getValue();
             if (!selectedItem.getValue().isDirectory()) {
                 String nomFichier = file.toString().substring(0, file.toString().length() - 6); // On enlève l'extension .class
-                nomFichier = file.getParentFolderName() + "." + nomFichier; // On ajoute le nom du package
-                Classe c = model.analyserClasse(nomFichier);
+                String nomFichierAvecPackage = file.getParentFolderName() + "." + nomFichier; // On ajoute le nom du package
+                Classe c = model.analyserClasse(nomFichierAvecPackage);
                 model.ajouterClasse(c);
                 vueDiagramme.afficherClasse(nomFichier);
             }

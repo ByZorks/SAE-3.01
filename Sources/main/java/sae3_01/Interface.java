@@ -27,8 +27,13 @@ public class Interface extends Application {
         stage.setTitle("SAE3-01");
         BorderPane root = new BorderPane();
         HBox content = new HBox();
+        ComboBox<String> comboExport = new ComboBox<>();
+
+        // Création de la vue diagramme
         VueDiagramme vueDiagramme = new VueDiagramme(model);
-        ComboBox comboExport = new ComboBox();
+        // On lie la taille de la vue diagramme à celle du contenu
+        vueDiagramme.prefWidthProperty().bind(content.widthProperty());
+        vueDiagramme.prefHeightProperty().bind(content.heightProperty());
 
         // Création de la barre de menu
         MenuBar menuBar = new MenuBar();
@@ -56,6 +61,9 @@ public class Interface extends Application {
 
         // Création des observateurs
         VueArborescence vueArborescence = new VueArborescence(treeRoot, rootDir);
+        // On lie la taille de la vue arborescence à celle du contenu
+        vueArborescence.prefWidthProperty().bind(content.widthProperty().divide(2));
+        vueArborescence.prefHeightProperty().bind(content.heightProperty());
         VueDiagrammeConsole vueDiagrammeConsole = new VueDiagrammeConsole();
 
         // Enregistrement des observateurs

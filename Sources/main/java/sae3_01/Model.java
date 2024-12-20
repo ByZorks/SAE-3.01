@@ -42,9 +42,6 @@ public class Model implements Sujet {
      * @param classe Classe
      */
     public void ajouterClasse(Classe classe) {
-        double x = Math.random() * 500;
-        double y = Math.random() * 500;
-        classe.setCoordonnees(x, y);
         this.classes.add(classe);
         notifierObservateurs();
     }
