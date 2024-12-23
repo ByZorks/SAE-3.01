@@ -51,7 +51,6 @@ public class VueClasse extends VBox implements Observateur {
         this.separation2 = new Line(0, 0, 400, 0);
         this.separation2.setStyle("-fx-stroke: black;");
         this.drag();
-        this.setContextMenu();
     }
 
     @Override
@@ -65,6 +64,10 @@ public class VueClasse extends VBox implements Observateur {
         this.getChildren().addAll(attributs, separation2);
         updateMethodes(model.getClasse(nomClasse).getMethodes());
         this.getChildren().add(methodes);
+    }
+
+    public String getNom() {
+        return this.nom.getText();
     }
 
     /**
@@ -149,21 +152,18 @@ public class VueClasse extends VBox implements Observateur {
     }
 
     /**
-     * Permet d'afficher le menu contextuel.
+     * Getter de contextMenuShown.
+     * @return true si le menu contextuel est affiché, false sinon.
      */
-    private void setContextMenu() {
-        this.setOnContextMenuRequested(e -> {
-            ContextMenu contextMenu = new ContextMenu();
-            MenuItem modifier = new MenuItem("Modifier (non implémenté)");
-            MenuItem supprimer = new MenuItem("Supprimer");
-            supprimer.setOnAction(event -> {
-                VueDiagramme diagramme = (VueDiagramme) this.getParent();
-                diagramme.retirerClasse(this.nom.getText());
-            });
-            contextMenu.getItems().addAll(modifier, supprimer);
-            contextMenu.setOnShowing(e2 -> contextMenuShown = true);
-            contextMenu.setOnHidden(e2 -> contextMenuShown = false);
-            contextMenu.show(this, e.getScreenX(), e.getScreenY());
-        });
+    public boolean isContextMenuShown() {
+        return contextMenuShown;
+    }
+
+    /**
+     * Setter de contextMenuShown.
+     * @param contextMenuShown true si le menu contextuel est affiché, false sinon.
+     */
+    public void setContextMenuShown(boolean contextMenuShown) {
+        this.contextMenuShown = contextMenuShown;
     }
 }

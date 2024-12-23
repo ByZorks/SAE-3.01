@@ -30,14 +30,10 @@ public class Interface extends Application {
         // Création de la fenêtre
         stage.setTitle("SAE3-01");
         BorderPane root = new BorderPane();
-        HBox content = new HBox();
         ComboBox<String> comboExport = new ComboBox<>();
 
         // Création de la vue diagramme
-        VueDiagramme vueDiagramme = new VueDiagramme(model);
-        // On lie la taille de la vue diagramme à celle du contenu
-        vueDiagramme.prefWidthProperty().bind(content.widthProperty());
-        vueDiagramme.prefHeightProperty().bind(content.heightProperty());
+        VueDiagramme vueDiagramme = new VueDiagramme();
 
         // Création de la barre de menu
         MenuBar menuBar = new MenuBar();
@@ -50,13 +46,12 @@ public class Interface extends Application {
         buttonSuppr.setLayoutY(10);
         root.setBottom(buttonSuppr);
 
-        //Création du comboBox pour l'exportation
-        comboExport.getItems().addAll("Exporter","PDF","JPEG","PNG");
+        // Création du comboBox pour l'exportation
+        comboExport.getItems().addAll("Exporter", "PDF", "JPEG", "PNG");
         comboExport.getSelectionModel().selectFirst();
         comboExport.setLayoutX(45);
         comboExport.setLayoutY(45);
         root.setTop(menuBar);
-        root.setCenter(vueDiagramme);
         root.setRight(comboExport);
 
         // Configuration du contenu principal
@@ -65,31 +60,34 @@ public class Interface extends Application {
 
         // Création des observateurs
         VueArborescence vueArborescence = new VueArborescence(treeRoot, rootDir);
-        // On lie la taille de la vue arborescence à celle du contenu
-        vueArborescence.prefWidthProperty().bind(content.widthProperty().divide(2));
-        vueArborescence.prefHeightProperty().bind(content.heightProperty());
         VueDiagrammeConsole vueDiagrammeConsole = new VueDiagrammeConsole();
 
         // Enregistrement des observateurs
         model.enregistrerObservateur(vueArborescence);
         model.enregistrerObservateur(vueDiagrammeConsole);
+        model.enregistrerObservateur(vueDiagramme);
 
         // Création des contrôleurs
         ControllerArborescence controllerArborescence = new ControllerArborescence(model, vueDiagramme);
+        ControllerContextMenu controllerContextMenu = new ControllerContextMenu(model);
 
         // Assignation des contrôleurs
         vueArborescence.setOnMouseClicked(controllerArborescence);
+        vueDiagramme.setOnContextMenuRequested(controllerContextMenu);
+
+        // Utilisation d'un SplitPane pour permettre le redimensionnement
+        SplitPane splitPane = new SplitPane();
+        splitPane.getItems().addAll(vueArborescence, vueDiagramme);
+        splitPane.setDividerPositions(0.2); // Position initiale du diviseur
 
         // Ajout des composants à l'interface
-        content.getChildren().addAll(vueArborescence, vueDiagramme);
         root.setTop(menuBar);
-        root.setCenter(content);
+        root.setCenter(splitPane);
 
         // Création de la scène
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
-
     }
-    
+
 }

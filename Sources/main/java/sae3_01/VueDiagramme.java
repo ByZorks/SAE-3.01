@@ -10,17 +10,13 @@ import java.util.Map;
  */
 public class VueDiagramme extends Pane implements Observateur {
 
-    /** Modèle associé à la vue. */
-    private Model model;
     /** Vues du diagramme. */
     private Map<String, VueClasse> vuesClasses; // Pour garder trace des vues créées
 
     /**
      * Constructeur.
-     * @param model Modèle associé à la vue.
      */
-    public VueDiagramme(Model model) {
-        this.model = model;
+    public VueDiagramme() {
         this.vuesClasses = new HashMap<>();
     }
 
@@ -32,8 +28,6 @@ public class VueDiagramme extends Pane implements Observateur {
         if (vuesClasses.containsKey(nomClasse)) return;
         VueClasse vueClasse = new VueClasse();
         vueClasse.setNom(nomClasse);
-        vueClasse.actualiser(model);
-        model.enregistrerObservateur(vueClasse);
         vuesClasses.put(nomClasse, vueClasse);
         this.getChildren().add(vueClasse);
     }
@@ -45,15 +39,19 @@ public class VueDiagramme extends Pane implements Observateur {
     public void retirerClasse(String nomClasse) {
         VueClasse vue = vuesClasses.remove(nomClasse);
         if (vue != null) {
-            Classe classe = new Classe(nomClasse);
-            model.supprimerObservateur(vue);
-            model.supprimerClasse(classe);
             this.getChildren().remove(vue);
         }
     }
 
     @Override
     public void actualiser(Sujet s) {
-        // Rien à faire
+        Model model = (Model) s;
+        for (Classe classe : model.getClasses()) {
+            String nomClasse = classe.getNomSimple();
+            if (!vuesClasses.containsKey(nomClasse)) {
+                afficherClasse(nomClasse);
+                vuesClasses.get(nomClasse).actualiser(s);
+            }
+        }
     }
 }
