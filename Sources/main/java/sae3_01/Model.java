@@ -106,7 +106,7 @@ public class Model implements Sujet {
         if (c1.equals(c2)) return null;
         String[] attributs = Analyseur.getDetailledFieldType(c1.getPackage() + "." + c1.getNomSimple());
         for (String attribut : attributs) {
-            if (attribut.contains(c2.getNomSimple())) {
+            if (attribut.matches(".*\\b" + c2.getNomSimple() + "\\b.*") || attribut.matches(".*<" + c2.getNomSimple() + ">.*")) { // Autorise le cas <nom> et nom mais pas <xyznom> ou <nomxyz>
                 attribut = attribut.split(" ")[1];
                 return attribut;
             }
@@ -124,6 +124,14 @@ public class Model implements Sujet {
             if (c.getNomSimple().equals(nom)) return c;
         }
         return null;
+    }
+
+    /**
+     * Retourne l'ensemble des classes
+     * @return Ensemble des classes
+     */
+    public Set<Classe> getClasses() {
+        return this.classes;
     }
 
     @Override
