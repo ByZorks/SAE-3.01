@@ -136,6 +136,7 @@ public class Analyseur {
             // Nom
             String[] nameTab = m.getName().split("\\.");
             String name = nameTab[nameTab.length - 1];
+            if (name.startsWith("lambda$")) continue; // On ne prend pas en compte les méthodes lambda
 
             // Type de return
             String returnTypeName = m.getReturnType().getSimpleName();
