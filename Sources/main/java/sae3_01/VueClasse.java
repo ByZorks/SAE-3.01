@@ -2,7 +2,9 @@ package sae3_01;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
@@ -14,8 +16,6 @@ import java.util.ArrayList;
  */
 public class VueClasse extends VBox implements Observateur {
 
-    /** Classe représentée */
-    private Classe classe;
     /** Nom de la classe */
     private Label nom;
     /** Header de la classe */
@@ -32,6 +32,8 @@ public class VueClasse extends VBox implements Observateur {
     private double x;
     /** Coordonnée y de this */
     private double y;
+    /** Indique si le menu contextuel est affiché */
+    private boolean contextMenuShown = false;
 
     /**
      * Constructeur de VueClasse.
@@ -48,12 +50,13 @@ public class VueClasse extends VBox implements Observateur {
         this.separation1.setStyle("-fx-stroke: black;");
         this.separation2 = new Line(0, 0, 400, 0);
         this.separation2.setStyle("-fx-stroke: black;");
+        this.drag();
+        this.setContextMenu();
     }
 
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
-        this.classe = model.getClasse(this.nom.getText().substring(this.nom.getText().lastIndexOf(".") + 1));
         String nomClasse = this.nom.getText().substring(this.nom.getText().lastIndexOf(".") + 1);
         this.getChildren().clear();
         updateHeader(model);
@@ -62,14 +65,6 @@ public class VueClasse extends VBox implements Observateur {
         this.getChildren().addAll(attributs, separation2);
         updateMethodes(model.getClasse(nomClasse).getMethodes());
         this.getChildren().add(methodes);
-    }
-
-    /**
-     * Retourne la classe représentée.
-     * @return La classe représentée.
-     */
-    public Classe getClasse() {
-        return classe;
     }
 
     /**
@@ -120,16 +115,16 @@ public class VueClasse extends VBox implements Observateur {
     }
 
     /**
-     * Permet de déplacer une classe.
-     * @param node Noeud à déplacer.
+     * Permet de drag la classe.
      */
-    public void drag(Node node) {
-        node.setOnMousePressed(e -> {
+    public void drag() {
+        this.setOnMousePressed(e -> {
             x = e.getSceneX() - this.getLayoutX();
             y = e.getSceneY() - this.getLayoutY();
         });
 
-        node.setOnMouseDragged(e -> {
+        this.setOnMouseDragged(e -> {
+            if (contextMenuShown) return; // On ne veut pas déplacer la classe si le menu contextuel est affiché
             double newX = e.getSceneX() - x;
             double newY = e.getSceneY() - y;
 
@@ -150,6 +145,25 @@ public class VueClasse extends VBox implements Observateur {
             if (yValide) {
                 this.setLayoutY(newY);
             }
+        });
+    }
+
+    /**
+     * Permet d'afficher le menu contextuel.
+     */
+    private void setContextMenu() {
+        this.setOnContextMenuRequested(e -> {
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem modifier = new MenuItem("Modifier (non implémenté)");
+            MenuItem supprimer = new MenuItem("Supprimer");
+            supprimer.setOnAction(event -> {
+                VueDiagramme diagramme = (VueDiagramme) this.getParent();
+                diagramme.retirerClasse(this.nom.getText());
+            });
+            contextMenu.getItems().addAll(modifier, supprimer);
+            contextMenu.setOnShowing(e2 -> contextMenuShown = true);
+            contextMenu.setOnHidden(e2 -> contextMenuShown = false);
+            contextMenu.show(this, e.getScreenX(), e.getScreenY());
         });
     }
 }

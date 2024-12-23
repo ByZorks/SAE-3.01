@@ -29,16 +29,13 @@ public class VueDiagramme extends Pane implements Observateur {
      * @param nomClasse Nom de la classe.
      */
     public void afficherClasse(String nomClasse) {
-        if (vuesClasses.containsKey(nomClasse)) {
-            return;
-        }
+        if (vuesClasses.containsKey(nomClasse)) return;
         VueClasse vueClasse = new VueClasse();
         vueClasse.setNom(nomClasse);
         vueClasse.actualiser(model);
         model.enregistrerObservateur(vueClasse);
         vuesClasses.put(nomClasse, vueClasse);
         this.getChildren().add(vueClasse);
-        vueClasse.drag(vueClasse);
     }
 
     /**
@@ -48,7 +45,9 @@ public class VueDiagramme extends Pane implements Observateur {
     public void retirerClasse(String nomClasse) {
         VueClasse vue = vuesClasses.remove(nomClasse);
         if (vue != null) {
+            Classe classe = new Classe(nomClasse);
             model.supprimerObservateur(vue);
+            model.supprimerClasse(classe);
             this.getChildren().remove(vue);
         }
     }

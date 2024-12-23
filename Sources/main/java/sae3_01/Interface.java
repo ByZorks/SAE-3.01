@@ -80,7 +80,6 @@ public class Interface extends Application {
         // Assignation des contrôleurs
         vueArborescence.setOnMouseClicked(controllerArborescence);
 
-
         // Ajout des composants à l'interface
         content.getChildren().addAll(vueArborescence, vueDiagramme);
         root.setTop(menuBar);

@@ -45,6 +45,20 @@ public class Classe {
     }
 
     /**
+     * Constructeur avec seulement le nom simple de la classe (utilisé pour suppression car deux classes sont égales si elles ont le même nom simple)
+     * @param nomSimple Nom simple de la classe
+     */
+    public Classe(String nomSimple) {
+        this.type = "class";
+        this.nomSimple = nomSimple;
+        this.nomExtended = nomSimple;
+        this.Package = "";
+        this.attributs = new ArrayList<>();
+        this.methodes = new ArrayList<>();
+        this.coordonnees = new double[]{0, 0};
+    }
+
+    /**
      * Retourne le type de la classe
      * @return Type de la classe
      */
