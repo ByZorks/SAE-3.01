@@ -108,6 +108,11 @@ public class Model implements Sujet {
         for (String attribut : attributs) {
             if (attribut.matches(".*\\b" + c2.getNomSimple() + "\\b.*") || attribut.matches(".*<" + c2.getNomSimple() + ">.*")) { // Autorise le cas <nom> et nom mais pas <xyznom> ou <nomxyz>
                 attribut = attribut.split(" ")[1];
+                // Dans le cas d'une liste, l'attribut est récupéré sous ce format : package.Classe>
+                if (attribut.contains(">")) {
+                    attribut = attribut.split("\\.")[1]; // Supprime le nom du package
+                    attribut = attribut.substring(0, attribut.length() - 1); // Supprime le >
+                }
                 return attribut;
             }
         }
