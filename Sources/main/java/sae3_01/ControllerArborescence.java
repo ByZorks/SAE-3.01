@@ -13,17 +13,13 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
 
     /** Modèle */
     private Model model;
-    /** Vue diagramme */
-    private VueDiagramme vueDiagramme;
 
     /**
      * Constructeur
      * @param model Modèle
-     * @param vueDiagramme Vue diagramme
      */
-    public ControllerArborescence(Model model, VueDiagramme vueDiagramme) {
+    public ControllerArborescence(Model model) {
         this.model = model;
-        this.vueDiagramme = vueDiagramme;
     }
 
     @Override
@@ -37,7 +33,6 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
                 String nomFichierAvecPackage = file.getParentFolderName() + "." + nomFichier; // On ajoute le nom du package
                 Classe c = model.analyserClasse(nomFichierAvecPackage);
                 model.ajouterClasse(c);
-                vueDiagramme.afficherClasse(nomFichier);
             }
         }
     }

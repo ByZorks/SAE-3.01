@@ -68,7 +68,7 @@ public class Interface extends Application {
         model.enregistrerObservateur(vueDiagramme);
 
         // Création des contrôleurs
-        ControllerArborescence controllerArborescence = new ControllerArborescence(model, vueDiagramme);
+        ControllerArborescence controllerArborescence = new ControllerArborescence(model);
         ControllerContextMenu controllerContextMenu = new ControllerContextMenu(model);
 
         // Assignation des contrôleurs
