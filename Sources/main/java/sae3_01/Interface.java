@@ -40,12 +40,6 @@ public class Interface extends Application {
         Menu fileMenu = new Menu("Arborescence :");
         menuBar.getMenus().add(fileMenu);
 
-        // Ajout d'une icône de poubelle (plus tard)
-        Button buttonSuppr = new Button("Supprimer");
-        buttonSuppr.setLayoutX(50);
-        buttonSuppr.setLayoutY(10);
-        root.setBottom(buttonSuppr);
-
         // Création du comboBox pour l'exportation
         comboExport.getItems().addAll("Exporter", "PDF", "JPEG", "PNG");
         comboExport.getSelectionModel().selectFirst();

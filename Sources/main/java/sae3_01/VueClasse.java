@@ -121,6 +121,7 @@ public class VueClasse extends VBox implements Observateur {
         this.setOnMousePressed(e -> {
             x = e.getSceneX() - this.getLayoutX();
             y = e.getSceneY() - this.getLayoutY();
+            this.toFront();
         });
 
         this.setOnMouseDragged(e -> {
