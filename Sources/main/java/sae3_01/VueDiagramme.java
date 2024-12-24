@@ -43,6 +43,28 @@ public class VueDiagramme extends Pane implements Observateur {
         }
     }
 
+    /**
+     * Masquer une vue de classe du diagramme sans la supprimer.
+     * @param nomClasse Nom de la classe.
+     */
+    public void masquerClasse(String nomClasse) {
+        VueClasse vue = vuesClasses.get(nomClasse);
+        if (vue != null) {
+            this.getChildren().remove(vue);
+        }
+    }
+
+    /**
+     * Afficher une classe précédemment masquée.
+     * @param nomClasse Nom de la classe.
+     */
+    public void afficherClasseMasquee(String nomClasse) {
+        VueClasse vue = vuesClasses.get(nomClasse);
+        if (vue != null && !this.getChildren().contains(vue)) {
+            this.getChildren().add(vue);
+        }
+    }
+
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
