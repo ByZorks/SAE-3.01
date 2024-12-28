@@ -3,11 +3,9 @@ package sae3_01;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -23,7 +21,7 @@ public class Interface extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         // Création des modèles
         Model model = new Model();
 
@@ -67,6 +65,7 @@ public class Interface extends Application {
 
         // Assignation des contrôleurs
         vueArborescence.setOnMouseClicked(controllerArborescence);
+        vueArborescence.setOnContextMenuRequested(controllerContextMenu);
         vueDiagramme.setOnContextMenuRequested(controllerContextMenu);
 
         // Utilisation d'un SplitPane pour permettre le redimensionnement

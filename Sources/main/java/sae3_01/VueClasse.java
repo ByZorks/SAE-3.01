@@ -119,13 +119,14 @@ public class VueClasse extends VBox implements Observateur {
      */
     public void drag() {
         this.setOnMousePressed(e -> {
+            if (!isVisible()) return; // On ne veut pas déplacer une classe masquée
             x = e.getSceneX() - this.getLayoutX();
             y = e.getSceneY() - this.getLayoutY();
             this.toFront();
         });
 
         this.setOnMouseDragged(e -> {
-            if (contextMenuShown) return; // On ne veut pas déplacer la classe si le menu contextuel est affiché
+            if (contextMenuShown || !isVisible()) return; // On ne veut pas déplacer la classe si le menu contextuel est affiché ou si la classe est masquée
             double newX = e.getSceneX() - x;
             double newY = e.getSceneY() - y;
 

@@ -1,7 +1,6 @@
 package sae3_01;
 
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
@@ -29,7 +28,7 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
             TreeItem<FileComposite> selectedItem = treeView.getSelectionModel().getSelectedItem();
             FileComposite file = selectedItem.getValue();
             if (!selectedItem.getValue().isDirectory()) {
-                String nomFichier = file.toString().substring(0, file.toString().length() - 6); // On enlève l'extension .class
+                String nomFichier = file.toString().replace(".class", "");
                 String nomFichierAvecPackage = file.getParentFolderName() + "." + nomFichier; // On ajoute le nom du package
                 Classe c = model.analyserClasse(nomFichierAvecPackage);
                 model.ajouterClasse(c);

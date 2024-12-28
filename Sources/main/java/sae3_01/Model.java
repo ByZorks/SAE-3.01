@@ -139,6 +139,17 @@ public class Model implements Sujet {
         return this.classes;
     }
 
+    /**
+     * Retourne la vue diagramme
+     * @return Vue diagramme
+     */
+    public VueDiagramme getVueDiagramme() {
+        for (Observateur o : this.observateurs) {
+            if (o instanceof VueDiagramme) return (VueDiagramme) o;
+        }
+        return null;
+    }
+
     @Override
     public void enregistrerObservateur(Observateur o) {
         this.observateurs.add(o);
