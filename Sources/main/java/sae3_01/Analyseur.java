@@ -191,33 +191,17 @@ public class Analyseur {
      * @return une chaine de caractères représentant les modificateurs de la classe
      */
     private static String getModifierString(int modifiers) {
-        StringBuilder modifierString = new StringBuilder();
+        String modifierString;
 
-        if (Modifier.isPublic(modifiers)) {
-            modifierString.append("public ");
-        } else if (Modifier.isPrivate(modifiers)) {
-            modifierString.append("private ");
-        } else if (Modifier.isProtected(modifiers)) {
-            modifierString.append("protected ");
-        }
-
-        if (Modifier.isStatic(modifiers)) {
-            modifierString.append("static ");
-        }
-        if (Modifier.isAbstract(modifiers)) {
-            modifierString.append("abstract ");
-        }
         if (Modifier.isInterface(modifiers)) {
-            modifierString.append("interface ");
-        }
-        if (Modifier.isFinal(modifiers)) {
-            modifierString.append("final ");
-        }
-        if (Modifier.isSynchronized(modifiers)) {
-            modifierString.append("synchronized ");
+            modifierString = "<<interface>>";
+        } else if (Modifier.isAbstract(modifiers)) {
+            modifierString = "<<abstract>>";
+        } else {
+            modifierString = "<<class>>";
         }
 
-        return modifierString.toString();
+        return modifierString;
     }
 
     /**

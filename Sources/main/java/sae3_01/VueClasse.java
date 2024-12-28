@@ -41,6 +41,7 @@ public class VueClasse extends VBox implements Observateur {
         header.setAlignment(Pos.CENTER);
         header.getChildren().addAll(
                 new Label(model.getClasse(nomClasse).getPackage()),
+                new Label(model.getClasse(nomClasse).getType()),
                 new Label(this.nom)
         );
 
@@ -68,6 +69,20 @@ public class VueClasse extends VBox implements Observateur {
             vBox.getChildren().add(new Label("")); // Pour éviter que la VBox ne se réduise à 0
         } else {
             for (String item : items) {
+                if (item.contains("{abstract}")) {
+                    item = item.replace("{abstract}", "");
+                    Label label = new Label(item);
+                    label.setStyle("-fx-font-style: italic;");
+                    vBox.getChildren().add(label);
+                    continue;
+                }
+                if (item.contains("{static}")) {
+                    item = item.replace("{static}", "");
+                    Label label = new Label(item);
+                    label.setUnderline(true);
+                    vBox.getChildren().add(label);
+                    continue;
+                }
                 vBox.getChildren().add(new Label(item));
             }
         }

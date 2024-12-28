@@ -20,7 +20,7 @@ public class TestAnalyseur {
     public void test_analyserClasse() throws ClassNotFoundException {
         // Préparation des données
         String nomClasse = "sae3_01.Repertoire";
-        String type = "public ";
+        String type = "<<class>>";
         String nomSimple = "Repertoire";
         String nomExtended = "Repertoire extends FileComposite";
         String packageName = "sae3_01";
