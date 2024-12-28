@@ -14,57 +14,82 @@ import java.util.ArrayList;
 public class VueClasse extends VBox implements Observateur {
 
     /** Nom de la classe */
-    private Label nom;
-    /** Header de la classe */
-    private VBox header;
-    /** Attributs de la classe */
-    private VBox attributs;
-    /** Méthodes de la classe */
-    private VBox methodes;
-    /** Ligne de séparation entre le header et les attributs */
-    private Line separation1;
-    /** Ligne de séparation entre les attributs et les méthodes */
-    private Line separation2;
-    /** Coordonnée x de this */
+    private String nom;
+    /** Coordonnée x de la classe */
     private double x;
-    /** Coordonnée y de this */
+    /** Coordonnée y de la classe */
     private double y;
     /** Indique si le menu contextuel est affiché */
     private boolean contextMenuShown = false;
 
     /**
      * Constructeur de VueClasse.
-     * Initialise les attributs et le style de la VBox.
      */
     public VueClasse() {
         this.setStyle("-fx-background-color: yellow; -fx-border-color: black;");
-        this.nom = new Label();
-        this.header = new VBox();
-        this.header.setAlignment(Pos.CENTER);
-        this.attributs = new VBox();
-        this.methodes = new VBox();
-        this.separation1 = new Line(0, 0, 400, 0);
-        this.separation1.setStyle("-fx-stroke: black;");
-        this.separation2 = new Line(0, 0, 400, 0);
-        this.separation2.setStyle("-fx-stroke: black;");
-        this.drag();
+        this.activerDragAndDrop();
     }
 
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
-        String nomClasse = this.nom.getText().substring(this.nom.getText().lastIndexOf(".") + 1);
+        String nomClasse = this.nom.substring(this.nom.lastIndexOf(".") + 1);
         this.getChildren().clear();
-        updateHeader(model);
-        this.getChildren().addAll(header, separation1);
-        updateAttributs(model.getClasse(nomClasse).getAttributs());
-        this.getChildren().addAll(attributs, separation2);
-        updateMethodes(model.getClasse(nomClasse).getMethodes());
-        this.getChildren().add(methodes);
+
+        // Header
+        VBox header = new VBox();
+        header.setAlignment(Pos.CENTER);
+        header.getChildren().addAll(
+                new Label(model.getClasse(nomClasse).getPackage()),
+                new Label(this.nom)
+        );
+
+        // Attributs
+        VBox attributs = createVBox(model.getClasse(nomClasse).getAttributs());
+
+        // Méthodes
+        VBox methodes = createVBox(model.getClasse(nomClasse).getMethodes());
+
+        // Séparations
+        Line separation1 = createSeparator();
+        Line separation2 = createSeparator();
+
+        this.getChildren().addAll(header, separation1, attributs, separation2, methodes);
     }
 
+    /**
+     * Crée une VBox à partir d'une liste de String.
+     * @param items Liste de String
+     * @return VBox
+     */
+    private VBox createVBox(ArrayList<String> items) {
+        VBox vBox = new VBox();
+        if (items.isEmpty()) {
+            vBox.getChildren().add(new Label("")); // Pour éviter que la VBox ne se réduise à 0
+        } else {
+            for (String item : items) {
+                vBox.getChildren().add(new Label(item));
+            }
+        }
+        return vBox;
+    }
+
+    /**
+     * Crée un séparateur
+     * @return Line
+     */
+    private Line createSeparator() {
+        Line separator = new Line(0, 0, 400, 0); // Valeur arbitraire
+        separator.setStyle("-fx-stroke: black;");
+        return separator;
+    }
+
+    /**
+     * Getter du nom de la classe.
+     * @return Nom de la classe.
+     */
     public String getNom() {
-        return this.nom.getText();
+        return this.nom;
     }
 
     /**
@@ -72,63 +97,24 @@ public class VueClasse extends VBox implements Observateur {
      * @param nom Nom de la classe.
      */
     public void setNom(String nom) {
-        this.nom.setText(nom);
-    }
-
-    /**
-     * Met à jour le header de la classe.
-     * @param model Modèle de l'application.
-     */
-    private void updateHeader(Model model) {
-        this.header.getChildren().clear();
-        String nomClasse = this.nom.getText().substring(this.nom.getText().lastIndexOf(".") + 1);
-        this.header.getChildren().add(new Label(model.getClasse(nomClasse).getPackage()));
-        this.header.getChildren().add(this.nom);
-    }
-
-    /**
-     * Met à jour les attributs de la classe.
-     * @param attributs Liste des attributs de la classe.
-     */
-    private void updateAttributs(ArrayList<String> attributs) {
-        this.attributs.getChildren().clear();
-        if (attributs.isEmpty()) {
-            this.attributs.getChildren().add(new Label("")); // Pour éviter que la VBox ne se réduise à 0
-        }
-        for (String attribut : attributs) {
-            this.attributs.getChildren().add(new Label(attribut));
-        }
-    }
-
-    /**
-     * Met à jour les méthodes de la classe.
-     * @param methodes Liste des méthodes de la classe.
-     */
-    private void updateMethodes(ArrayList<String> methodes) {
-        this.methodes.getChildren().clear();
-        if (methodes.isEmpty()) {
-            this.methodes.getChildren().add(new Label("")); // Pour éviter que la VBox ne se réduise à 0
-        }
-        for (String methode : methodes) {
-            this.methodes.getChildren().add(new Label(methode));
-        }
+        this.nom = nom;
     }
 
     /**
      * Permet de drag la classe.
      */
-    public void drag() {
+    public void activerDragAndDrop() {
         this.setOnMousePressed(e -> {
-            if (!isVisible()) return; // On ne veut pas déplacer une classe masquée
-            x = e.getSceneX() - this.getLayoutX();
-            y = e.getSceneY() - this.getLayoutY();
+            if (!this.isVisible()) return; // On ne veut pas déplacer une classe masquée
+            this.x = e.getSceneX() - this.getLayoutX();
+            this.y = e.getSceneY() - this.getLayoutY();
             this.toFront();
         });
 
         this.setOnMouseDragged(e -> {
-            if (contextMenuShown || !isVisible()) return; // On ne veut pas déplacer la classe si le menu contextuel est affiché ou si la classe est masquée
-            double newX = e.getSceneX() - x;
-            double newY = e.getSceneY() - y;
+            if (this.contextMenuShown || !isVisible()) return; // On ne veut pas déplacer la classe si le menu contextuel est affiché ou si la classe est masquée
+            double newX = e.getSceneX() - this.x;
+            double newY = e.getSceneY() - this.y;
 
             // Dimensions du parent
             double parentMaxX = getParent().getLayoutBounds().getWidth();
@@ -141,10 +127,8 @@ public class VueClasse extends VBox implements Observateur {
             boolean xValide = (newX >= 0) && (newX + nodeWidth <= parentMaxX);
             boolean yValide = (newY >= 0) && (newY + nodeHeight <= parentMaxY);
 
-            if (xValide) {
+            if (xValide && yValide) {
                 this.setLayoutX(newX);
-            }
-            if (yValide) {
                 this.setLayoutY(newY);
             }
         });
@@ -155,7 +139,7 @@ public class VueClasse extends VBox implements Observateur {
      * @return true si le menu contextuel est affiché, false sinon.
      */
     public boolean isContextMenuShown() {
-        return contextMenuShown;
+        return this.contextMenuShown;
     }
 
     /**
