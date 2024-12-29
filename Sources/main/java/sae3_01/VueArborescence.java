@@ -18,6 +18,7 @@ public class VueArborescence extends TreeView<FileComposite> implements Observat
         super();
         buildTree(root, parentFile);
         this.setRoot(root);
+        this.getRoot().setExpanded(true);
     }
 
     @Override
