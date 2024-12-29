@@ -45,8 +45,8 @@ public class TestAnalyseur {
         assertEquals(attributs, c.getAttributs());
         assertEquals(3, c.getMethodes().size());
         assertEquals(methodes, c.getMethodes());
-        assertEquals(coordonnees[0], c.getCoordonnees()[0]);
-        assertEquals(coordonnees[1], c.getCoordonnees()[1]);
+        assertEquals(coordonnees[0], c.getX());
+        assertEquals(coordonnees[1], c.getY());
     }
 
     @Test
