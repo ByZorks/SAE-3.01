@@ -45,20 +45,6 @@ public class Classe {
     }
 
     /**
-     * Constructeur avec seulement le nom simple de la classe (utilisé pour suppression car deux classes sont égales si elles ont le même nom simple)
-     * @param nomSimple Nom simple de la classe
-     */
-    public Classe(String nomSimple) {
-        this.type = "class";
-        this.nomSimple = nomSimple;
-        this.nomExtended = nomSimple;
-        this.Package = "";
-        this.attributs = new ArrayList<>();
-        this.methodes = new ArrayList<>();
-        this.coordonnees = new double[]{0, 0};
-    }
-
-    /**
      * Retourne le type de la classe
      * @return Type de la classe
      */
@@ -107,11 +93,19 @@ public class Classe {
     }
 
     /**
-     * Retourne les coordonnées de la classe
-     * @return Coordonnées de la classe
+     * Retourne la coordonnée x de la classe
+     * @return Coordonnée x
      */
-    public double[] getCoordonnees() {
-        return coordonnees;
+    public double getX() {
+        return coordonnees[0];
+    }
+
+    /**
+     * Retourne la coordonnée y de la classe
+     * @return Coordonnée y
+     */
+    public double getY() {
+        return coordonnees[1];
     }
 
     /**
