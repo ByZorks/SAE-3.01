@@ -5,6 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -72,6 +74,39 @@ public class Interface extends Application {
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(vueArborescence, vueDiagramme);
         splitPane.setDividerPositions(0.2); // Position initiale du diviseur
+
+        // Gestion du drag and drop avec l'arborescence et le diagramme
+        vueDiagramme.setOnDragOver(dragEvent -> {
+            if (dragEvent.getGestureSource() != vueDiagramme &&
+                    dragEvent.getDragboard().hasString()) {
+                dragEvent.acceptTransferModes(TransferMode.MOVE);
+            }
+            dragEvent.consume();
+        });
+
+        vueDiagramme.setOnDragEntered(dragEvent -> {
+            if (dragEvent.getGestureSource() != vueDiagramme && dragEvent.getDragboard().hasString()) {
+                vueDiagramme.setStyle("-fx-opacity:.4;-fx-background-color: gray;");
+            }
+            dragEvent.consume();
+        });
+
+        vueDiagramme.setOnDragDropped(dragEvent -> {
+            Dragboard db = dragEvent.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                String nomFichier = db.getString().replace(".class", "");
+                TreeItem<FileComposite> selectedItem = vueArborescence.getSelectionModel().getSelectedItem();
+                String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
+                Classe c = model.analyserClasse(nomFichierAvecPackage);
+                c.setCoordonnees(dragEvent.getX(), dragEvent.getY());
+                model.ajouterClasse(c);
+                success = true;
+            }
+            dragEvent.setDropCompleted(success);
+            dragEvent.consume();
+            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
+        });
 
         // Ajout des composants à l'interface
         root.setTop(menuBar);

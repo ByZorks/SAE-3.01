@@ -55,6 +55,10 @@ public class VueClasse extends VBox implements Observateur {
         Line separation1 = createSeparator();
         Line separation2 = createSeparator();
 
+        // Position de la vue (this)
+        this.setLayoutX(model.getClasse(nomClasse).getX());
+        this.setLayoutY(model.getClasse(nomClasse).getY());
+
         this.getChildren().addAll(header, separation1, attributs, separation2, methodes);
     }
 

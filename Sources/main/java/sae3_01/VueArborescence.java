@@ -2,6 +2,9 @@ package sae3_01;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 
 /**
  * VueArborescence est une classe qui hérite de TreeView<FileComposite> et qui
@@ -19,6 +22,7 @@ public class VueArborescence extends TreeView<FileComposite> implements Observat
         buildTree(root, parentFile);
         this.setRoot(root);
         this.getRoot().setExpanded(true);
+        this.activerDragAndDrop();
     }
 
     @Override
@@ -39,5 +43,18 @@ public class VueArborescence extends TreeView<FileComposite> implements Observat
                 buildTree(childItem, child);
             }
         }
+    }
+
+    /**
+     * Active le drag and drop sur l'arborescence.
+     */
+    private void activerDragAndDrop() {
+        this.setOnDragDetected(event -> {
+            Dragboard db = this.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(this.getSelectionModel().getSelectedItem().getValue().toString());
+            db.setContent(content);
+            event.consume();
+        });
     }
 }
