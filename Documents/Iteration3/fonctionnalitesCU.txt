@@ -1,0 +1,8 @@
+Fonctionnalités des Cas d'Utilisation:
+
+- Affichage des classes
+- Suppression de classe
+- Masquage de classe
+- Réaffichage de classe masquée
+- Déplacement de classe
+- Drag and drop de classe depuis l'arborescence

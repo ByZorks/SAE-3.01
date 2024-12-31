@@ -1,0 +1,17 @@
+Bug(s):
+
+    Non réglé(s):
+    - Pas d'association entre les classes qui extends des types comme des List (ex: TreeView<FileComposite> et FileComposite)
+    - Pas de cardinalité sur les associations
+
+    Nouveaux bug(s):
+    - Le fond du diagramme reste grisé lorsqu'on tente de drag and drop un fichier qui n'est pas un fichier .class
+
+Validation:
+
+- Afficher les classes sous forme de diagramme de classes sans les relations
+- Supprimer une classe du diagramme
+- Masquer une classe du diagramme
+- Réafficher une classe masquée
+- Déplacer une classe sur le diagramme
+- Drag and drop une classe sur le diagramme depuis l'arborescence

@@ -1,0 +1,141 @@
+@startuml
+abstract FileComposite {
+	# file : File
+	+ FileComposite(File)
+	+ toString() : String
+	+ {abstract} isDirectory() : boolean
+	+ getParentFolderName() : String
+	+ {abstract} getContenu() : List
+}
+class VueClasse #A9DCDF extends VBox implements Observateur {
+	- nom : String
+	- x : double
+	- y : double
+	- contextMenuShown : boolean
+	+ VueClasse()
+	+ actualiser(Sujet) : void
+	+ activerDragAndDrop() : void
+	- createSeparator() : Line
+	+ isContextMenuShown() : boolean
+	+ setNom(String) : void
+	+ getNom() : String
+	- createVBox(ArrayList<String>) : VBox
+	+ setContextMenuShown(boolean) : void
+}
+class Repertoire extends FileComposite {
+	- contenu : List
+	+ Repertoire(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List
+}
+class VueArborescence extends TreeView implements Observateur {
+	+ VueArborescence(TreeItem<FileComposite>, FileComposite)
+	+ actualiser(Sujet) : void
+	- <back:#A9DCDF>activerDragAndDrop() : void</back>
+	- buildTree(TreeItem, FileComposite) : void
+}
+class Fichier extends FileComposite {
+	+ Fichier(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List
+}
+class VueDiagramme #A9DCDF extends Pane implements Observateur {
+	- vuesClasses : Map<String, VueClasse>
+	+ VueDiagramme()
+	+ actualiser(Sujet) : void
+	+ getVueClasse(String) : VueClasse
+	+ afficherClasse(String) : void
+	+ retirerClasse(String) : void
+	+ toggleAffichageClasse(String) : void
+}
+class VueDiagrammeConsole implements Observateur {
+	+ VueDiagrammeConsole()
+	+ actualiser(Sujet) : void
+}
+class ControllerContextMenu #A9DCDF implements EventHandler {
+	- model : Model
+	+ ControllerContextMenu(Model)
+	+ handle(ContextMenuEvent) : void
+}
+class ControllerArborescence implements EventHandler {
+	- model : Model
+	+ ControllerArborescence(Model)
+	+ handle(MouseEvent) : void
+}
+interface Observateur {
+	+ {abstract} actualiser(Sujet) : void
+}
+class Analyseur {
+	+ Analyseur()
+	- {static} getPackage(Class) : String
+	- {static} getModifierUMLSymbol(int) : String
+	- {static} getMethodes(Class) : ArrayList<String>
+	- {static} getAttributs(Class) : ArrayList<String>
+	+ {static} analyseClasse(String) : Classe
+	+ {static} getDetailledFieldType(String) : String[]
+	- {static} getNom(Class) : String
+	- {static} getClassModifier(Class) : String
+	- {static} getModifierString(int) : String
+}
+class Model implements Sujet {
+	- classes : Set<Classe>
+	- observateurs : ArrayList<Observateur>
+	+ Model()
+	+ <back:#A9DCDF>getClasses() : Set<Classe></back>
+	+ ajouterClasse(Classe) : void
+	+ analyserClasse(String) : Classe
+	+ enregistrerObservateur(Observateur) : void
+	+ supprimerClasse(Classe) : void
+	+ checkAssociation(Classe, Classe) : String
+	+ genererPlantUML() : String
+	+ <back:#A9DCDF>getVueDiagramme() : VueDiagramme</back>
+	+ <back:#A9DCDF>getClasse(String) : Classe</back>
+	+ notifierObservateurs() : void
+	+ supprimerObservateur(Observateur) : void
+}
+class Classe {
+	- type : String
+	- nomSimple : String
+	- nomExtended : String
+	- Package : String
+	- attributs : ArrayList<String>
+	- methodes : ArrayList<String>
+	- coordonnees : double[]
+	+ Classe(String, String, String, String, ArrayList<String>, ArrayList<String>, double[])
+	+ equals(Object) : boolean
+	+ toString() : String
+	+ hashCode() : int
+	+ getPackage() : String
+	+ getType() : String
+	+ setCoordonnees(double, double) : void
+	+ getY() : double
+	+ getX() : double
+	+ getMethodes() : ArrayList<String>
+	+ getNomSimple() : String
+	+ getNomExtended() : String
+	+ getAttributs() : ArrayList<String>
+}
+class Interface extends Application {
+	+ Interface()
+	+ {static} main(String[]) : void
+	+ start(Stage) : void
+}
+interface Sujet {
+	+ {abstract} enregistrerObservateur(Observateur) : void
+	+ {abstract} notifierObservateurs() : void
+	+ {abstract} supprimerObservateur(Observateur) : void
+}
+
+Repertoire "1" --> "*" FileComposite : contenu
+VueDiagramme "1" --> "*" VueClasse : VueClasses
+ControllerContextMenu "1" --> "1" Model : model
+ControllerArborescence "1" --> "1" Model : model
+Model "1" --> "*" Observateur : observateurs
+Model "1" --> "*" Classe : classes
+TreeView "1" --> "*" FileComposite
+
+legend
+  | Arrière plan | Signification |
+  | Vert         | Nouveauté     |
+endlegend
+@enduml
