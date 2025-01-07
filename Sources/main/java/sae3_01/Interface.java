@@ -2,15 +2,28 @@ package sae3_01;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+
+import java.awt.*;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+
 
 /**
  * Classe Interface
@@ -112,10 +125,55 @@ public class Interface extends Application {
         root.setTop(menuBar);
         root.setCenter(splitPane);
 
+
+
         // Création de la scène
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
+        javafx.scene.control.Button buttonExport = new javafx.scene.control.Button("Exporter");
+
+        root.setBottom(buttonExport);
+        buttonExport.setOnMouseClicked(event -> {
+            capturePane(vueDiagramme, "image/diagramme.png");
+        });
+
     }
 
+    public void capturePane(Pane pane, String filePath) {
+        try {
+            // Créer les paramètres du snapshot
+            SnapshotParameters params = new SnapshotParameters();
+
+            // Prendre le screenshot du Pane
+            WritableImage fxImage = pane.snapshot(params, null);
+
+            // Convertir l'image JavaFX en BufferedImage
+            BufferedImage bufferedImage = new BufferedImage(
+                    (int) fxImage.getWidth(),
+                    (int) fxImage.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+
+            PixelReader pixelReader = fxImage.getPixelReader();
+
+            // Copier les pixels
+            for (int x = 0; x < fxImage.getWidth(); x++) {
+                for (int y = 0; y < fxImage.getHeight(); y++) {
+                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
+                }
+            }
+
+            // Sauvegarder l'image
+            ImageIO.write(bufferedImage, "png", new File(filePath));
+
+            System.out.println("Screenshot sauvegardé avec succès : " + filePath);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde du screenshot : " + e.getMessage());
+        }
+    }
+
+
+
 }
+
