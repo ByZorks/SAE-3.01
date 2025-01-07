@@ -1,11 +1,13 @@
 package sae3_01;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * VueClasse est une classe qui hérite de VBox et qui implémente l'interface Observateur.
@@ -15,6 +17,8 @@ public class VueClasse extends VBox implements Observateur {
 
     /** Nom de la classe */
     private String nom;
+    /** Liste des méthodes */
+    private List<String> methodes;
     /** Coordonnée x de la classe */
     private double x;
     /** Coordonnée y de la classe */
@@ -151,6 +155,14 @@ public class VueClasse extends VBox implements Observateur {
                 this.setLayoutY(newY);
             }
         });
+    }
+
+    public void hideMethodes() {
+        if (this.getChildren().getLast().isVisible()) {
+            this.getChildren().getLast().setVisible(false);
+        } else {
+            this.getChildren().getLast().setVisible(true);
+        }
     }
 
     /**
