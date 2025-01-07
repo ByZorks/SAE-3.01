@@ -26,6 +26,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.IOException;
 
 
@@ -73,13 +76,20 @@ public class Interface extends Application {
         });
         MenuItem item3 = new MenuItem("PDF");
 
-        menu.getItems().addAll(item, item2);
+        MenuItem item4 = new MenuItem("PUML");
+
+        menu.getItems().addAll(item, item2,item4);
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(menu);
         root.setTop(menuBar);
 
 
 
+
+        // Gestion de l'exportation en fonction du choix du ComboBox
+        item4.setOnAction(event -> {
+                exporterPlantUML(model);
+        });
 
         // Configuration du contenu principal
         Repertoire rootDir = new Repertoire(new File("Target/"));
@@ -145,7 +155,6 @@ public class Interface extends Application {
         root.setTop(menuBar);
         root.setCenter(splitPane);
 
-
         // Création de la scène
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
@@ -191,6 +200,21 @@ public class Interface extends Application {
         }
     }
 
+    /**
+     * Exporte le modèle sous forme de fichier texte contenant le code PlantUML.
+     * @param model Le modèle contenant les classes à exporter.
+     */
+    private void exporterPlantUML(Model model) {
+        String plantUMLCode = model.genererPlantUML();
+        File fichierExport = new File("Model_PlantUML.txt");
+
+        try (FileWriter writer = new FileWriter(fichierExport)) {
+            writer.write(plantUMLCode);
+            System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
+        }
+    }
 
 }
 
