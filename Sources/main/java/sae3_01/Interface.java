@@ -55,12 +55,21 @@ public class Interface extends Application {
         // Création de la barre de menu
         Menu menu = new Menu("Exporter");
         MenuItem item = new MenuItem("PNG");
+        ImageView pngIcon = new ImageView("file:image/png.png");
+        pngIcon.setFitHeight(25);
+        pngIcon.setFitWidth(25);
+        item.setGraphic(pngIcon);
         item.setOnAction(event -> {
             capturePane(vueDiagramme, "image/diagramme.png");
         });
-        MenuItem item2 = new MenuItem("JPEG");
+
+        MenuItem item2 = new MenuItem("JPG");
+        ImageView jpgIcon = new ImageView("file:image/jpg.png");
+        jpgIcon.setFitHeight(25);
+        jpgIcon.setFitWidth(25);
+        item2.setGraphic(jpgIcon);
         item2.setOnAction(event -> {
-            capturePane(vueDiagramme, "image/diagramme.jpeg");
+            capturePane(vueDiagramme, "image/diagramme.jpg");
         });
         MenuItem item3 = new MenuItem("PDF");
 
