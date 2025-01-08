@@ -229,7 +229,7 @@ public class Interface extends Application {
      * Exporte le modèle sous forme de fichier texte contenant le code PlantUML.
      * @param model Le modèle contenant les classes à exporter.
      */
-    private void exporterPlantUML(Model model) {
+    public void exporterPlantUML(Model model) {
         String plantUMLCode = model.genererPlantUML();
         File fichierExport = new File("output/Model_PlantUML.puml");
 

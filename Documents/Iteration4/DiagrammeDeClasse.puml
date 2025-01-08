@@ -162,7 +162,7 @@ class Interface extends Application {
 	+ start(Stage) : void
 	+ <back:#A9DCDF>capturePane(Pane, String) : void</back>
 	+ <back:#A9DCDF>capturePaneAsHTML(Pane, String) : void</back>
-	- <back:#A9DCDF>exporterPlantUML(Model) : void</back>
+	+ <back:#A9DCDF>exporterPlantUML(Model) : void</back>
 }
 interface Sujet {
 	+ {abstract} enregistrerObservateur(Observateur) : void
