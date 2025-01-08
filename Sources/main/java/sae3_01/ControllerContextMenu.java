@@ -67,6 +67,7 @@ public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem modifier = new MenuItem("Modifier (non implémenté)");
         MenuItem masquer = new MenuItem("Masquer / Afficher");
+        MenuItem masquerAttributs = new MenuItem("Masquer / Afficher les attributs");
         MenuItem masquerMethode = new MenuItem("Masquer / Afficher les méthodes");
         MenuItem supprimer = new MenuItem("Supprimer");
 
@@ -81,12 +82,18 @@ public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
             classe.hideMethodes();
         });
 
+        masquerAttributs.setOnAction(e -> {
+            VueDiagramme diagramme = (VueDiagramme) finalVueClasse.getParent();
+            VueClasse classe = (VueClasse) diagramme.getVueClasse(finalVueClasse.getNom());
+            classe.hideAttributs();
+        });
+
         supprimer.setOnAction(e -> {
             VueDiagramme diagramme = (VueDiagramme) finalVueClasse.getParent();
             diagramme.retirerClasse(finalVueClasse.getNom());
             model.supprimerClasse(model.getClasse(finalVueClasse.getNom()));
         });
-        contextMenu.getItems().addAll(modifier, masquer, masquerMethode, supprimer);
+        contextMenu.getItems().addAll(modifier, masquer, masquerAttributs, masquerMethode, supprimer);
         contextMenu.setOnShowing(e -> finalVueClasse.setContextMenuShown(true));
         contextMenu.setOnHidden(e -> finalVueClasse.setContextMenuShown(false));
         contextMenu.show(vueClasse, event.getScreenX(), event.getScreenY());

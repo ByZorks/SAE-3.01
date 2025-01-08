@@ -1,6 +1,7 @@
 package sae3_01;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -159,9 +160,35 @@ public class VueClasse extends VBox implements Observateur {
 
     public void hideMethodes() {
         if (this.getChildren().getLast().isVisible()) {
+            this.getChildren().get(3).setVisible(false);
+            this.getChildren().get(3).setManaged(false);
             this.getChildren().getLast().setVisible(false);
+            this.getChildren().getLast().setManaged(false);
         } else {
+            this.getChildren().get(3).setVisible(true);
+            this.getChildren().get(3).setManaged(true);
             this.getChildren().getLast().setVisible(true);
+            this.getChildren().getLast().setManaged(true);
+        }
+        for (Node node: this.getChildren()) {
+            System.out.println("type : \t\t" + node.getClass() + "\t|\t visible : \t" + node.isVisible());
+        }
+    }
+
+    public void hideAttributs() {
+        if (this.getChildren().get(2).isVisible()) {
+            this.getChildren().get(1).setVisible(false);
+            this.getChildren().get(1).setManaged(false);
+            this.getChildren().get(2).setVisible(false);
+            this.getChildren().get(2).setManaged(false);
+        } else {
+            this.getChildren().get(1).setVisible(true);
+            this.getChildren().get(1).setManaged(true);
+            this.getChildren().get(2).setVisible(true);
+            this.getChildren().get(2).setManaged(true);
+        }
+        for (Node node: this.getChildren()) {
+            System.out.println("type : \t\t" + node.getClass() + "\t|\t visible : \t" + node.isVisible());
         }
     }
 
