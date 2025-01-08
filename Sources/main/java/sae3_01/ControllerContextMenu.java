@@ -10,12 +10,25 @@ import javafx.scene.input.ContextMenuEvent;
 
 public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
 
+    /** Modèle */
     private Model model;
 
+    /**
+     * Constructeur
+     * @param model Modèle
+     */
     public ControllerContextMenu(Model model) {
         this.model = model;
     }
 
+    /**
+     * Gère l'événement de clic droit pour afficher un menu contextuel.
+     * Un menu contextuel est affiché avec des options pour :
+     * - Modifier (non implémenté)
+     * - Masquer/Afficher une classe
+     * - Supprimer une classe
+     * @param event L'événement de clic droit déclenchant l'affichage du menu contextuel.
+     */
     @Override
     public void handle(ContextMenuEvent event) {
         VueClasse vueClasse = null;
