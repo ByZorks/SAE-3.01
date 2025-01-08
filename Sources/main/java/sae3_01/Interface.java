@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -16,6 +18,8 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.robot.Robot;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -30,6 +34,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 /**
@@ -83,6 +89,24 @@ public class Interface extends Application {
         MenuItem itemInterface = new MenuItem("Interface");
         MenuItem itemClasseConcrete = new MenuItem("Classe concrète");
         MenuItem itemClasseAbstraite = new MenuItem("Classe abstraite");
+
+        itemInterface.setOnAction(e -> {
+            ArrayList<String> methodes = new ArrayList<>();
+            methodes.add("+ {abstract} seDeplacer()");
+            double[] coordonees = {0, 0};
+            Classe nvlInterface = new Classe("<<interface>>", "Transport", "Transport", "sae3_01", new ArrayList<String>(), methodes, coordonees);
+            Dialog<Classe> dialog = new InterfaceDialog("interface");
+            Optional<Classe> classeTesteuse = dialog.showAndWait();
+            System.out.println("\t"+classeTesteuse.get());
+            System.out.println("\t"+classeTesteuse.isPresent());
+            model.ajouterClasse(nvlInterface);
+        });
+        itemClasseConcrete.setOnAction(e -> {
+            // TODO
+        });
+        itemClasseAbstraite.setOnAction(e -> {
+            // TODO
+        });
 
         menu.getItems().addAll(item, item2,item4);
         ajouter.getItems().addAll(itemInterface, itemClasseAbstraite, itemClasseConcrete);
