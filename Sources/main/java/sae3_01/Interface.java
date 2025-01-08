@@ -1,40 +1,28 @@
 package sae3_01;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.robot.Robot;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import javax.print.DocFlavor;
 
 import java.awt.*;
 
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -198,7 +186,7 @@ public class Interface extends Application {
 
     public Classe ajouterClasse(String type) {
         Classe nvlInterface = null;
-        Dialog<Classe> dialog = new InterfaceDialog(type, nvlInterface);
+        Dialog<Classe> dialog = new ClasseDialog(type, nvlInterface);
         Optional<Classe> classeAttendre = dialog.showAndWait();
         if (classeAttendre.isPresent()) {
             nvlInterface = classeAttendre.get();

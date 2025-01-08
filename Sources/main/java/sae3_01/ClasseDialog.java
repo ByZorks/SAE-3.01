@@ -8,7 +8,7 @@ import javafx.util.Callback;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class InterfaceDialog extends Dialog<Classe> {
+public class ClasseDialog extends Dialog<Classe> {
     private Classe classe;
 
     private TextField nomClasseField;
@@ -16,7 +16,7 @@ public class InterfaceDialog extends Dialog<Classe> {
     private TextArea attributsField;
     private TextArea methodesField;
 
-    public InterfaceDialog(String type, Classe classe) {
+    public ClasseDialog(String type, Classe classe) {
         super();
         this.setTitle(type + " à créer");
         buildUI(type.equals("interface"));
