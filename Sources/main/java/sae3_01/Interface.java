@@ -180,7 +180,6 @@ public class Interface extends Application {
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
-        javafx.scene.control.Button buttonExport = new javafx.scene.control.Button("Exporter");
     }
 
     /**
