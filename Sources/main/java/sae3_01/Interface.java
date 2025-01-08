@@ -231,11 +231,12 @@ public class Interface extends Application {
      */
     private void exporterPlantUML(Model model) {
         String plantUMLCode = model.genererPlantUML();
-        File fichierExport = new File("Model_PlantUML.txt");
+        File fichierExport = new File("Model_PlantUML.puml");
 
         try (FileWriter writer = new FileWriter(fichierExport)) {
             writer.write(plantUMLCode);
             System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
+            Desktop.getDesktop().open(new File(String.valueOf(fichierExport)));
         } catch (IOException e) {
             System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
         }

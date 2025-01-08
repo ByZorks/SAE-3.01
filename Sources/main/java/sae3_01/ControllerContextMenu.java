@@ -23,6 +23,7 @@ public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
      * Un menu contextuel est affiché avec des options pour :
      * - Modifier (non implémenté)
      * - Masquer/Afficher une classe
+     * - Masquer/Afficher les méthodes
      * - Supprimer une classe
      * @param event L'événement de clic droit déclenchant l'affichage du menu contextuel.
      */
