@@ -26,16 +26,16 @@ public class TestAnalyseur {
         String nomExtended = "Repertoire extends FileComposite";
         String packageName = "sae3_01";
         ArrayList<String> attributs = new ArrayList<>();
-        attributs.add("- contenu : List");
+        attributs.add("- contenu : List<FileComposite>");
         ArrayList<String> methodes = new ArrayList<>();
         methodes.add("+ Repertoire(File)");
         methodes.add("+ isDirectory() : boolean");
-        methodes.add("+ getContenu() : List");
+        methodes.add("+ getContenu() : List<FileComposite>");
         int[] coordonnees = new int[]{0, 0};
         HashMap<String, ArrayList<String>> relations = new HashMap<>();
         relations.put("parent", new ArrayList<>(List.of("FileComposite")));
         relations.put("interface", new ArrayList<>());
-        relations.put("associations", new ArrayList<>(List.of("FileComposite contenu")));
+        relations.put("associations", new ArrayList<>(List.of("FileComposite contenu [*]")));
 
         // Exécution de la méthode à tester
         Classe c = Analyseur.analyseClasse(nomClasse);
