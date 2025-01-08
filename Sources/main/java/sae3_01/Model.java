@@ -88,7 +88,9 @@ public class Model implements Sujet {
             for (Classe c2 : classes) {
                 String association = checkAssociation(c1, c2);
                 if (association != null) {
-                    associations.append(c1.getNomSimple()).append(" --> ").append(c2.getNomSimple()).append(" : ").append(association).append("\n");
+                    String nomAssociation = association.split(" ")[1];
+                    String cardinal = association.split(" ")[2].replace("]", "\"").replace("[", "\""); // "cardinal"
+                    associations.append(c1.getNomSimple()).append(" --> ").append(cardinal).append(" ").append(c2.getNomSimple()).append(" : ").append(nomAssociation).append("\n");
                 }
             }
         }
@@ -100,13 +102,13 @@ public class Model implements Sujet {
      * Vérifie si une association existe entre deux classes
      * @param c1 Classe 1
      * @param c2 Classe 2
-     * @return Nom de l'attribut
+     * @return Type Nom [Cardinalité]
      */
     public String checkAssociation(Classe c1, Classe c2) {
         if (c1.equals(c2)) return null;
 
         for (String attribut : c1.getAssociations()) {
-            if (attribut.split(" ")[0].equals(c2.getNomSimple())) return attribut.split(" ")[1];
+            if (attribut.split(" ")[0].equals(c2.getNomSimple())) return attribut;
         }
         return null;
     }

@@ -64,7 +64,7 @@ public class TestModel {
         "\t+ toString() : String\n",
         "\t+ {abstract} isDirectory() : boolean\n",
         "\t+ getParentFolderName() : String\n",
-        "\t+ {abstract} getContenu() : List\n",
+        "\t+ {abstract} getContenu() : List<FileComposite>\n",
         "}\n\n@enduml"};
 
         // Exécution de la méthode à tester
@@ -113,15 +113,15 @@ public class TestModel {
                 "\t+ toString() : String\n",
                 "\t+ {abstract} isDirectory() : boolean\n",
                 "\t+ getParentFolderName() : String\n",
-                "\t+ {abstract} getContenu() : List\n",
+                "\t+ {abstract} getContenu() : List<FileComposite>\n",
                 "}\n",
                 "class Repertoire extends FileComposite {\n",
-                "\t- contenu : List\n",
+                "\t- contenu : List<FileComposite>\n",
                 "\t+ Repertoire(File)\n",
                 "\t+ isDirectory() : boolean\n",
-                "\t+ getContenu() : List\n",
+                "\t+ getContenu() : List<FileComposite>\n",
                 "}\n",
-                "Repertoire --> FileComposite : contenu\n",
+                "Repertoire --> \"*\" FileComposite : contenu\n",
                 "\n@enduml"};
 
         // Exécution de la méthode à tester
@@ -129,6 +129,8 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
+            System.out.println(result.contains(s));
+            System.out.println(s);
             assertTrue(result.contains(s));
         }
     }
