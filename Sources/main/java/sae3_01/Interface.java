@@ -79,8 +79,17 @@ public class Interface extends Application {
             capturePane(vueDiagramme, "image/diagramme.jpg");
         });
 
-        //Exportation en PDF
-        MenuItem item3 = new MenuItem("PDF");
+        // Exportation en html
+        MenuItem item5 = new MenuItem("HTML");
+        ImageView htmlIcon = new ImageView("file:image/html.png");
+        htmlIcon.setFitWidth(25);
+        htmlIcon.setFitHeight(25);
+        item5.setGraphic(htmlIcon);
+        item5.setOnAction(event -> {
+            capturePaneAsHTML(vueDiagramme, "diagramme.html");
+        });
+        menu.getItems().add(item5);
+
 
         //Exportation en PlantUML
         MenuItem item4 = new MenuItem("PUML");
@@ -227,6 +236,56 @@ public class Interface extends Application {
             System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
         }
     }
+
+    /**
+     * Capture un Pane et exporte son contenu dans un fichier HTML.
+     * @param pane Pane à capturer
+     * @param filePath Chemin du fichier HTML de sauvegarde
+     */
+    public void capturePaneAsHTML(Pane pane, String filePath) {
+        try {
+            // Prendre un snapshot du Pane
+            SnapshotParameters params = new SnapshotParameters();
+            WritableImage fxImage = pane.snapshot(params, null);
+
+            // Sauvegarder l'image en tant que fichier temporaire PNG
+            File tempImageFile = new File("temp_image.png");
+            BufferedImage bufferedImage = new BufferedImage(
+                    (int) fxImage.getWidth(),
+                    (int) fxImage.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+
+            PixelReader pixelReader = fxImage.getPixelReader();
+            for (int x = 0; x < fxImage.getWidth(); x++) {
+                for (int y = 0; y < fxImage.getHeight(); y++) {
+                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
+                }
+            }
+            ImageIO.write(bufferedImage, "png", tempImageFile);
+
+            // Créer un fichier HTML et intègre l'image
+            File htmlFile = new File(filePath);
+            try (FileWriter writer = new FileWriter(htmlFile)) {
+                writer.write("<!DOCTYPE html>\n");
+                writer.write("<html>\n");
+                writer.write("<head>\n");
+                writer.write("<title>Exportation HTML</title>\n");
+                writer.write("</head>\n");
+                writer.write("<body>\n");
+                writer.write("<h1>Votre diagramme !</h1>\n");
+                writer.write("<img src=\"temp_image.png\" alt=\"Diagramme\">\n");
+                writer.write("</body>\n");
+                writer.write("</html>");
+            }
+
+            System.out.println("HTML exporté avec succès : " + filePath);
+            Desktop.getDesktop().open(htmlFile);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'export en HTML : " + e.getMessage());
+        }
+    }
+
 
 }
 
