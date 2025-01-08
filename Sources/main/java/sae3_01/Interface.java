@@ -57,7 +57,10 @@ public class Interface extends Application {
 
         // Création de la barre de menu
         Menu menu = new Menu("Exporter");
+
+        //Exportation en format PNG
         MenuItem item = new MenuItem("PNG");
+        //Ajout du logo PNG
         ImageView pngIcon = new ImageView("file:image/png.png");
         pngIcon.setFitHeight(25);
         pngIcon.setFitWidth(25);
@@ -66,7 +69,9 @@ public class Interface extends Application {
             capturePane(vueDiagramme, "image/diagramme.png");
         });
 
+        //Exportation en JPG
         MenuItem item2 = new MenuItem("JPG");
+        //Ajout du logo JPG
         ImageView jpgIcon = new ImageView("file:image/jpg.png");
         jpgIcon.setFitHeight(25);
         jpgIcon.setFitWidth(25);
@@ -74,9 +79,20 @@ public class Interface extends Application {
         item2.setOnAction(event -> {
             capturePane(vueDiagramme, "image/diagramme.jpg");
         });
+
+        //Exportation en PDF
         MenuItem item3 = new MenuItem("PDF");
 
+        //Exportation en PlantUML
         MenuItem item4 = new MenuItem("PUML");
+        //Ajout du logo PlantUML
+        ImageView pumlIcon = new ImageView("file:image/puml.png");
+        pumlIcon.setFitHeight(25);
+        pumlIcon.setFitWidth(25);
+        item4.setGraphic(pumlIcon);
+        item4.setOnAction(event -> {
+            capturePane(vueDiagramme, "image/diagramme.jpg");
+        });
 
         menu.getItems().addAll(item, item2,item4);
         MenuBar menuBar = new MenuBar();
