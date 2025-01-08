@@ -1,0 +1,16 @@
+Bug(s):
+
+    Non réglé(s):
+    - Types List ne s'affichant pas correctement
+    - Pas d'association entre les classes qui extends des types comme des List (ex: TreeView<FileComposite> et FileComposite)
+    - Pas de cardinalité sur les associations
+
+    Nouveaux bug(s):
+    - Si deux fleches partent d'une d'un même classe et vont vers la même classe, une seul flèche s'affichera
+
+Validation:
+
+- Relation entres les classes sur le diagramme
+- Export PNG, JPEG, HTML, PUML
+- Masquer les méthodes dans le diagramme
+- Créer des classes via l'interface graphique
