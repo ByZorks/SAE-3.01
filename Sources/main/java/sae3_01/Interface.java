@@ -1,16 +1,36 @@
 package sae3_01;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import javax.print.DocFlavor;
+
+import java.awt.*;
+
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.IOException;
+
 
 /**
  * Classe Interface
@@ -36,17 +56,56 @@ public class Interface extends Application {
         VueDiagramme vueDiagramme = new VueDiagramme();
 
         // Création de la barre de menu
-        MenuBar menuBar = new MenuBar();
-        Menu fileMenu = new Menu("Arborescence :");
-        menuBar.getMenus().add(fileMenu);
+        Menu menu = new Menu("Exporter");
 
-        // Création du comboBox pour l'exportation
-        comboExport.getItems().addAll("Exporter", "PDF", "JPEG", "PNG");
-        comboExport.getSelectionModel().selectFirst();
-        comboExport.setLayoutX(45);
-        comboExport.setLayoutY(45);
+        //Exportation en format PNG
+        MenuItem item = new MenuItem("PNG");
+        //Ajout du logo PNG
+        ImageView pngIcon = new ImageView("file:image/png.png");
+        pngIcon.setFitHeight(25);
+        pngIcon.setFitWidth(25);
+        item.setGraphic(pngIcon);
+        item.setOnAction(event -> {
+            capturePane(vueDiagramme, "image/diagramme.png");
+        });
+
+        //Exportation en JPG
+        MenuItem item2 = new MenuItem("JPG");
+        //Ajout du logo JPG
+        ImageView jpgIcon = new ImageView("file:image/jpg.png");
+        jpgIcon.setFitHeight(25);
+        jpgIcon.setFitWidth(25);
+        item2.setGraphic(jpgIcon);
+        item2.setOnAction(event -> {
+            capturePane(vueDiagramme, "image/diagramme.jpg");
+        });
+
+        //Exportation en PDF
+        MenuItem item3 = new MenuItem("PDF");
+
+        //Exportation en PlantUML
+        MenuItem item4 = new MenuItem("PUML");
+        //Ajout du logo PlantUML
+        ImageView pumlIcon = new ImageView("file:image/puml.png");
+        pumlIcon.setFitHeight(25);
+        pumlIcon.setFitWidth(25);
+        item4.setGraphic(pumlIcon);
+        item4.setOnAction(event -> {
+            capturePane(vueDiagramme, "image/diagramme.jpg");
+        });
+
+        menu.getItems().addAll(item, item2,item4);
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(menu);
         root.setTop(menuBar);
-        root.setRight(comboExport);
+
+
+
+
+        // Gestion de l'exportation en fonction du choix du ComboBox
+        item4.setOnAction(event -> {
+                exporterPlantUML(model);
+        });
 
         // Configuration du contenu principal
         Repertoire rootDir = new Repertoire(new File("Target/"));
@@ -116,6 +175,66 @@ public class Interface extends Application {
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
+        javafx.scene.control.Button buttonExport = new javafx.scene.control.Button("Exporter");
+
+
+
+
+    }
+
+    public void capturePane(Pane pane, String filePath) {
+        try {
+            // Créer les paramètres du snapshot
+            SnapshotParameters params = new SnapshotParameters();
+
+            // Prendre le screenshot du Pane
+            WritableImage fxImage = pane.snapshot(params, null);
+
+            // Convertir l'image JavaFX en BufferedImage
+            BufferedImage bufferedImage = new BufferedImage(
+                    (int) fxImage.getWidth(),
+                    (int) fxImage.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+
+            PixelReader pixelReader = fxImage.getPixelReader();
+
+            // Copier les pixels
+            for (int x = 0; x < fxImage.getWidth(); x++) {
+                for (int y = 0; y < fxImage.getHeight(); y++) {
+                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
+                }
+            }
+
+            // Sauvegarder l'image
+
+            ImageIO.write(bufferedImage, "png", new File(filePath));
+            Desktop.getDesktop().open(new File(filePath));
+            System.out.println("Screenshot sauvegardé avec succès : " + filePath);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde du screenshot : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Exporte le modèle sous forme de fichier texte contenant le code PlantUML.
+     * @param model Le modèle contenant les classes à exporter.
+     */
+    private void exporterPlantUML(Model model) {
+        String plantUMLCode = model.genererPlantUML();
+        File fichierExport = new File("Model_PlantUML.txt");
+
+        try (FileWriter writer = new FileWriter(fichierExport)) {
+            writer.write(plantUMLCode);
+            System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
+        }
     }
 
 }
+
+
+
+
+

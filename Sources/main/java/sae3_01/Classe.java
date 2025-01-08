@@ -159,6 +159,11 @@ public class Classe {
         return relations.get("associations");
     }
 
+    /**
+     * Compare cette classe à une autre basée sur leur nom simple.
+     * @param o Objet à comparer
+     * @return true si les classes ont le même nom simple, sinon false
+     */
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -166,11 +171,20 @@ public class Classe {
         return Objects.equals(nomSimple, classe.nomSimple);
     }
 
+    /**
+     * Génère un code de hachage basé sur le nom simple de la classe.
+     * @return Code de hachage
+     */
     @Override
     public int hashCode() {
         return Objects.hashCode(nomSimple);
     }
 
+    /**
+     * Retourne une représentation sous forme de chaîne de caractères de la classe,
+     * incluant toutes ses propriétés principales.
+     * @return Représentation textuelle de la classe
+     */
     @Override
     public String toString() {
         return "Classe {" +

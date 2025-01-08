@@ -21,6 +21,12 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
         this.model = model;
     }
 
+    /**
+     * Méthode déclenchée lors d'un clic sur l'arborescence des fichiers.
+     * Un double clic sur un fichier non répertoire permet d'analyser la classe
+     * et de l'ajouter au modèle.
+     * @param mouseEvent L'événement de clic de souris détecté.
+     */
     @Override
     public void handle(MouseEvent mouseEvent) {
         TreeView<FileComposite> treeView = (TreeView<FileComposite>) mouseEvent.getSource();

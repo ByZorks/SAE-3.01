@@ -30,10 +30,21 @@ public class Repertoire extends FileComposite {
         }
     }
 
+    /**
+     * Retourne le contenu du répertoire sous forme d'une liste d'objets FileComposite.
+     * Chaque élément peut être un fichier ou un sous-répertoire.
+     * @return Liste des fichiers et sous-répertoires du répertoire.
+     */
+    @Override
     public List<FileComposite> getContenu() {
         return this.contenu;
     }
 
+    /**
+     * Indique si cet objet est un répertoire.
+     * Cette méthode retourne toujours true pour cette classe.
+     * @return true, car cet objet représente un répertoire.
+     */
     @Override
     public boolean isDirectory() {
         return true;
