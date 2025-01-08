@@ -1,11 +1,10 @@
 package sae3_01;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,22 +48,22 @@ public class VueClasse extends VBox implements Observateur {
                 new Label(model.getClasse(nomClasse).getType()),
                 new Label(this.nom)
         );
+        header.setPadding(new Insets(5));
 
         // Attributs
         VBox attributs = createVBox(model.getClasse(nomClasse).getAttributs());
+        attributs.setStyle("-fx-border-color: black transparent black transparent;"); // Séparation
+        attributs.setPadding(new Insets(5));
 
         // Méthodes
         VBox methodes = createVBox(model.getClasse(nomClasse).getMethodes());
-
-        // Séparations
-        Line separation1 = createSeparator();
-        Line separation2 = createSeparator();
+        methodes.setPadding(new Insets(5));
 
         // Position de la vue (this)
         this.setLayoutX(model.getClasse(nomClasse).getX());
         this.setLayoutY(model.getClasse(nomClasse).getY());
 
-        this.getChildren().addAll(header, separation1, attributs, separation2, methodes);
+        this.getChildren().addAll(header, attributs, methodes);
     }
 
     /**
@@ -96,16 +95,6 @@ public class VueClasse extends VBox implements Observateur {
             }
         }
         return vBox;
-    }
-
-    /**
-     * Crée un séparateur
-     * @return Line
-     */
-    private Line createSeparator() {
-        Line separator = new Line(0, 0, 400, 0); // Valeur arbitraire
-        separator.setStyle("-fx-stroke: black;");
-        return separator;
     }
 
     /**

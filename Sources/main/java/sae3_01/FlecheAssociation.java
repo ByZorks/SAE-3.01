@@ -9,10 +9,13 @@ public class FlecheAssociation extends FlecheRelation {
 
     private final Text nom;
 
-    public FlecheAssociation(VueClasse destination, String nom) {
+    public FlecheAssociation(VueClasse destination, String nom, boolean multiple) {
         super(destination);
-        this.nom = new Text();
-        this.nom.setText(nom);
+        if (multiple) {
+            this.nom = new Text("* " + nom);
+        } else {
+            this.nom = new Text(nom);
+        }
         this.nom.setStyle("-fx-font-size: 15;");
         this.getChildren().add(this.nom);
     }
