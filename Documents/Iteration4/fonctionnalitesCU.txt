@@ -1,0 +1,4 @@
+Fonctionnalités des Cas d'Utilisation:
+
+- Export sous différents formats
+- Masquer des méthodes
