@@ -3,9 +3,10 @@ import sae3_01.Analyseur;
 import sae3_01.Classe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Classe de test de la classe Analyseur
@@ -31,6 +32,10 @@ public class TestAnalyseur {
         methodes.add("+ isDirectory() : boolean");
         methodes.add("+ getContenu() : List");
         int[] coordonnees = new int[]{0, 0};
+        HashMap<String, ArrayList<String>> relations = new HashMap<>();
+        relations.put("parent", new ArrayList<>(List.of("FileComposite")));
+        relations.put("interface", new ArrayList<>());
+        relations.put("associations", new ArrayList<>(List.of("FileComposite contenu")));
 
         // Exécution de la méthode à tester
         Classe c = Analyseur.analyseClasse(nomClasse);
@@ -44,20 +49,13 @@ public class TestAnalyseur {
         assertEquals(1, c.getAttributs().size());
         assertEquals(attributs, c.getAttributs());
         assertEquals(3, c.getMethodes().size());
-        assertEquals(methodes, c.getMethodes());
+        for (String m : c.getMethodes()) {
+            assertTrue(methodes.contains(m));
+        }
         assertEquals(coordonnees[0], c.getX());
         assertEquals(coordonnees[1], c.getY());
-    }
-
-    @Test
-    public void test_getDetailledFieldType() {
-        // Préparation des données
-        String[] expected = new String[]{"java.util.List<sae3_01.FileComposite> contenu"};
-
-        // Exécution de la méthode à tester
-        String[] result = Analyseur.getDetailledFieldType("sae3_01.Repertoire");
-
-        // Vérification
-        assertEquals(expected[0], result[0]);
+        assertEquals(relations.get("parent").getFirst(), c.getParent());
+        assertEquals(relations.get("interface"), c.getInterfaces());
+        assertEquals(relations.get("associations"), c.getAssociations());
     }
 }

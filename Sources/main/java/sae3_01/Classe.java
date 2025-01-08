@@ -2,6 +2,7 @@ package sae3_01;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -13,8 +14,6 @@ public class Classe {
     private String type;
     /** Nom simple de la classe */
     private String nomSimple;
-    /** Nom de la classe avec ses interfaces et sa classe mère */
-    private String nomExtended;
     /** Package de la classe */
     private String Package;
     /** Liste des attributs */
@@ -23,25 +22,26 @@ public class Classe {
     private ArrayList<String> methodes;
     /** Coordonnées de la classe */
     private double[] coordonnees;
+    /** Relations de la classe */
+    private HashMap<String, ArrayList<String>> relations;
 
     /**
      * Constructeur
      * @param type Type de la classe
      * @param nomSimple Nom simple de la classe
-     * @param nomExtended Nom de la classe avec ses interfaces et sa classe mère
      * @param Package Package de la classe
      * @param attributs Liste des attributs
      * @param methodes Liste des méthodes
      * @param coordonnees Coordonnées de la classe
      */
-    public Classe(String type, String nomSimple, String nomExtended, String Package, ArrayList<String> attributs, ArrayList<String> methodes, double[] coordonnees) {
+    public Classe(String type, String nomSimple, String Package, ArrayList<String> attributs, ArrayList<String> methodes, double[] coordonnees, HashMap<String, ArrayList<String>> relations) {
         this.type = type;
         this.nomSimple = nomSimple;
-        this.nomExtended = nomExtended;
         this.Package = Package;
         this.coordonnees = coordonnees;
         this.attributs = attributs;
         this.methodes = methodes;
+        this.relations = relations;
     }
 
     /**
@@ -65,7 +65,24 @@ public class Classe {
      * @return Nom de la classe
      */
     public String getNomExtended() {
-        return nomExtended;
+        // Nom de la classe
+        StringBuilder res = new StringBuilder(nomSimple);
+
+        // ajout du parent
+        if (!relations.get("parent").getFirst().equals("Object")) {
+            res.append(" extends ").append(relations.get("parent").getFirst());
+        }
+
+        // ajout des interfaces
+        if (!relations.get("interface").isEmpty()) {
+            res.append(" implements ");
+            for (String i : relations.get("interface")) {
+                res.append(i).append(", ");
+            }
+            res = new StringBuilder(res.substring(0, res.length() - 2)); // Supprime la dernière virgule
+        }
+
+        return res.toString();
     }
 
     /**
@@ -118,6 +135,30 @@ public class Classe {
         this.coordonnees[1] = y;
     }
 
+    /**
+     * Retourne le nom de la classe mère
+     * @return Nom de la classe mère
+     */
+    public String getParent() {
+        return relations.get("parent").getFirst();
+    }
+
+    /**
+     * Retourne les interfaces implémentées par la classe
+     * @return Interfaces implémentées
+     */
+    public ArrayList<String> getInterfaces() {
+        return relations.get("interface");
+    }
+
+    /**
+     * Retourne les associations de la classe
+     * @return Associations
+     */
+    public ArrayList<String> getAssociations() {
+        return relations.get("associations");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -134,11 +175,12 @@ public class Classe {
     public String toString() {
         return "Classe {" +
                 "\ntype=" + type +
-                "\nnom=" + nomExtended +
+                "\nnom=" + nomSimple +
                 "\nPackage=" + Package +
                 "\nattributs=" + attributs +
                 "\nmethodes=" + methodes +
                 "\ncoordonnees=" + Arrays.toString(coordonnees) +
+                "\nrelations=" + relations +
                 "\n}";
     }
 }

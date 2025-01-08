@@ -104,17 +104,9 @@ public class Model implements Sujet {
      */
     public String checkAssociation(Classe c1, Classe c2) {
         if (c1.equals(c2)) return null;
-        String[] attributs = Analyseur.getDetailledFieldType(c1.getPackage() + "." + c1.getNomSimple());
-        for (String attribut : attributs) {
-            if (attribut.matches(".*\\b" + c2.getNomSimple() + "\\b.*") || attribut.matches(".*<" + c2.getNomSimple() + ">.*")) { // Autorise le cas <nom> et nom mais pas <xyznom> ou <nomxyz>
-                attribut = attribut.split(" ")[1];
-                // Dans le cas d'une liste, l'attribut est récupéré sous ce format : package.Classe>
-                if (attribut.contains(">")) {
-                    attribut = attribut.split("\\.")[1]; // Supprime le nom du package
-                    attribut = attribut.substring(0, attribut.length() - 1); // Supprime le >
-                }
-                return attribut;
-            }
+
+        for (String attribut : c1.getAssociations()) {
+            if (attribut.split(" ")[0].equals(c2.getNomSimple())) return attribut.split(" ")[1];
         }
         return null;
     }

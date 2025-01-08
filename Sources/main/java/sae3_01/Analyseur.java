@@ -1,7 +1,7 @@
 package sae3_01;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Classe permettant d'analyser une classe Java
@@ -19,12 +19,12 @@ public class Analyseur {
 
         String type = getClassModifier(c);
         String nomSimple = c.getSimpleName();
-        String nomExtended = getNom(c);
         String packageName = getPackage(c);
         ArrayList<String> attributs = getAttributs(c);
         ArrayList<String> methodes = getMethodes(c);
+        HashMap<String, ArrayList<String>> relations = getRelations(c);
 
-        return new Classe(type, nomSimple, nomExtended, packageName, attributs, methodes, new double[]{0, 0});
+        return new Classe(type, nomSimple, packageName, attributs, methodes, new double[]{0, 0}, relations);
     }
 
     /**
@@ -34,43 +34,6 @@ public class Analyseur {
      */
     private static String getClassModifier(Class<?> c) {
         return getModifierString(c.getModifiers());
-    }
-
-    /**
-     * Retourne le nom de la classe avec ses interfaces et sa classe mère
-     * @param c la classe
-     * @return le nom de la classe
-     */
-    private static String getNom(Class<?> c) {
-        // Récupère le nom de la classe
-        String[] classNameTab = c.getName().split("\\.");
-        String className = classNameTab[classNameTab.length - 1];
-
-        // Récupère le nom de la classe mère
-        Class<?> superClass = c.getSuperclass();
-        String superClassName = "";
-        if (superClass != null) { // null dans le cas d'une interface
-            if (!superClass.getName().contains("Object")) {
-                String[] superClassNameTab = superClass.getName().split("\\.");
-                superClassName = " extends " + superClassNameTab[superClassNameTab.length - 1];
-            }
-        }
-
-        // Récupère les noms des interfaces
-        Class<?>[] interfaces = c.getInterfaces();
-        StringBuilder interfacesNames;
-        String itfNames = "";
-        if (interfaces.length != 0) {
-            interfacesNames = new StringBuilder(" implements ");
-            for (Class<?> i : interfaces) {
-                String[] interfacesNamesTab = i.getName().split("\\.");
-                interfacesNames.append(interfacesNamesTab[interfacesNamesTab.length - 1]).append(", ");
-            }
-            itfNames = interfacesNames.substring(0, interfacesNames.length() - 2);
-        }
-
-
-        return  className + superClassName + itfNames;
     }
 
     /**
@@ -162,27 +125,55 @@ public class Analyseur {
     }
 
     /**
-     * Retourne le type de l'attribut
-     * @param c le nom de la classe
-     * @return le type de l'attribut en entier et son nom sous la forme "type nom"
+     * Retourne les relations de la classe (hors classes du package java)
+     * @param c la classe
+     * @return les relations de la classe
      */
-    public static String[] getDetailledFieldType(String c) {
-        Class<?> cl;
-        String[] types = null;
-        try {
-            cl = Class.forName(c);
-            Field[] fields = cl.getDeclaredFields();
-            types = new String[fields.length];
-            for (int i = 0; i < fields.length; i++) {
-                AnnotatedType type = fields[i].getAnnotatedType(); // Récupère le type complet de l'attribut
-                String name = fields[i].getName();
-                types[i] = type.getType().getTypeName() + " " + name;
-            }
-        } catch (ClassNotFoundException e) {
-            // Ne devrait jamais arriver car la classe a déjà été chargée une fois avant d'appeler cette méthode
+    private static HashMap<String, ArrayList<String>> getRelations(Class<?> c) {
+        HashMap<String, ArrayList<String>> relations = new HashMap<>();
+
+        // Classe mère
+        Class<?> superClass = c.getSuperclass();
+        if (superClass != null) {
+            relations.put("parent", new ArrayList<>(List.of(superClass.getSimpleName())));
+        } else {
+            relations.put("parent", new ArrayList<>(List.of("Object")));
         }
 
-        return types;
+        // Interfaces
+        Class<?>[] interfaces = c.getInterfaces();
+        ArrayList<String> interfacesNames = new ArrayList<>();
+        for (Class<?> i : interfaces) {
+            interfacesNames.add(i.getSimpleName());
+        }
+        relations.put("interface", interfacesNames);
+
+        // Attributs
+        ArrayList<String> attributsNames = new ArrayList<>();
+        for (Field f : c.getDeclaredFields()) {
+            if (f.getType().isPrimitive()) continue;
+
+            if (f.getType().getName().startsWith("java.util.List") ||
+                    f.getType().getName().startsWith("java.util.Map") ||
+                    f.getType().getName().startsWith("java.util.Set") ||
+                    f.getType().getName().startsWith("java.util.Array")) {
+                // Récupération des types génériques pour List et Map
+                ParameterizedType pType = (ParameterizedType) f.getGenericType();
+                for (Type argType : pType.getActualTypeArguments()) {
+                    String typeName = ((Class<?>) argType).getName();
+                    if (!typeName.startsWith("java.")) {
+                        attributsNames.add(((Class<?>) argType).getSimpleName() + " " + f.getName()); // type nom
+                    }
+                }
+            }
+            // Type simple non-Java
+            else if (!f.getType().getName().startsWith("java.")) {
+                attributsNames.add(f.getType().getSimpleName() + " " + f.getName()); // type nom
+            }
+        }
+        relations.put("associations", attributsNames);
+
+        return relations;
     }
 
     /**
