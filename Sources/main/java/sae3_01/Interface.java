@@ -78,9 +78,16 @@ public class Interface extends Application {
 
         MenuItem item4 = new MenuItem("PUML");
 
+        // Création du bouton nouvelle classe
+        Menu ajouter = new Menu("Ajouter");
+        MenuItem itemInterface = new MenuItem("Interface");
+        MenuItem itemClasseConcrete = new MenuItem("Classe concrète");
+        MenuItem itemClasseAbstraite = new MenuItem("Classe abstraite");
+
         menu.getItems().addAll(item, item2,item4);
+        ajouter.getItems().addAll(itemInterface, itemClasseAbstraite, itemClasseConcrete);
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(menu);
+        menuBar.getMenus().addAll(menu, ajouter);
         root.setTop(menuBar);
 
 
