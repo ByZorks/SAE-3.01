@@ -46,8 +46,6 @@ public class FlecheAssociation extends FlecheRelation {
         double textOffset = ARROW_HEAD_LENGTH * 3; // Distance du texte par rapport à la pointe
         double textX = x2 - Math.cos(theta) * textOffset;
         double textY = y2 - Math.sin(theta) * textOffset;
-
-        // Centre le texte par rapport à sa position
         nom.setX(textX);
         nom.setY(textY);
     }

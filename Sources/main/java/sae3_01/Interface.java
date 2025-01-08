@@ -31,7 +31,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.IOException;
 
-
 /**
  * Classe Interface
  * Classe principale de l'application, elle gère l'interface graphique
@@ -98,9 +97,6 @@ public class Interface extends Application {
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(menu);
         root.setTop(menuBar);
-
-
-
 
         // Gestion de l'exportation en fonction du choix du ComboBox
         item4.setOnAction(event -> {
@@ -176,12 +172,13 @@ public class Interface extends Application {
         stage.setScene(scene);
         stage.show();
         javafx.scene.control.Button buttonExport = new javafx.scene.control.Button("Exporter");
-
-
-
-
     }
 
+    /**
+     * Capture un Pane et sauvegarde le screenshot dans un fichier.
+     * @param pane Pane à capturer
+     * @param filePath Chemin du fichier de sauvegarde
+     */
     public void capturePane(Pane pane, String filePath) {
         try {
             // Créer les paramètres du snapshot
@@ -207,7 +204,6 @@ public class Interface extends Application {
             }
 
             // Sauvegarder l'image
-
             ImageIO.write(bufferedImage, "png", new File(filePath));
             Desktop.getDesktop().open(new File(filePath));
             System.out.println("Screenshot sauvegardé avec succès : " + filePath);
