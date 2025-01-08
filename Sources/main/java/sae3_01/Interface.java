@@ -4,33 +4,25 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import javax.imageio.ImageIO;
-
-import java.awt.*;
-
-import java.awt.Button;
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
-/**
- * Classe Interface
- * Classe principale de l'application, elle gère l'interface graphique
- */
 public class Interface extends Application {
+
+    private Model model;
+    private VueDiagramme vueDiagramme;
+    private VueArborescence vueArborescence;
 
     public static void main(String[] args) {
         Application.launch();
@@ -38,224 +30,218 @@ public class Interface extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Création des modèles
-        Model model = new Model();
+        // Initialisation
+        initialiserMVC();
+        configureDragAndDrop();
 
-        // Création de la fenêtre
-        stage.setTitle("SAE3-01");
+        // Panes
         BorderPane root = new BorderPane();
-        ComboBox<String> comboExport = new ComboBox<>();
-
-        // Création de la vue diagramme
-        VueDiagramme vueDiagramme = new VueDiagramme();
-
-        // Création de la barre de menu
-        Menu menu = new Menu("Exporter");
-
-        MenuItem supp = new MenuItem("Tout effacer");
-        supp.setOnAction(event -> {
-            model.supprimerToutesLesClasses();
-            System.out.println("Toutes les classes ont été supprimées du modèle.");
+        ToolBar toolBar = new ToolBar(createMenuBar(), createClearButton());
+        SplitPane splitPane = new SplitPane();
+        splitPane.getItems().addAll(vueArborescence, vueDiagramme);
+        splitPane.setDividerPositions(0.2);
+        splitPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            splitPane.setDividerPositions(0.2); // Empeche le diviseur de bouger lorsqu'on redimensionne la fenetre
         });
 
-        //Exportation en format PNG
-        MenuItem item = new MenuItem("PNG");
-        //Ajout du logo PNG
-        ImageView pngIcon = new ImageView("file:image/png.png");
-        pngIcon.setFitHeight(25);
-        pngIcon.setFitWidth(25);
-        item.setGraphic(pngIcon);
-        item.setOnAction(event -> {
-            capturePane(vueDiagramme, "output/diagramme.png");
-        });
+        // Placement dans la fenêtre
+        root.setTop(toolBar);
+        root.setCenter(splitPane);
 
-        //Exportation en JPG
-        MenuItem item2 = new MenuItem("JPG");
-        //Ajout du logo JPG
-        ImageView jpgIcon = new ImageView("file:image/jpg.png");
-        jpgIcon.setFitHeight(25);
-        jpgIcon.setFitWidth(25);
-        item2.setGraphic(jpgIcon);
-        item2.setOnAction(event -> {
-            capturePane(vueDiagramme, "output/diagramme.jpg");
-        });
+        // Parametres du stage
+        Scene scene = new Scene(root, 800, 600);
+        stage.setTitle("SAE3-01");
+        stage.setScene(scene);
+        stage.show();
+    }
 
-        // Exportation en html
-        MenuItem item5 = new MenuItem("HTML");
-        ImageView htmlIcon = new ImageView("file:image/html.png");
-        htmlIcon.setFitWidth(25);
-        htmlIcon.setFitHeight(25);
-        item5.setGraphic(htmlIcon);
-        item5.setOnAction(event -> {
-            capturePaneAsHTML(vueDiagramme, "output/diagramme.html");
-        });
-        menu.getItems().add(item5);
+    /**
+     * Initialise les attributs et les classes du MVC
+     */
+    private void initialiserMVC() {
+        model = new Model();
+        vueDiagramme = new VueDiagramme();
 
-
-        //Exportation en PlantUML
-        MenuItem item4 = new MenuItem("PUML");
-        //Ajout du logo PlantUML
-        ImageView pumlIcon = new ImageView("file:image/puml.png");
-        pumlIcon.setFitHeight(25);
-        pumlIcon.setFitWidth(25);
-        item4.setGraphic(pumlIcon);
-        item4.setOnAction(event -> {
-            capturePane(vueDiagramme, "output/diagramme.jpg");
-        });
-
-        // Création du bouton nouvelle classe
-        Menu ajouter = new Menu("Ajouter");
-        MenuItem itemInterface = new MenuItem("Interface");
-        MenuItem itemClasseConcrete = new MenuItem("Classe concrète");
-        MenuItem itemClasseAbstraite = new MenuItem("Classe abstraite");
-
-        itemInterface.setOnAction(e -> {
-            Classe nvlInterface = ajouterClasse("interface");
-            if (nvlInterface != null)
-                model.ajouterClasse(nvlInterface);
-        });
-        itemClasseConcrete.setOnAction(e -> {
-            Classe nvlInterface = ajouterClasse("class");
-            if (nvlInterface != null)
-                model.ajouterClasse(nvlInterface);
-        });
-        itemClasseAbstraite.setOnAction(e -> {
-            Classe nvlInterface = ajouterClasse("abstract");
-            if (nvlInterface != null)
-                model.ajouterClasse(nvlInterface);
-        });
-
-        Menu effacer = new Menu("Tout effacer");
-        menu.getItems().addAll(item, item2,item4);
-        effacer.getItems().addAll(supp);
-        ajouter.getItems().addAll(itemInterface, itemClasseAbstraite, itemClasseConcrete);
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menu, ajouter,effacer);
-        root.setTop(menuBar);
-
-        // Gestion de l'exportation en fonction du choix du ComboBox
-        item4.setOnAction(event -> {
-                exporterPlantUML(model);
-        });
-
-        // Configuration du contenu principal
+        // Arborescence
         Repertoire rootDir = new Repertoire(new File("Target/"));
         TreeItem<FileComposite> treeRoot = new TreeItem<>(rootDir);
+        vueArborescence = new VueArborescence(treeRoot, rootDir);
 
-        // Création des observateurs
-        VueArborescence vueArborescence = new VueArborescence(treeRoot, rootDir);
-        VueDiagrammeConsole vueDiagrammeConsole = new VueDiagrammeConsole();
-
-        // Enregistrement des observateurs
+        // Observateurs
         model.enregistrerObservateur(vueArborescence);
-        model.enregistrerObservateur(vueDiagrammeConsole);
+        model.enregistrerObservateur(new VueDiagrammeConsole());
         model.enregistrerObservateur(vueDiagramme);
 
-        // Création des contrôleurs
+        // Controllers
         ControllerArborescence controllerArborescence = new ControllerArborescence(model);
         ControllerContextMenu controllerContextMenu = new ControllerContextMenu(model);
 
-        // Assignation des contrôleurs
         vueArborescence.setOnMouseClicked(controllerArborescence);
         vueArborescence.setOnContextMenuRequested(controllerContextMenu);
         vueDiagramme.setOnContextMenuRequested(controllerContextMenu);
+    }
 
-        // Utilisation d'un SplitPane pour permettre le redimensionnement
-        SplitPane splitPane = new SplitPane();
-        splitPane.getItems().addAll(vueArborescence, vueDiagramme);
-        splitPane.setDividerPositions(0.2); // Position initiale du diviseur
+    /**
+     * Créer le MenuBar
+     * @return MenuBar
+     */
+    private MenuBar createMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(
+                createExportMenu(),
+                createAddMenu()
+        );
+        return menuBar;
+    }
 
-        // Gestion du drag and drop avec l'arborescence et le diagramme
-        vueDiagramme.setOnDragOver(dragEvent -> {
-            if (dragEvent.getGestureSource() != vueDiagramme &&
-                    dragEvent.getDragboard().hasString()) {
-                dragEvent.acceptTransferModes(TransferMode.MOVE);
+    /**
+     * Créer les items du menu d'exportation
+     * @return Menu d'exportation
+     */
+    private Menu createExportMenu() {
+        Menu menu = new Menu("Exporter");
+
+        // PNG Export
+        MenuItem pngItem = new MenuItem("PNG");
+        ImageView pngIcon = new ImageView("file:image/png.png");
+        pngIcon.setFitHeight(25);
+        pngIcon.setFitWidth(25);
+        pngItem.setGraphic(pngIcon);
+        pngItem.setOnAction(e -> capturePane(vueDiagramme, "output/diagramme.png"));
+
+        // JPG Export
+        MenuItem jpgItem = new MenuItem("JPG");
+        ImageView jpgIcon = new ImageView("file:image/jpg.png");
+        jpgIcon.setFitHeight(25);
+        jpgIcon.setFitWidth(25);
+        jpgItem.setGraphic(jpgIcon);
+        jpgItem.setOnAction(e -> capturePane(vueDiagramme, "output/diagramme.jpg"));
+
+        // HTML Export
+        MenuItem htmlItem = new MenuItem("HTML");
+        ImageView htmlIcon = new ImageView("file:image/html.png");
+        htmlIcon.setFitHeight(25);
+        htmlIcon.setFitWidth(25);
+        htmlItem.setGraphic(htmlIcon);
+        htmlItem.setOnAction(e -> capturePaneAsHTML(vueDiagramme));
+
+        // PUML Export
+        MenuItem pumlItem = new MenuItem("PUML");
+        ImageView pumlIcon = new ImageView("file:image/puml.png");
+        pumlIcon.setFitHeight(25);
+        pumlIcon.setFitWidth(25);
+        pumlItem.setGraphic(pumlIcon);
+        pumlItem.setOnAction(e -> exporterPlantUML());
+
+        menu.getItems().addAll(pngItem, jpgItem, htmlItem, pumlItem);
+        return menu;
+    }
+
+    /**
+     * Créer les items du menu d'ajout de classe
+     * @return Menu d'ajout
+     */
+    private Menu createAddMenu() {
+        Menu menu = new Menu("Ajouter");
+        MenuItem interfaceItem = new MenuItem("Interface");
+        interfaceItem.setOnAction(e -> addNewClass("interface"));
+
+        MenuItem classeConcreteItem = new MenuItem("Classe concrète");
+        classeConcreteItem.setOnAction(e -> addNewClass("class"));
+
+        MenuItem classeAbstraiteItem = new MenuItem("Classe abstraite");
+        classeAbstraiteItem.setOnAction(e -> addNewClass("abstract"));
+
+        menu.getItems().addAll(interfaceItem, classeConcreteItem, classeAbstraiteItem);
+        return menu;
+    }
+
+    /**
+     * Créer les items du menu de suppression
+     * @return Menu de suppression
+     */
+    private Button createClearButton() {
+        Button reset = new Button("Réinitialiser");
+        reset.setOnAction(e -> {
+            model.supprimerToutesLesClasses();
+            System.out.println("Toutes les classes ont été supprimées du modèle.");
+        });
+        return reset;
+    }
+
+    /**
+     * Active le drap and drop vers le diagramme
+     */
+    private void configureDragAndDrop() {
+        vueDiagramme.setOnDragOver(event -> {
+            if (event.getGestureSource() != vueDiagramme &&
+                    event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
             }
-            dragEvent.consume();
+            event.consume();
         });
 
-        vueDiagramme.setOnDragEntered(dragEvent -> {
-            if (dragEvent.getGestureSource() != vueDiagramme && dragEvent.getDragboard().hasString()) {
+        vueDiagramme.setOnDragEntered(event -> {
+            if (event.getGestureSource() != vueDiagramme &&
+                    event.getDragboard().hasString()) {
                 vueDiagramme.setStyle("-fx-opacity:.4;-fx-background-color: gray;");
             }
-            dragEvent.consume();
+            event.consume();
         });
 
-        vueDiagramme.setOnDragDropped(dragEvent -> {
-            Dragboard db = dragEvent.getDragboard();
+        vueDiagramme.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
                 String nomFichier = db.getString().replace(".class", "");
                 TreeItem<FileComposite> selectedItem = vueArborescence.getSelectionModel().getSelectedItem();
                 String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
                 Classe c = model.analyserClasse(nomFichierAvecPackage);
-                c.setCoordonnees(dragEvent.getX(), dragEvent.getY());
+                c.setCoordonnees(event.getX(), event.getY());
                 model.ajouterClasse(c);
                 success = true;
             }
-            dragEvent.setDropCompleted(success);
-            dragEvent.consume();
+            event.setDropCompleted(success);
+            event.consume();
             vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
         });
 
-        vueDiagramme.setOnDragExited(dragEvent -> {
+        vueDiagramme.setOnDragExited(event -> {
             vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
-            dragEvent.consume();
+            event.consume();
         });
-
-        // Ajout des composants à l'interface
-        root.setTop(menuBar);
-        root.setCenter(splitPane);
-
-        // Création de la scène
-        Scene scene = new Scene(root, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public Classe ajouterClasse(String type) {
-        Classe nvlInterface = null;
-        Dialog<Classe> dialog = new ClasseDialog(type, nvlInterface);
-        Optional<Classe> classeAttendre = dialog.showAndWait();
-        if (classeAttendre.isPresent()) {
-            nvlInterface = classeAttendre.get();
-        }
-
-        return nvlInterface;
     }
 
     /**
-     * Capture un Pane et sauvegarde le screenshot dans un fichier.
-     * @param pane Pane à capturer
-     * @param filePath Chemin du fichier de sauvegarde
+     * Ajoute une nouvelle classe
+     * @param type type de classe
      */
-    public void capturePane(Pane pane, String filePath) {
-        try {
-            // Créer les paramètres du snapshot
-            SnapshotParameters params = new SnapshotParameters();
+    private void addNewClass(String type) {
+        Dialog<Classe> dialog = new ClasseDialog(type, null);
+        Optional<Classe> result = dialog.showAndWait();
+        result.ifPresent(model::ajouterClasse);
+    }
 
-            // Prendre le screenshot du Pane
+    /**
+     * Fais une capture d'écran du diagramme
+     * @param pane Pane à capturer
+     * @param filePath chemin de sortie
+     */
+    private void capturePane(Pane pane, String filePath) {
+        try {
+            SnapshotParameters params = new SnapshotParameters();
             WritableImage fxImage = pane.snapshot(params, null);
 
-            // Convertir l'image JavaFX en BufferedImage
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
                     (int) fxImage.getHeight(),
                     BufferedImage.TYPE_INT_ARGB
             );
 
-            PixelReader pixelReader = fxImage.getPixelReader();
-
-            // Copier les pixels
-            for (int x = 0; x < fxImage.getWidth(); x++) {
-                for (int y = 0; y < fxImage.getHeight(); y++) {
-                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
-                }
-            }
-
-            // Sauvegarder l'image
+            copyPixels(fxImage, bufferedImage);
             ImageIO.write(bufferedImage, "png", new File(filePath));
             Desktop.getDesktop().open(new File(filePath));
+
             System.out.println("Screenshot sauvegardé avec succès : " + filePath);
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde du screenshot : " + e.getMessage());
@@ -263,34 +249,48 @@ public class Interface extends Application {
     }
 
     /**
-     * Exporte le modèle sous forme de fichier texte contenant le code PlantUML.
-     * @param model Le modèle contenant les classes à exporter.
+     * Convertis une writableImage en BufferedImage en copiant les pixels 1 par 1
+     * @param fxImage image en entrée
+     * @param bufferedImage image en sortie
      */
-    public void exporterPlantUML(Model model) {
-        String plantUMLCode = model.genererPlantUML();
-        File fichierExport = new File("output/Model_PlantUML.puml");
+    private void copyPixels(WritableImage fxImage, BufferedImage bufferedImage) {
+        PixelReader pixelReader = fxImage.getPixelReader();
+        for (int x = 0; x < fxImage.getWidth(); x++) {
+            for (int y = 0; y < fxImage.getHeight(); y++) {
+                bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
+            }
+        }
+    }
 
-        try (FileWriter writer = new FileWriter(fichierExport)) {
-            writer.write(plantUMLCode);
-            System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
-            Desktop.getDesktop().open(fichierExport);
+    /**
+     * Exporte le code plantUML dans un fichier
+     */
+    private void exporterPlantUML() {
+        try {
+            String plantUMLCode = model.genererPlantUML();
+            File fichierExport = new File("output/Model_PlantUML.puml");
+
+            try (FileWriter writer = new FileWriter(fichierExport)) {
+                writer.write(plantUMLCode);
+                System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
+                Desktop.getDesktop().open(fichierExport);
+            }
         } catch (IOException e) {
             System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
         }
     }
 
     /**
-     * Capture un Pane et exporte son contenu dans un fichier HTML.
-     * @param pane Pane à capturer
-     * @param filePath Chemin du fichier HTML de sauvegarde
+     * Exporte un pane au format HTML
+     * @param pane Pane à exporter
      */
-    public void capturePaneAsHTML(Pane pane, String filePath) {
+    private void capturePaneAsHTML(Pane pane) {
         try {
-            // Prendre un snapshot du Pane
+            // Capture de l'image
             SnapshotParameters params = new SnapshotParameters();
             WritableImage fxImage = pane.snapshot(params, null);
 
-            // Sauvegarder l'image en tant que fichier temporaire PNG
+            // Sauvegarde de l'image temporaire
             File tempImageFile = new File("output/temp_image.png");
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
@@ -298,40 +298,23 @@ public class Interface extends Application {
                     BufferedImage.TYPE_INT_ARGB
             );
 
-            PixelReader pixelReader = fxImage.getPixelReader();
-            for (int x = 0; x < fxImage.getWidth(); x++) {
-                for (int y = 0; y < fxImage.getHeight(); y++) {
-                    bufferedImage.setRGB(x, y, pixelReader.getArgb(x, y));
-                }
-            }
+            copyPixels(fxImage, bufferedImage);
             ImageIO.write(bufferedImage, "png", tempImageFile);
 
-            // Créer un fichier HTML et intègre l'image
-            File htmlFile = new File(filePath);
+            // Création du fichier HTML
+            File htmlFile = new File("output/diagramme.html");
             try (FileWriter writer = new FileWriter(htmlFile)) {
-                writer.write("<!DOCTYPE html>\n");
-                writer.write("<html>\n");
-                writer.write("<head>\n");
-                writer.write("<title>Exportation HTML</title>\n");
-                writer.write("</head>\n");
-                writer.write("<body>\n");
+                writer.write("<!DOCTYPE html>\n<html>\n<head>\n");
+                writer.write("<title>Exportation HTML</title>\n</head>\n<body>\n");
                 writer.write("<h1>Votre diagramme !</h1>\n");
                 writer.write("<img src=\"../output/temp_image.png\" alt=\"Diagramme\">\n");
-                writer.write("</body>\n");
-                writer.write("</html>");
+                writer.write("</body>\n</html>");
             }
 
-            System.out.println("HTML exporté avec succès : " + filePath);
+            System.out.println("HTML exporté avec succès : output/diagramme.html");
             Desktop.getDesktop().open(htmlFile);
         } catch (IOException e) {
             System.err.println("Erreur lors de l'export en HTML : " + e.getMessage());
         }
     }
-
-
 }
-
-
-
-
-
