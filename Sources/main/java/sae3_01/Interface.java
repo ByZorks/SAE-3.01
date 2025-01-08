@@ -91,21 +91,19 @@ public class Interface extends Application {
         MenuItem itemClasseAbstraite = new MenuItem("Classe abstraite");
 
         itemInterface.setOnAction(e -> {
-            ArrayList<String> methodes = new ArrayList<>();
-            methodes.add("+ {abstract} seDeplacer()");
-            double[] coordonees = {0, 0};
-            Classe nvlInterface = new Classe("<<interface>>", "Transport", "Transport", "sae3_01", new ArrayList<String>(), methodes, coordonees);
-            Dialog<Classe> dialog = new InterfaceDialog("interface");
-            Optional<Classe> classeTesteuse = dialog.showAndWait();
-            System.out.println("\t"+classeTesteuse.get());
-            System.out.println("\t"+classeTesteuse.isPresent());
-            model.ajouterClasse(nvlInterface);
+            Classe nvlInterface = ajouterClasse("interface");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
         });
         itemClasseConcrete.setOnAction(e -> {
-            // TODO
+            Classe nvlInterface = ajouterClasse("class");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
         });
         itemClasseAbstraite.setOnAction(e -> {
-            // TODO
+            Classe nvlInterface = ajouterClasse("abstract");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
         });
 
         menu.getItems().addAll(item, item2,item4);
@@ -175,6 +173,7 @@ public class Interface extends Application {
                 Classe c = model.analyserClasse(nomFichierAvecPackage);
                 c.setCoordonnees(dragEvent.getX(), dragEvent.getY());
                 model.ajouterClasse(c);
+                System.out.println(c);
                 success = true;
             }
             dragEvent.setDropCompleted(success);
@@ -195,6 +194,17 @@ public class Interface extends Application {
 
 
 
+    }
+
+    public Classe ajouterClasse(String type) {
+        Classe nvlInterface = null;
+        Dialog<Classe> dialog = new InterfaceDialog(type, nvlInterface);
+        Optional<Classe> classeAttendre = dialog.showAndWait();
+        if (classeAttendre.isPresent()) {
+            nvlInterface = classeAttendre.get();
+        }
+
+        return nvlInterface;
     }
 
     public void capturePane(Pane pane, String filePath) {
