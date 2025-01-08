@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 
 import java.awt.*;
 
+import java.awt.Button;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -50,6 +51,12 @@ public class Interface extends Application {
 
         // Création de la barre de menu
         Menu menu = new Menu("Exporter");
+
+        MenuItem supp = new MenuItem("Tout effacer");
+        supp.setOnAction(event -> {
+            model.supprimerToutesLesClasses();
+            System.out.println("Toutes les classes ont été supprimées du modèle.");
+        });
 
         //Exportation en format PNG
         MenuItem item = new MenuItem("PNG");
@@ -118,10 +125,12 @@ public class Interface extends Application {
                 model.ajouterClasse(nvlInterface);
         });
 
+        Menu effacer = new Menu("Tout effacer");
         menu.getItems().addAll(item, item2,item4);
+        effacer.getItems().addAll(supp);
         ajouter.getItems().addAll(itemInterface, itemClasseAbstraite, itemClasseConcrete);
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menu, ajouter);
+        menuBar.getMenus().addAll(menu, ajouter,effacer);
         root.setTop(menuBar);
 
         // Gestion de l'exportation en fonction du choix du ComboBox

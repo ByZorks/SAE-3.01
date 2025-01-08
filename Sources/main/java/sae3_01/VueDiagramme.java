@@ -166,4 +166,13 @@ public class VueDiagramme extends Pane implements Observateur {
         fleche.x2Property().bind(cible.layoutXProperty().add(cible.widthProperty().divide(2)));
         fleche.y2Property().bind(cible.layoutYProperty().add(cible.heightProperty().divide(2)));
     }
+
+    /**
+     * Supprime toutes les vues de classes et les relations du diagramme.
+     */
+    public void clearDiagram() {
+        this.getChildren().clear();       // Supprime tout du panneau graphique
+        this.vuesClasses.clear();         // Vide la collection des vues de classes
+        this.flechesRelations.clear();    // Vide la collection des relations
+    }
 }

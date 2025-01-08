@@ -142,6 +142,16 @@ public class Model implements Sujet {
         return null;
     }
 
+
+    /**
+     * Supprime toutes les classes et leurs données associées du modèle.
+     */
+    public void supprimerToutesLesClasses() {
+        this.classes.clear();
+        getVueDiagramme().clearDiagram();
+        notifierObservateurs();
+    }
+
     @Override
     public void enregistrerObservateur(Observateur o) {
         this.observateurs.add(o);
