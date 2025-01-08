@@ -1,0 +1,52 @@
+@startuml
+Systeme -> VueDiagramme : actualiser(Sujet s)
+loop classes du model
+    VueDiagramme -> VueDiagramme : new HashMap() : vuesClasses
+    note left: stocke les vues des classes
+
+    alt !vuesClasses.containsKey(nomClasse)
+        VueDiagramme -> VueDiagramme : afficherClasse(nomClasse)
+        VueDiagramme -> VueClasse : new VueClasse()
+        VueDiagramme -> VueClasse : actualiser(s)
+    end
+    note left: création des vues manquantes
+
+    loop classes pour relations
+        VueDiagramme -> VueDiagramme : new HashMap() : flechesRelations
+        note left: stocke les flèches de relations
+
+        alt classe.getParent() != "Object"
+            alt !flechesRelations.containsKey(key)
+                VueDiagramme -> FlecheHeritage : new FlecheHeritage(vueClasseParent)
+                VueDiagramme -> VueDiagramme : connecterFleche(flecheHeritage, vueClasse, vueClasseParent)
+                VueDiagramme -> VueDiagramme : getChildren().add(flecheHeritage)
+                VueDiagramme -> FlecheHeritage : toBack()
+            end
+        end
+        note left: gestion de l'héritage
+
+        loop interfaces de la classe
+            alt !flechesRelations.containsKey(key)
+                VueDiagramme -> FlecheImplementation : new FlecheImplementation(vueInterface)
+                VueDiagramme -> VueDiagramme : connecterFleche(fleche, vueClasse, vueInterface)
+                VueDiagramme -> VueDiagramme : getChildren().add(fleche)
+                VueDiagramme -> FlecheImplementation : toBack()
+            end
+        end
+        note left: gestion des implémentations
+
+        loop associations de la classe
+            alt !flechesRelations.containsKey(key)
+                VueDiagramme -> FlecheAssociation : new FlecheAssociation(vueClasseAssociee, multiplicite)
+                VueDiagramme -> VueDiagramme : connecterFleche(fleche, vueClasse, vueClasseAssociee)
+                VueDiagramme -> VueDiagramme : getChildren().add(fleche)
+                VueDiagramme -> FlecheAssociation : toBack()
+            end
+        end
+        note left: gestion des associations
+    end
+end
+
+VueDiagramme -> Systeme : void
+
+@enduml
