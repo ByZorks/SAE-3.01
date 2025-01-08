@@ -143,7 +143,6 @@ public class VueDiagramme extends Pane implements Observateur {
                     String key = nomClasse + ";" + nomClasseCible;
                     if (!flechesRelations.containsKey(key)) {
                         VueClasse vueClasseAssociee = vuesClasses.get(nomClasseCible);
-                        System.out.println(association);
                         FlecheAssociation flecheAssociation;
                         if (association.endsWith("[*]")) {
                             flecheAssociation = new FlecheAssociation(vueClasseAssociee, association.split(" ")[1], true);
