@@ -7,6 +7,7 @@ import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class ClasseDialog extends Dialog<Classe> {
     private Classe classe;
@@ -30,11 +31,11 @@ public class ClasseDialog extends Dialog<Classe> {
                     return new Classe(
                             "<<"+type+">>",
                             nomCourt,
-                            nomClasseField.getText(),
                             packageField.getText(),
                             attributs,
                             methodes,
-                            new double[]{0,0}
+                            new double[]{0,0},
+                            new HashMap<>()
                             );
                 }
                 return null;
