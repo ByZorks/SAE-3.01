@@ -236,7 +236,7 @@ public class Interface extends Application {
         try (FileWriter writer = new FileWriter(fichierExport)) {
             writer.write(plantUMLCode);
             System.out.println("Exportation PlantUML réussie : " + fichierExport.getAbsolutePath());
-            Desktop.getDesktop().open(new File(String.valueOf(fichierExport)));
+            Desktop.getDesktop().open(fichierExport);
         } catch (IOException e) {
             System.err.println("Erreur lors de l'exportation du fichier PlantUML : " + e.getMessage());
         }
