@@ -55,10 +55,52 @@ public class Analyseur {
         Field[] fields = c.getDeclaredFields();
         for (Field f : fields) {
             String name = f.getName();
-            String typeName = f.getType().getSimpleName();
+            String typeName;
+
+            // On vérifie qu'un type générique est utilisé
+            Type type = f.getGenericType();
+            if (type instanceof ParameterizedType paramType) {
+                String rawType = ((Class<?>) paramType.getRawType()).getSimpleName(); // Type (e.g., ArrayList, Map)
+                StringBuilder genericTypes = getGenericTypes(paramType); // Sous-type (e.g., String, Integer)
+                typeName = rawType + "<" + genericTypes + ">";
+            } else {
+                typeName = f.getType().getSimpleName();
+            }
+
             attributs.add(getModifierUMLSymbol(f.getModifiers()) + name + " : " + typeName);
         }
         return attributs;
+    }
+
+    /**
+     * Retourne les types génériques d'un paramètre
+     * @param paramType le type du paramètre
+     * @return les types génériques d'un paramètre
+     */
+    private static StringBuilder getGenericTypes(ParameterizedType paramType) {
+        Type[] typeArguments = paramType.getActualTypeArguments();
+        StringBuilder genericTypes = new StringBuilder();
+
+        // Récupère les types génériques
+        for (Type typeArg : typeArguments) {
+            if (!genericTypes.isEmpty()) {
+                genericTypes.append(", ");
+            }
+
+            // Si le type est une classe, on récupère son nom simple
+            if (typeArg instanceof Class) {
+                genericTypes.append(((Class<?>) typeArg).getSimpleName());
+            // Si le type est un type paramétré, on récupère ses types génériques
+            } else if (typeArg instanceof ParameterizedType genericType) {
+                String rawType = ((Class<?>) genericType.getRawType()).getSimpleName();
+                genericTypes.append(rawType)
+                        .append("<")
+                        .append(getGenericTypes(genericType)) // Récursif pour les types génériques imbriqués
+                        .append(">");
+            }
+        }
+
+        return genericTypes;
     }
 
     /**
@@ -67,8 +109,9 @@ public class Analyseur {
      * @return les méthodes de la classe
      */
     private static ArrayList<String> getMethodes(Class<?> c) {
-        // Constructeurs
         ArrayList<String> methodes = new ArrayList<>();
+
+        // Constructeurs
         Constructor<?>[] cons = c.getDeclaredConstructors();
         for (Constructor<?> con : cons) {
             // Nom
@@ -79,8 +122,18 @@ public class Analyseur {
             Parameter[] parameters = con.getParameters();
             String initParams = getModifierUMLSymbol(con.getModifiers()) + name + "(";
             StringBuilder params = new StringBuilder(initParams);
+
             for (Parameter p : parameters) {
-                String typeName = p.getType().getSimpleName();
+                // Get generic parameter type if it exists
+                String typeName;
+                Type paramType = p.getParameterizedType();
+                if (paramType instanceof ParameterizedType) {
+                    String rawType = ((Class<?>) ((ParameterizedType) paramType).getRawType()).getSimpleName();
+                    StringBuilder genericTypes = getGenericTypes((ParameterizedType) paramType);
+                    typeName = rawType + "<" + genericTypes + ">";
+                } else {
+                    typeName = p.getType().getSimpleName();
+                }
                 params.append(typeName).append(", ");
             }
 
@@ -101,17 +154,36 @@ public class Analyseur {
             String name = nameTab[nameTab.length - 1];
             if (name.startsWith("lambda$")) continue; // On ne prend pas en compte les méthodes lambda
 
-            // Type de return
-            String returnTypeName = m.getReturnType().getSimpleName();
+            // Type de return avec gestion des génériques
+            String returnTypeName;
+            Type returnType = m.getGenericReturnType();
+            if (returnType instanceof ParameterizedType) {
+                String rawType = ((Class<?>) ((ParameterizedType) returnType).getRawType()).getSimpleName();
+                StringBuilder genericTypes = getGenericTypes((ParameterizedType) returnType);
+                returnTypeName = rawType + "<" + genericTypes + ">";
+            } else {
+                returnTypeName = m.getReturnType().getSimpleName();
+            }
 
             // Parametres
             Parameter[] parameters = m.getParameters();
             String initParams = getModifierUMLSymbol(m.getModifiers()) + name + "(";
             StringBuilder params = new StringBuilder(initParams);
+
             for (Parameter p : parameters) {
-                String argName = p.getType().getSimpleName();
-                params.append(argName).append(", ");
+                // Get generic parameter type if it exists
+                String typeName;
+                Type paramType = p.getParameterizedType();
+                if (paramType instanceof ParameterizedType) {
+                    String rawType = ((Class<?>) ((ParameterizedType) paramType).getRawType()).getSimpleName();
+                    StringBuilder genericTypes = getGenericTypes((ParameterizedType) paramType);
+                    typeName = rawType + "<" + genericTypes + ">";
+                } else {
+                    typeName = p.getType().getSimpleName();
+                }
+                params.append(typeName).append(", ");
             }
+
             // Empeche la suppression de la dernière virgule si il n'y a pas de paramètres
             if (!params.toString().equals(initParams)) {
                 params.deleteCharAt(params.length() - 1); // Supprime l'espace
@@ -215,9 +287,6 @@ public class Analyseur {
         }
         if (Modifier.isAbstract(modifiers)) {
             modifierString += "{abstract} ";
-        }
-        if (Modifier.isFinal(modifiers)) {
-            modifierString += "{final} ";
         }
         if (Modifier.isSynchronized(modifiers)) {
             modifierString += "{synchronized} ";
