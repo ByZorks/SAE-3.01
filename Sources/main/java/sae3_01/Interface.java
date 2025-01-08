@@ -1,35 +1,29 @@
 package sae3_01;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import javax.print.DocFlavor;
 
 import java.awt.*;
 
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Classe Interface
@@ -102,9 +96,32 @@ public class Interface extends Application {
             capturePane(vueDiagramme, "output/diagramme.jpg");
         });
 
+        // Création du bouton nouvelle classe
+        Menu ajouter = new Menu("Ajouter");
+        MenuItem itemInterface = new MenuItem("Interface");
+        MenuItem itemClasseConcrete = new MenuItem("Classe concrète");
+        MenuItem itemClasseAbstraite = new MenuItem("Classe abstraite");
+
+        itemInterface.setOnAction(e -> {
+            Classe nvlInterface = ajouterClasse("interface");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
+        });
+        itemClasseConcrete.setOnAction(e -> {
+            Classe nvlInterface = ajouterClasse("class");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
+        });
+        itemClasseAbstraite.setOnAction(e -> {
+            Classe nvlInterface = ajouterClasse("abstract");
+            if (nvlInterface != null)
+                model.ajouterClasse(nvlInterface);
+        });
+
         menu.getItems().addAll(item, item2,item4);
+        ajouter.getItems().addAll(itemInterface, itemClasseAbstraite, itemClasseConcrete);
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(menu);
+        menuBar.getMenus().addAll(menu, ajouter);
         root.setTop(menuBar);
 
         // Gestion de l'exportation en fonction du choix du ComboBox
@@ -185,6 +202,17 @@ public class Interface extends Application {
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public Classe ajouterClasse(String type) {
+        Classe nvlInterface = null;
+        Dialog<Classe> dialog = new ClasseDialog(type, nvlInterface);
+        Optional<Classe> classeAttendre = dialog.showAndWait();
+        if (classeAttendre.isPresent()) {
+            nvlInterface = classeAttendre.get();
+        }
+
+        return nvlInterface;
     }
 
     /**
