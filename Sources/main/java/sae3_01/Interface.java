@@ -163,6 +163,11 @@ public class Interface extends Application {
             vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
         });
 
+        vueDiagramme.setOnDragExited(dragEvent -> {
+            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
+            dragEvent.consume();
+        });
+
         // Ajout des composants à l'interface
         root.setTop(menuBar);
         root.setCenter(splitPane);
