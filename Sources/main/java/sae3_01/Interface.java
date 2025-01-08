@@ -65,7 +65,7 @@ public class Interface extends Application {
         pngIcon.setFitWidth(25);
         item.setGraphic(pngIcon);
         item.setOnAction(event -> {
-            capturePane(vueDiagramme, "image/diagramme.png");
+            capturePane(vueDiagramme, "output/diagramme.png");
         });
 
         //Exportation en JPG
@@ -76,7 +76,7 @@ public class Interface extends Application {
         jpgIcon.setFitWidth(25);
         item2.setGraphic(jpgIcon);
         item2.setOnAction(event -> {
-            capturePane(vueDiagramme, "image/diagramme.jpg");
+            capturePane(vueDiagramme, "output/diagramme.jpg");
         });
 
         // Exportation en html
@@ -86,7 +86,7 @@ public class Interface extends Application {
         htmlIcon.setFitHeight(25);
         item5.setGraphic(htmlIcon);
         item5.setOnAction(event -> {
-            capturePaneAsHTML(vueDiagramme, "diagramme.html");
+            capturePaneAsHTML(vueDiagramme, "output/diagramme.html");
         });
         menu.getItems().add(item5);
 
@@ -99,7 +99,7 @@ public class Interface extends Application {
         pumlIcon.setFitWidth(25);
         item4.setGraphic(pumlIcon);
         item4.setOnAction(event -> {
-            capturePane(vueDiagramme, "image/diagramme.jpg");
+            capturePane(vueDiagramme, "output/diagramme.jpg");
         });
 
         menu.getItems().addAll(item, item2,item4);
@@ -231,7 +231,7 @@ public class Interface extends Application {
      */
     private void exporterPlantUML(Model model) {
         String plantUMLCode = model.genererPlantUML();
-        File fichierExport = new File("Model_PlantUML.txt");
+        File fichierExport = new File("output/Model_PlantUML.txt");
 
         try (FileWriter writer = new FileWriter(fichierExport)) {
             writer.write(plantUMLCode);
@@ -253,7 +253,7 @@ public class Interface extends Application {
             WritableImage fxImage = pane.snapshot(params, null);
 
             // Sauvegarder l'image en tant que fichier temporaire PNG
-            File tempImageFile = new File("temp_image.png");
+            File tempImageFile = new File("output/temp_image.png");
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
                     (int) fxImage.getHeight(),
@@ -278,7 +278,7 @@ public class Interface extends Application {
                 writer.write("</head>\n");
                 writer.write("<body>\n");
                 writer.write("<h1>Votre diagramme !</h1>\n");
-                writer.write("<img src=\"temp_image.png\" alt=\"Diagramme\">\n");
+                writer.write("<img src=\"../output/temp_image.png\" alt=\"Diagramme\">\n");
                 writer.write("</body>\n");
                 writer.write("</html>");
             }
