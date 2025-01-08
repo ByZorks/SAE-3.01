@@ -90,6 +90,15 @@ public class VueDiagramme extends Pane implements Observateur {
         }
     }
 
+    /**
+     * Masquer une vue de méthode du diagramme sans la supprimer.
+     * @param nomClasse nom de la classe
+     * @param nomMethode nom de la méthode
+     */
+    public void toggleAffichageMethode(String nomClasse, String nomMethode) {
+
+    }
+
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;
@@ -143,7 +152,13 @@ public class VueDiagramme extends Pane implements Observateur {
                     String key = nomClasse + ";" + nomClasseCible;
                     if (!flechesRelations.containsKey(key)) {
                         VueClasse vueClasseAssociee = vuesClasses.get(nomClasseCible);
-                        FlecheAssociation flecheAssociation = new FlecheAssociation(vueClasseAssociee, association.split(" ")[1]);
+                        System.out.println(association);
+                        FlecheAssociation flecheAssociation;
+                        if (association.endsWith("[*]")) {
+                            flecheAssociation = new FlecheAssociation(vueClasseAssociee, association.split(" ")[1], true);
+                        } else {
+                            flecheAssociation = new FlecheAssociation(vueClasseAssociee, association.split(" ")[1], false);
+                        }
                         connecterFleche(flecheAssociation, vueClasse, vueClasseAssociee);
                         flechesRelations.put(key, flecheAssociation);
                         this.getChildren().add(flecheAssociation);

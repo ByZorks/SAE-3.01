@@ -199,7 +199,7 @@ public class Analyseur {
     /**
      * Retourne les relations de la classe (hors classes du package java)
      * @param c la classe
-     * @return les relations de la classe
+     * @return les relations de la classe avec leurs types
      */
     private static HashMap<String, ArrayList<String>> getRelations(Class<?> c) {
         HashMap<String, ArrayList<String>> relations = new HashMap<>();
@@ -225,22 +225,28 @@ public class Analyseur {
         for (Field f : c.getDeclaredFields()) {
             if (f.getType().isPrimitive()) continue;
 
+            // Détermine le type de relation basé sur le type de l'attribut
             if (f.getType().getName().startsWith("java.util.List") ||
                     f.getType().getName().startsWith("java.util.Map") ||
                     f.getType().getName().startsWith("java.util.Set") ||
                     f.getType().getName().startsWith("java.util.Array")) {
-                // Récupération des types génériques pour List et Map
+
+                // Récupération des types génériques
                 ParameterizedType pType = (ParameterizedType) f.getGenericType();
                 for (Type argType : pType.getActualTypeArguments()) {
                     String typeName = ((Class<?>) argType).getName();
                     if (!typeName.startsWith("java.")) {
-                        attributsNames.add(((Class<?>) argType).getSimpleName() + " " + f.getName()); // type nom
+                        // Format: type nom [type-relation]
+                        attributsNames.add(((Class<?>) argType).getSimpleName() + " " +
+                                f.getName() + " [*]"); // * indique multiple
                     }
                 }
             }
             // Type simple non-Java
             else if (!f.getType().getName().startsWith("java.")) {
-                attributsNames.add(f.getType().getSimpleName() + " " + f.getName()); // type nom
+                // Format: type nom [type-relation]
+                attributsNames.add(f.getType().getSimpleName() + " " +
+                        f.getName() + " [1]"); // 1 indique simple
             }
         }
         relations.put("associations", attributsNames);
