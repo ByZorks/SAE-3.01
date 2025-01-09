@@ -180,4 +180,54 @@ public class VueDiagramme extends Pane implements Observateur {
         this.vuesClasses.clear();         // Vide la collection des vues de classes
         this.flechesRelations.clear();    // Vide la collection des relations
     }
+
+    /** Facteur de zoom courant */
+    private double zoomFactor = 1.0;
+
+    /**
+     * Ajuste le zoom du diagramme.
+     * @param factor Facteur de zoom (1.0 = taille normale, > 1.0 zoom avant, < 1.0 zoom arrière)
+     */
+    public void zoom(double factor) {
+        // Limiter le zoom entre 0.5 et 2.0
+        factor = Math.max(0.5, Math.min(2.0, factor));
+
+        // Appliquer le zoom à toutes les vues de classes
+        for (VueClasse vueClasse : vuesClasses.values()) {
+            vueClasse.setScaleX(factor);
+            vueClasse.setScaleY(factor);
+        }
+
+        // Mettre à jour le facteur de zoom
+        this.zoomFactor = factor;
+    }
+
+    /**
+     * Réinitialise le zoom à la taille normale (100%).
+     */
+    public void resetZoom() {
+        zoom(1.0);
+    }
+
+    /**
+     * Effectue un zoom avant.
+     */
+    public void zoomIn() {
+        zoom(zoomFactor * 1.2); // Augmente de 20%
+    }
+
+    /**
+     * Effectue un zoom arrière.
+     */
+    public void zoomOut() {
+        zoom(zoomFactor * 0.8); // Diminue de 20%
+    }
+
+    /**
+     * Obtient le facteur de zoom actuel.
+     * @return Le facteur de zoom courant
+     */
+    public double getZoomFactor() {
+        return zoomFactor;
+    }
 }

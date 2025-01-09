@@ -7,8 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.Desktop;
@@ -56,6 +55,22 @@ public class Interface extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+
+        // Ajout des boutons de zoom
+        HBox zoomControls = configureZoomControls();
+
+        // Ajout des contrôles de zoom
+        HBox topContainer = new HBox();
+        topContainer.setStyle("-fx-alignment: center-left;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        MenuBar menuBar = createMenuBar();
+        topContainer.getChildren().addAll(menuBar, spacer, zoomControls);
+        root.setTop(topContainer);
+
+        // Augmenter la taille de la zone de diagramme
+        vueDiagramme.setPrefSize(2000, 2000); // Définir une zone plus grande
+        vueDiagramme.setStyle("-fx-background-color: transparent;");
     }
 
     /**
@@ -235,11 +250,11 @@ public class Interface extends Application {
             }
             event.setDropCompleted(success);
             event.consume();
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
+            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
         });
 
         vueDiagramme.setOnDragExited(event -> {
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: white;");
+            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
             event.consume();
         });
     }
@@ -361,4 +376,55 @@ public class Interface extends Application {
             System.err.println("Erreur lors de l'export en HTML : " + e.getMessage());
         }
     }
+    /**
+     * Configure les contrôles de zoom pour le diagramme.
+     * @return HBox contenant les boutons de zoom
+     */
+    private HBox configureZoomControls() {
+        // Créer les boutons de zoom
+        HBox zoomControls = new HBox(10);
+        Button zoomInButton = new Button("+");
+        Button zoomOutButton = new Button("-");
+        Button zoomResetButton = new Button("100%");
+
+        // Définir les actions des boutons de zoom
+        zoomInButton.setOnAction(e -> zoomDiagramme(1.2)); // Zoom avant de 20%
+        zoomOutButton.setOnAction(e -> zoomDiagramme(0.8)); // Zoom arrière de 20%
+        zoomResetButton.setOnAction(e -> zoomDiagramme(1.0)); // Réinitialiser le zoom
+
+        // Styliser les boutons de zoom
+        zoomInButton.getStyleClass().add("zoom-button");
+        zoomOutButton.getStyleClass().add("zoom-button");
+        zoomResetButton.getStyleClass().add("zoom-button");
+
+        // Ajouter les boutons au conteneur
+        zoomControls.getChildren().addAll(zoomInButton, zoomOutButton, zoomResetButton);
+
+        return zoomControls;
+    }
+
+
+
+    /**
+     * Ajuste le zoom du diagramme.
+     * @param scaleFactor Facteur de mise à l'échelle (1.2 pour zoom avant, 0.8 pour zoom arrière, 1.0 pour réinitialiser)
+     */
+    private void zoomDiagramme(double scaleFactor) {
+        if (vueDiagramme != null) {
+            // Si le facteur est exactement 1.0, réinitialiser complètement
+            if (scaleFactor == 1.0) {
+                vueDiagramme.setScaleX(1.0);
+                vueDiagramme.setScaleY(1.0);
+                return;
+            }
+
+            // Pour les zooms avant et arrière
+            double currentScale = vueDiagramme.getScaleX();
+            double newScale = Math.max(0.5, Math.min(2.0, currentScale * scaleFactor));
+
+            vueDiagramme.setScaleX(newScale);
+            vueDiagramme.setScaleY(newScale);
+        }
+    }
+
 }
