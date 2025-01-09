@@ -2,6 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sae3_01.Classe;
 import sae3_01.Model;
+import sae3_01.SaveManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,9 +130,24 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
-            System.out.println(result.contains(s));
-            System.out.println(s);
             assertTrue(result.contains(s));
         }
+    }
+
+    /**
+     * Test de la méthode loadModel
+     */
+    @Test
+    public void test_loadModel() throws Exception {
+        // Préparation des données
+        Classe c1 = model.analyserClasse("sae3_01.Repertoire");
+        model.ajouterClasse(c1);
+        SaveManager.save(model);
+        model = new Model(); // Simule réouverture de l'application
+
+        // Vérifications
+        assertDoesNotThrow(() -> model.loadSave(SaveManager.load()));
+        assertEquals(1, model.getClasses().size());
+        assertEquals(c1, model.getClasse(c1.getNomSimple()));
     }
 }

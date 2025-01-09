@@ -178,11 +178,7 @@ public class Model implements Sujet, Serializable {
     public void notifierObservateurs() {
         for (Observateur o : this.observateurs) o.actualiser(this);
     }
-    /**
-     * Modifie une classe existante dans le modèle
-     * @param classeOriginale La classe à modifier
-     * @param classeModifiee La nouvelle version de la classe
-     */
+
     /**
      * Modifie une classe existante dans le modèle
      * @param classeOriginale La classe à modifier
