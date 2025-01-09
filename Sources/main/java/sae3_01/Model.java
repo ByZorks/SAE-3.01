@@ -10,9 +10,13 @@ import java.util.Set;
  */
 public class Model implements Sujet, Serializable {
 
-    /** Ensemble des classes */
+    /**
+     * Ensemble des classes
+     */
     private Set<Classe> classes;
-    /** Liste des observateurs */
+    /**
+     * Liste des observateurs
+     */
     private transient ArrayList<Observateur> observateurs;
 
     /**
@@ -25,6 +29,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Charge une save
+     *
      * @param model model de save
      */
     public void loadSave(Model model) {
@@ -34,6 +39,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Analyse une classe
+     *
      * @param nomClasse Nom de la classe
      * @return Classe
      */
@@ -49,6 +55,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Ajoute une classe
+     *
      * @param classe Classe
      */
     public void ajouterClasse(Classe classe) {
@@ -58,6 +65,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Supprime une classe
+     *
      * @param classe Classe
      */
     public void supprimerClasse(Classe classe) {
@@ -67,13 +75,16 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Génère le code PlantUML
+     *
      * @return Code PlantUML
      */
     public String genererPlantUML() {
         StringBuilder plantUML = new StringBuilder();
         StringBuilder associations = new StringBuilder();
         plantUML.append("@startuml\n");
+
         for (Classe c1 : classes) {
+            // Début de déclaration de la classe (interface, abstract, ou classe)
             if (c1.getType().contains("interface")) {
                 plantUML.append("interface ");
             } else if (c1.getType().contains("abstract")) {
@@ -83,33 +94,54 @@ public class Model implements Sujet, Serializable {
             }
             plantUML.append(c1.getNomExtended()).append(" {\n");
 
-            // Attributs
+            // Ajout des attributs de la classe
             for (String attribut : c1.getAttributs()) {
                 plantUML.append("\t").append(attribut).append("\n");
             }
 
-            // Methodes
+            // Ajout des méthodes de la classe
             for (String methode : c1.getMethodes()) {
                 plantUML.append("\t").append(methode).append("\n");
             }
             plantUML.append("}\n");
 
-            // Associations
+            // Ajout des associations des relations explicites (entre classes définies)
             for (Classe c2 : classes) {
                 String association = checkAssociation(c1, c2);
                 if (association != null) {
                     String nomAssociation = association.split(" ")[1];
-                    String cardinal = association.split(" ")[2].replace("]", "\"").replace("[", "\""); // "cardinal"
-                    associations.append(c1.getNomSimple()).append(" --> ").append(cardinal).append(" ").append(c2.getNomSimple()).append(" : ").append(nomAssociation).append("\n");
+                    String cardinal = association.split(" ")[2].replace("]", "\"").replace("[", "\"");
+                    associations.append(c1.getNomSimple())
+                            .append(" --> ").append(cardinal)
+                            .append(" ").append(c2.getNomSimple())
+                            .append(" : ").append(nomAssociation).append("\n");
+                }
+            }
+
+            // Vérification des relations génériques pour les classes parentes
+            if (c1.getRelations().containsKey("parent")) {
+                String parentRelation = c1.getRelations().get("parent").getFirst(); // Il n'y a qu'un seul parent
+                if (parentRelation.contains("<")) {
+                    // Extrait les types génériques du parent
+                    String parentGenericType = parentRelation.substring(parentRelation.indexOf("<") + 1, parentRelation.indexOf(">"));
+                    String parent = parentRelation.substring(0, parentRelation.indexOf("<"));
+
+                    // Crée une association avec le type générique
+                    associations.append(parent)
+                            .append(" --> \"1\" ")
+                            .append(parentGenericType)
+                            .append(" : type générique\n");
                 }
             }
         }
+
         plantUML.append("\n").append(associations).append("@enduml");
         return plantUML.toString();
     }
 
     /**
      * Vérifie si une association existe entre deux classes
+     *
      * @param c1 Classe 1
      * @param c2 Classe 2
      * @return Type Nom [Cardinalité]
@@ -125,6 +157,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Retourne la classe correspondant au nom
+     *
      * @param nom Nom de la classe
      * @return Classe
      */
@@ -137,6 +170,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Retourne l'ensemble des classes
+     *
      * @return Ensemble des classes
      */
     public Set<Classe> getClasses() {
@@ -145,6 +179,7 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Retourne la vue diagramme
+     *
      * @return Vue diagramme
      */
     public VueDiagramme getVueDiagramme() {
@@ -181,8 +216,9 @@ public class Model implements Sujet, Serializable {
 
     /**
      * Modifie une classe existante dans le modèle
+     *
      * @param classeOriginale La classe à modifier
-     * @param classeModifiee La nouvelle version de la classe
+     * @param classeModifiee  La nouvelle version de la classe
      */
     public void modifierClasse(Classe classeOriginale, Classe classeModifiee) {
         // Supprimer l'ancienne classe
