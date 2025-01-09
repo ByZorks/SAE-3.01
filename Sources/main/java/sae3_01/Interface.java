@@ -43,10 +43,7 @@ public class Interface extends Application {
         BorderPane root = new BorderPane();
         Button[] zoomControls = configureZoomControls();
         ToolBar toolBar = new ToolBar(
-                createMenuBar(),
-                createClearButton(),
-                createSaveButton(),
-                createLoadFolderButton(stage),
+                createMenuBar(stage),
                 zoomControls[0],
                 zoomControls[1],
                 zoomControls[2]
@@ -117,13 +114,61 @@ public class Interface extends Application {
      * Créer le MenuBar
      * @return MenuBar
      */
-    private MenuBar createMenuBar() {
+    private MenuBar createMenuBar(Stage stage) {
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(
+                createFicherMenu(stage),
                 createExportMenu(),
                 createAddMenu()
         );
         return menuBar;
+    }
+
+    /**
+     * Créer le menu fichier
+     * @return Menu fichier
+     */
+    private Menu createFicherMenu(Stage stage) {
+        Menu menu = new Menu("Fichier");
+
+        // Sauvegarde
+        MenuItem saveItem = new MenuItem("Sauvegarder");
+        saveItem.setOnAction(e -> {
+            // Sauvegarde la position des vuesClasses
+            for (Classe c : model.getClasses() ) {
+                VueClasse vc = vueDiagramme.getVueClasse(c.getNomSimple());
+                if (vc != null) {
+                    c.setCoordonnees(vc.getLayoutX(), vc.getLayoutY());
+                }
+            }
+            SaveManager.save(model);
+            System.out.println("Sauvegarde effectué avec succès");
+        });
+
+        MenuItem loadItem = new MenuItem("Ouvrir dossier");
+        loadItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File(vueArborescence.getRoot().getValue().getFile().getAbsolutePath()));
+            directoryChooser.setTitle("Ouvrir un dossier dans l'arborescence");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            if (selectedDirectory != null) {
+                Repertoire r = new Repertoire(selectedDirectory);
+                TreeItem<FileComposite> treeItem = new TreeItem<>(r);
+                vueArborescence.update(treeItem, r);
+                model.supprimerToutesLesClasses();
+            }
+        });
+
+        MenuItem reset = new MenuItem("Réinitialiser");
+        reset.setStyle("-fx-text-fill: red;");
+        reset.setOnAction(e -> {
+            model.supprimerToutesLesClasses();
+            System.out.println("Toutes les classes ont été supprimées du modèle.");
+        });
+
+        menu.getItems().addAll(saveItem, loadItem, reset);
+
+        return menu;
     }
 
     /**
@@ -186,61 +231,6 @@ public class Interface extends Application {
 
         menu.getItems().addAll(interfaceItem, classeConcreteItem, classeAbstraiteItem);
         return menu;
-    }
-
-    /**
-     * Créer les items du menu de suppression
-     * @return Menu de suppression
-     */
-    private Button createClearButton() {
-        Button reset = new Button("Réinitialiser");
-        reset.setOnAction(e -> {
-            model.supprimerToutesLesClasses();
-            System.out.println("Toutes les classes ont été supprimées du modèle.");
-        });
-        return reset;
-    }
-
-    /**
-     * Créer un bouton de sauvegarde
-     * @return Bouton de sauvegarde
-     */
-    private Button createSaveButton() {
-        Button save = new Button("Sauvegarder");
-        save.setOnAction(e -> {
-            // Sauvegarde la position des vuesClasses
-            for (Classe c : model.getClasses() ) {
-                VueClasse vc = vueDiagramme.getVueClasse(c.getNomSimple());
-                if (vc != null) {
-                    c.setCoordonnees(vc.getLayoutX(), vc.getLayoutY());
-                }
-            }
-            SaveManager.save(model);
-            System.out.println("Sauvegarde effectué avec succès");
-        });
-        return save;
-    }
-
-    /**
-     * Créer un bouton pour charger un dossier dans l'arborescence
-     * @return Bouton de choix de fichier
-     */
-    private Button createLoadFolderButton(Stage stage) {
-        Button load = new Button("Ouvrir dossier");
-        load.setOnAction(e -> {
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setInitialDirectory(new File(vueArborescence.getRoot().getValue().getFile().getAbsolutePath()));
-            directoryChooser.setTitle("Ouvrir un dossier dans l'arborescence");
-            File selectedDirectory = directoryChooser.showDialog(stage);
-            if (selectedDirectory != null) {
-                Repertoire r = new Repertoire(selectedDirectory);
-                TreeItem<FileComposite> treeItem = new TreeItem<>(r);
-                vueArborescence.update(treeItem, r);
-                model.supprimerToutesLesClasses();
-            }
-        });
-
-        return load;
     }
 
     /**
