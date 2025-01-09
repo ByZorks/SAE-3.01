@@ -168,4 +168,36 @@ public class Model implements Sujet {
     public void notifierObservateurs() {
         for (Observateur o : this.observateurs) o.actualiser(this);
     }
+    /**
+     * Modifie une classe existante dans le modèle
+     * @param classeOriginale La classe à modifier
+     * @param classeModifiee La nouvelle version de la classe
+     */
+    /**
+     * Modifie une classe existante dans le modèle
+     * @param classeOriginale La classe à modifier
+     * @param classeModifiee La nouvelle version de la classe
+     */
+    public void modifierClasse(Classe classeOriginale, Classe classeModifiee) {
+        // Supprimer l'ancienne classe
+        this.classes.remove(classeOriginale);
+
+        // Ajouter la nouvelle classe
+        this.classes.add(classeModifiee);
+
+        // Mettre à jour la vue du diagramme
+        VueDiagramme vueDiagramme = this.getVueDiagramme();
+        VueClasse vueClasse = vueDiagramme.getVueClasse(classeOriginale.getNomSimple());
+
+        if (vueClasse != null) {
+            // Mettre à jour le nom de la vue
+            vueClasse.setNom(classeModifiee.getPackage() + "." + classeModifiee.getNomSimple());
+
+            // Forcer une mise à jour complète de la vue
+            vueClasse.actualiser(this);
+        }
+
+        // Notifier tous les observateurs pour une mise à jour globale
+        this.notifierObservateurs();
+    }
 }

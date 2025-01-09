@@ -8,7 +8,7 @@ import javafx.util.Callback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
+/**
 public class ClasseDialog extends Dialog<Classe> {
     private Classe classe;
 
@@ -75,3 +75,4 @@ public class ClasseDialog extends Dialog<Classe> {
         return grid;
     }
 }
+**/

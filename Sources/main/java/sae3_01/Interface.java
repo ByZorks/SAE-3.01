@@ -16,6 +16,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class Interface extends Application {
@@ -215,9 +217,21 @@ public class Interface extends Application {
     /**
      * Ajoute une nouvelle classe
      * @param type type de classe
-     */
+     **/
     private void addNewClass(String type) {
-        Dialog<Classe> dialog = new ClasseDialog(type, null);
+        Dialog<Classe> dialog = new Dialog<>();
+        dialog.setTitle("Nouvelle Classe");
+        dialog.setHeaderText("Ajouter une nouvelle classe de type : " + type);
+
+        ButtonType createButtonType = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == createButtonType) {
+                return new Classe(type, "DefaultClassName", "defaultPackage", new ArrayList<>(), new ArrayList<>(), new double[0], new HashMap<>());
+            }
+            return null;
+        });
         Optional<Classe> result = dialog.showAndWait();
         result.ifPresent(model::ajouterClasse);
     }

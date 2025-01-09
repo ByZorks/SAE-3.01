@@ -1,10 +1,11 @@
 package sae3_01;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,22 +49,22 @@ public class VueClasse extends VBox implements Observateur {
                 new Label(model.getClasse(nomClasse).getType()),
                 new Label(this.nom)
         );
-        header.setPadding(new Insets(5));
 
         // Attributs
         VBox attributs = createVBox(model.getClasse(nomClasse).getAttributs());
-        attributs.setStyle("-fx-border-color: black transparent black transparent;"); // Séparation
-        attributs.setPadding(new Insets(5));
 
         // Méthodes
         VBox methodes = createVBox(model.getClasse(nomClasse).getMethodes());
-        methodes.setPadding(new Insets(5));
+
+        // Séparations
+        Line separation1 = createSeparator();
+        Line separation2 = createSeparator();
 
         // Position de la vue (this)
         this.setLayoutX(model.getClasse(nomClasse).getX());
         this.setLayoutY(model.getClasse(nomClasse).getY());
 
-        this.getChildren().addAll(header, attributs, methodes);
+        this.getChildren().addAll(header, separation1, attributs, separation2, methodes);
     }
 
     /**
@@ -98,6 +99,16 @@ public class VueClasse extends VBox implements Observateur {
     }
 
     /**
+     * Crée un séparateur
+     * @return Line
+     */
+    private Line createSeparator() {
+        Line separator = new Line(0, 0, 400, 0); // Valeur arbitraire
+        separator.setStyle("-fx-stroke: black;");
+        return separator;
+    }
+
+    /**
      * Getter du nom de la classe.
      * @return Nom de la classe.
      */
@@ -129,21 +140,9 @@ public class VueClasse extends VBox implements Observateur {
             double newX = e.getSceneX() - this.x;
             double newY = e.getSceneY() - this.y;
 
-            // Dimensions du parent
-            double parentMaxX = getParent().getLayoutBounds().getWidth();
-            double parentMaxY = getParent().getLayoutBounds().getHeight();
-
-            // Dimensions de la VBox (this)
-            double nodeWidth = this.getBoundsInLocal().getWidth();
-            double nodeHeight = this.getBoundsInLocal().getHeight();
-
-            boolean xValide = (newX >= 0) && (newX + nodeWidth <= parentMaxX);
-            boolean yValide = (newY >= 0) && (newY + nodeHeight <= parentMaxY);
-
-            if (xValide && yValide) {
-                this.setLayoutX(newX);
-                this.setLayoutY(newY);
-            }
+            // Autoriser le déplacement au-delà des limites initiales
+            this.setLayoutX(newX);
+            this.setLayoutY(newY);
         });
     }
 
@@ -191,9 +190,9 @@ public class VueClasse extends VBox implements Observateur {
 
     /**
      * Setter de contextMenuShown.
-     * @param contextMenuShown true si le menu contextuel est affiché, false sinon.
+     * @param shown Nouvel état du menu contextuel
      */
-    public void setContextMenuShown(boolean contextMenuShown) {
-        this.contextMenuShown = contextMenuShown;
+    public void setContextMenuShown(boolean shown) {
+        this.contextMenuShown = shown;
     }
 }
