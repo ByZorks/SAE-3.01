@@ -90,6 +90,15 @@ public class VueDiagramme extends Pane implements Observateur {
         }
     }
 
+    /**
+     * Masquer une vue de méthode du diagramme sans la supprimer.
+     * @param nomClasse nom de la classe
+     * @param nomMethode nom de la méthode
+     */
+    public void toggleAffichageMethode(String nomClasse, String nomMethode) {
+
+    }
+
     @Override
     public void actualiser(Sujet s) {
         Model model = (Model) s;

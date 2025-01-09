@@ -22,9 +22,9 @@ public class Classe implements Serializable {
     /** Liste des méthodes */
     private ArrayList<String> methodes;
     /** Coordonnées de la classe */
-    private double[] coordonnees;
+    public double[] coordonnees;
     /** Relations de la classe */
-    private HashMap<String, ArrayList<String>> relations;
+    public HashMap<String, ArrayList<String>> relations;
 
     /**
      * Constructeur
