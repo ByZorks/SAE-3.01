@@ -214,8 +214,8 @@ public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
                             packageField.getText(),
                             new ArrayList<>(attributsListView.getItems()),
                             new ArrayList<>(methodesListView.getItems()),
-                            classeAModifier.coordonnees,
-                            classeAModifier.relations
+                            classeAModifier.getCoordonnees(),
+                            classeAModifier.getRelations()
                     );
 
                     // Mettre à jour le modèle

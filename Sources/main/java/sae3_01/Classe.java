@@ -22,9 +22,9 @@ public class Classe implements Serializable {
     /** Liste des méthodes */
     private ArrayList<String> methodes;
     /** Coordonnées de la classe */
-    public double[] coordonnees;
+    private double[] coordonnees;
     /** Relations de la classe */
-    public HashMap<String, ArrayList<String>> relations;
+    private HashMap<String, ArrayList<String>> relations;
 
     /**
      * Constructeur
@@ -197,5 +197,13 @@ public class Classe implements Serializable {
                 "\ncoordonnees=" + Arrays.toString(coordonnees) +
                 "\nrelations=" + relations +
                 "\n}";
+    }
+
+    public double[] getCoordonnees() {
+        return coordonnees;
+    }
+
+    public HashMap<String, ArrayList<String>> getRelations() {
+        return relations;
     }
 }
