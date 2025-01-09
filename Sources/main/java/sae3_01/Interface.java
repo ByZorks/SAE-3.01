@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.Desktop;
@@ -36,12 +37,20 @@ public class Interface extends Application {
         initialiserMVC();
 
         // Panes
-        BorderPane root = new BorderPane();
-        Button[] zoomControls = configureZoomControls();
-        ToolBar toolBar = new ToolBar(createMenuBar(), createClearButton(), createSaveButton(), zoomControls[0], zoomControls[1], zoomControls[2]);
-
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(vueArborescence, vueDiagramme);
+
+        BorderPane root = new BorderPane();
+        Button[] zoomControls = configureZoomControls();
+        ToolBar toolBar = new ToolBar(
+                createMenuBar(),
+                createClearButton(),
+                createSaveButton(),
+                createLoadFolderButton(stage),
+                zoomControls[0],
+                zoomControls[1],
+                zoomControls[2]
+        );
 
         // Placement dans la fenêtre
         root.setTop(toolBar);
@@ -213,6 +222,28 @@ public class Interface extends Application {
     }
 
     /**
+     * Créer un bouton pour charger un dossier dans l'arborescence
+     * @return Bouton de choix de fichier
+     */
+    private Button createLoadFolderButton(Stage stage) {
+        Button load = new Button("Ouvrir dossier");
+        load.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File(vueArborescence.getRoot().getValue().getFile().getAbsolutePath()));
+            directoryChooser.setTitle("Ouvrir un dossier dans l'arborescence");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            if (selectedDirectory != null) {
+                Repertoire r = new Repertoire(selectedDirectory);
+                TreeItem<FileComposite> treeItem = new TreeItem<>(r);
+                vueArborescence.update(treeItem, r);
+                model.supprimerToutesLesClasses();
+            }
+        });
+
+        return load;
+    }
+
+    /**
      * Active le drap and drop vers le diagramme
      */
     private void configureDragAndDrop() {
@@ -235,10 +266,15 @@ public class Interface extends Application {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                String nomFichier = db.getString().replace(".class", "");
                 TreeItem<FileComposite> selectedItem = vueArborescence.getSelectionModel().getSelectedItem();
-                String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
-                Classe c = model.analyserClasse(nomFichierAvecPackage);
+                Classe c;
+                if (!selectedItem.getValue().getFile().getAbsolutePath().contains("sae3_01")) {
+                    c = model.analyserClasseHorsClassPath(selectedItem.getValue().getFile());
+                } else {
+                    String nomFichier = db.getString().replace(".class", "");
+                    String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
+                    c = model.analyserClasse(nomFichierAvecPackage);
+                }
                 c.setCoordonnees(event.getX(), event.getY());
                 model.ajouterClasse(c);
                 success = true;

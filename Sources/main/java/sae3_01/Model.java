@@ -1,5 +1,6 @@
 package sae3_01;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,6 +49,21 @@ public class Model implements Sujet, Serializable {
         try {
             c = Analyseur.analyseClasse(nomClasse);
         } catch (ClassNotFoundException e) {
+            System.out.println("Classe non trouvée");
+        }
+        return c;
+    }
+
+    /**
+     * Analyse une classe en dehors du classpath
+     * @param classeFile Fichier de la classe
+     * @return Classe
+     */
+    public Classe analyserClasseHorsClassPath(File classeFile) {
+        Classe c = null;
+        try {
+            c = Analyseur.analyserClasseHorsClassPath(classeFile);
+        } catch (Exception e) {
             System.out.println("Classe non trouvée");
         }
         return c;

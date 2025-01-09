@@ -31,6 +31,17 @@ public class VueArborescence extends TreeView<FileComposite> implements Observat
     }
 
     /**
+     * Recharge l'arborescence avec de nouveaux items
+     * @param parentItem L'élément parent.
+     * @param parentFile Le fichier parent.
+     */
+    public void update(TreeItem<FileComposite> parentItem, FileComposite parentFile) {
+        buildTree(parentItem, parentFile);
+        this.setRoot(parentItem);
+        this.getRoot().setExpanded(true);
+    }
+
+    /**
      * Construit l'arborescence des fichiers et répertoires.
      * @param parentItem L'élément parent.
      * @param parentFile Le fichier parent.
