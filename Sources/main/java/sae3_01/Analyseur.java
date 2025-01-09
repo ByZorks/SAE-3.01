@@ -205,9 +205,12 @@ public class Analyseur {
         HashMap<String, ArrayList<String>> relations = new HashMap<>();
 
         // Classe mère
-        Class<?> superClass = c.getSuperclass();
-        if (superClass != null) {
-            relations.put("parent", new ArrayList<>(List.of(superClass.getSimpleName())));
+        Type superClassType = c.getGenericSuperclass();
+        if (superClassType instanceof ParameterizedType) {
+            String genericTypes = new StringBuilder(getGenericTypes((ParameterizedType) superClassType)).toString();
+            relations.put("parent", new ArrayList<>(List.of(((Class<?>) ((ParameterizedType) superClassType).getRawType()).getSimpleName() + "<" + genericTypes + ">")));
+        } else if (superClassType instanceof Class) {
+            relations.put("parent", new ArrayList<>(List.of(((Class<?>) superClassType).getSimpleName())));
         } else {
             relations.put("parent", new ArrayList<>(List.of("Object")));
         }
