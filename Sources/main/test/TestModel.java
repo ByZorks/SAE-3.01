@@ -1,7 +1,9 @@
+import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sae3_01.Classe;
 import sae3_01.Model;
+import sae3_01.SaveManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,9 +131,50 @@ public class TestModel {
 
         // Vérification
         for (String s : expected) {
-            System.out.println(result.contains(s));
-            System.out.println(s);
             assertTrue(result.contains(s));
         }
+    }
+
+    @Test
+    public void test_genererPlantUMLClassAvecParentGenerique() {
+        // Préparation des données
+        Platform.startup(() -> {}); // Necéssaire car TreeView (classe mère) provient de JavaFX
+        Classe c1 = model.analyserClasse("sae3_01.VueArborescence");
+        model.ajouterClasse(c1);
+        String[] expected = {"@startuml\nclass VueArborescence extends TreeView<FileComposite> implements Observateur {\n",
+                "\t+ VueArborescence(TreeItem<FileComposite>, FileComposite)\n",
+                "\t+ actualiser(Sujet) : void\n",
+                "\t- activerDragAndDrop() : void\n",
+                "\t- buildTree(TreeItem<FileComposite>, FileComposite) : void\n",
+                "}\n",
+                "TreeView --> \"1\" FileComposite : type générique",
+                "\n@enduml"
+        };
+
+        // Exécution de la méthode à tester
+        String result = this.model.genererPlantUML();
+
+
+        // Vérification
+        for (String s : expected) {
+            assertTrue(result.contains(s));
+        }
+    }
+
+    /**
+     * Test de la méthode loadModel
+     */
+    @Test
+    public void test_loadModel() throws Exception {
+        // Préparation des données
+        Classe c1 = model.analyserClasse("sae3_01.Repertoire");
+        model.ajouterClasse(c1);
+        SaveManager.save(model);
+        model = new Model(); // Simule réouverture de l'application
+
+        // Vérifications
+        assertDoesNotThrow(() -> model.loadSave(SaveManager.load()));
+        assertEquals(1, model.getClasses().size());
+        assertEquals(c1, model.getClasse(c1.getNomSimple()));
     }
 }
