@@ -15,15 +15,25 @@ import java.util.List;
  */
 public class VueClasse extends VBox implements Observateur {
 
-    /** Nom de la classe */
+    /**
+     * Nom de la classe
+     */
     private String nom;
-    /** Liste des méthodes */
+    /**
+     * Liste des méthodes
+     */
     private List<String> methodes;
-    /** Coordonnée x de la classe */
+    /**
+     * Coordonnée x de la classe
+     */
     private double x;
-    /** Coordonnée y de la classe */
+    /**
+     * Coordonnée y de la classe
+     */
     private double y;
-    /** Indique si le menu contextuel est affiché */
+    /**
+     * Indique si le menu contextuel est affiché
+     */
     private boolean contextMenuShown = false;
 
     /**
@@ -68,6 +78,7 @@ public class VueClasse extends VBox implements Observateur {
 
     /**
      * Crée une VBox à partir d'une liste de String.
+     *
      * @param items Liste de String
      * @return VBox
      */
@@ -99,6 +110,7 @@ public class VueClasse extends VBox implements Observateur {
 
     /**
      * Getter du nom de la classe.
+     *
      * @return Nom de la classe.
      */
     public String getNom() {
@@ -107,6 +119,7 @@ public class VueClasse extends VBox implements Observateur {
 
     /**
      * Setter du nom de la classe.
+     *
      * @param nom Nom de la classe.
      */
     public void setNom(String nom) {
@@ -129,21 +142,8 @@ public class VueClasse extends VBox implements Observateur {
             double newX = e.getSceneX() - this.x;
             double newY = e.getSceneY() - this.y;
 
-            // Dimensions du parent
-            double parentMaxX = getParent().getLayoutBounds().getWidth();
-            double parentMaxY = getParent().getLayoutBounds().getHeight();
-
-            // Dimensions de la VBox (this)
-            double nodeWidth = this.getBoundsInLocal().getWidth();
-            double nodeHeight = this.getBoundsInLocal().getHeight();
-
-            boolean xValide = (newX >= 0) && (newX + nodeWidth <= parentMaxX);
-            boolean yValide = (newY >= 0) && (newY + nodeHeight <= parentMaxY);
-
-            if (xValide && yValide) {
-                this.setLayoutX(newX);
-                this.setLayoutY(newY);
-            }
+            this.setLayoutX(newX);
+            this.setLayoutY(newY);
         });
     }
 
@@ -159,7 +159,7 @@ public class VueClasse extends VBox implements Observateur {
             this.getChildren().getLast().setVisible(true);
             this.getChildren().getLast().setManaged(true);
         }
-        for (Node node: this.getChildren()) {
+        for (Node node : this.getChildren()) {
             System.out.println("type : \t\t" + node.getClass() + "\t|\t visible : \t" + node.isVisible());
         }
     }
@@ -176,13 +176,14 @@ public class VueClasse extends VBox implements Observateur {
             this.getChildren().get(2).setVisible(true);
             this.getChildren().get(2).setManaged(true);
         }
-        for (Node node: this.getChildren()) {
+        for (Node node : this.getChildren()) {
             System.out.println("type : \t\t" + node.getClass() + "\t|\t visible : \t" + node.isVisible());
         }
     }
 
     /**
      * Getter de contextMenuShown.
+     *
      * @return true si le menu contextuel est affiché, false sinon.
      */
     public boolean isContextMenuShown() {
@@ -191,6 +192,7 @@ public class VueClasse extends VBox implements Observateur {
 
     /**
      * Setter de contextMenuShown.
+     *
      * @param contextMenuShown true si le menu contextuel est affiché, false sinon.
      */
     public void setContextMenuShown(boolean contextMenuShown) {

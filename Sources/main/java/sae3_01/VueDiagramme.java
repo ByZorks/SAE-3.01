@@ -22,6 +22,7 @@ public class VueDiagramme extends Pane implements Observateur {
     public VueDiagramme() {
         this.vuesClasses = new HashMap<>();
         this.flechesRelations = new HashMap<>();
+        this.setStyle("-fx-background-color: transparent;");
     }
 
     /**
