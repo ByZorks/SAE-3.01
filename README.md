@@ -1,3 +1,6 @@
 # SAE-3.01
 
-Andrieu, Masson-Claudez, Ozen, Unternehr S3D
+- Andrieu Paul (Paul5400)
+- Masson-Claudez Aloïs (Packingdustry)
+- Ozen Burak (DioAkaTheWorld)
+- Unternehr David (ByZorks)
