@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sae3_01.Classe;
@@ -127,6 +128,32 @@ public class TestModel {
 
         // Exécution de la méthode à tester
         String result = this.model.genererPlantUML();
+
+        // Vérification
+        for (String s : expected) {
+            assertTrue(result.contains(s));
+        }
+    }
+
+    @Test
+    public void test_genererPlantUMLClassAvecParentGenerique() {
+        // Préparation des données
+        Platform.startup(() -> {}); // Necéssaire car TreeView (classe mère) provient de JavaFX
+        Classe c1 = model.analyserClasse("sae3_01.VueArborescence");
+        model.ajouterClasse(c1);
+        String[] expected = {"@startuml\nclass VueArborescence extends TreeView<FileComposite> implements Observateur {\n",
+                "\t+ VueArborescence(TreeItem<FileComposite>, FileComposite)\n",
+                "\t+ actualiser(Sujet) : void\n",
+                "\t- activerDragAndDrop() : void\n",
+                "\t- buildTree(TreeItem<FileComposite>, FileComposite) : void\n",
+                "}\n",
+                "TreeView --> \"1\" FileComposite : type générique",
+                "\n@enduml"
+        };
+
+        // Exécution de la méthode à tester
+        String result = this.model.genererPlantUML();
+
 
         // Vérification
         for (String s : expected) {
