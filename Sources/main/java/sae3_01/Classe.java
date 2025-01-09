@@ -1,5 +1,6 @@
 package sae3_01;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Objects;
 /**
  * Classe permettant de représenter une classe Java
  */
-public class Classe {
+public class Classe implements Serializable {
 
     /** Type de la classe */
     private String type;

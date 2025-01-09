@@ -1,5 +1,6 @@
 package sae3_01;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,18 +8,27 @@ import java.util.Set;
 /**
  * Classe Model
  */
-public class Model implements Sujet {
+public class Model implements Sujet, Serializable {
 
     /** Ensemble des classes */
     private Set<Classe> classes;
     /** Liste des observateurs */
-    private ArrayList<Observateur> observateurs;
+    private transient ArrayList<Observateur> observateurs;
 
     /**
      * Constructeur
      */
     public Model() {
         this.classes = new HashSet<>();
+        this.observateurs = new ArrayList<>();
+    }
+
+    /**
+     * Charge une save
+     * @param model model de save
+     */
+    public void loadSave(Model model) {
+        this.classes = model.classes;
         this.observateurs = new ArrayList<>();
     }
 

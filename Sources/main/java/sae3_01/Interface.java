@@ -36,7 +36,7 @@ public class Interface extends Application {
 
         // Panes
         BorderPane root = new BorderPane();
-        ToolBar toolBar = new ToolBar(createMenuBar(), createClearButton());
+        ToolBar toolBar = new ToolBar(createMenuBar(), createClearButton(), createSaveButton());
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(vueArborescence, vueDiagramme);
         splitPane.setDividerPositions(0.2);
@@ -49,9 +49,10 @@ public class Interface extends Application {
         root.setCenter(splitPane);
 
         // Parametres du stage
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root);
         stage.setTitle("SAE3-01");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 
@@ -60,6 +61,13 @@ public class Interface extends Application {
      */
     private void initialiserMVC() {
         model = new Model();
+        try {
+            Model save = SaveManager.load();
+            model.loadSave(save);
+        } catch (Exception e) {
+            // Rien à faire car l'utilisateur n'as pas forcément de save
+        }
+
         vueDiagramme = new VueDiagramme();
 
         // Arborescence
@@ -79,6 +87,8 @@ public class Interface extends Application {
         vueArborescence.setOnMouseClicked(controllerArborescence);
         vueArborescence.setOnContextMenuRequested(controllerContextMenu);
         vueDiagramme.setOnContextMenuRequested(controllerContextMenu);
+
+        model.notifierObservateurs(); // Utile en cas de chargement de save
     }
 
     /**
@@ -167,6 +177,26 @@ public class Interface extends Application {
             System.out.println("Toutes les classes ont été supprimées du modèle.");
         });
         return reset;
+    }
+
+    /**
+     * Créer un bouton de sauvegarde
+     * @return Bouton de sauvegarde
+     */
+    private Button createSaveButton() {
+        Button save = new Button("Sauvegarder");
+        save.setOnAction(e -> {
+            // Sauvegarde la position des vuesClasses
+            for (Classe c : model.getClasses() ) {
+                VueClasse vc = vueDiagramme.getVueClasse(c.getNomSimple());
+                if (vc != null) {
+                    c.setCoordonnees(vc.getLayoutX(), vc.getLayoutY());
+                }
+            }
+            SaveManager.save(model);
+            System.out.println("Sauvegarde effectué avec succès");
+        });
+        return save;
     }
 
     /**
