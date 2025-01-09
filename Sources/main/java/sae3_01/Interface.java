@@ -33,6 +33,7 @@ public class Interface extends Application {
     @Override
     public void start(Stage stage) {
         // Initialisation
+        creerDossierOutput();
         initialiserMVC();
         configureDragAndDrop();
 
@@ -119,7 +120,7 @@ public class Interface extends Application {
         pngIcon.setFitHeight(25);
         pngIcon.setFitWidth(25);
         pngItem.setGraphic(pngIcon);
-        pngItem.setOnAction(e -> capturePane(vueDiagramme, "output/diagramme.png"));
+        pngItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.png"));
 
         // JPG Export
         MenuItem jpgItem = new MenuItem("JPG");
@@ -127,7 +128,7 @@ public class Interface extends Application {
         jpgIcon.setFitHeight(25);
         jpgIcon.setFitWidth(25);
         jpgItem.setGraphic(jpgIcon);
-        jpgItem.setOnAction(e -> capturePane(vueDiagramme, "output/diagramme.jpg"));
+        jpgItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.jpg"));
 
         // HTML Export
         MenuItem htmlItem = new MenuItem("HTML");
@@ -312,7 +313,7 @@ public class Interface extends Application {
     private void exporterPlantUML() {
         try {
             String plantUMLCode = model.genererPlantUML();
-            File fichierExport = new File("output/Model_PlantUML.puml");
+            File fichierExport = new File("output/export/Model_PlantUML.puml");
 
             try (FileWriter writer = new FileWriter(fichierExport)) {
                 writer.write(plantUMLCode);
@@ -335,7 +336,7 @@ public class Interface extends Application {
             WritableImage fxImage = pane.snapshot(params, null);
 
             // Sauvegarde de l'image temporaire
-            File tempImageFile = new File("output/temp_image.png");
+            File tempImageFile = new File("output/export/temp_image.png");
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
                     (int) fxImage.getHeight(),
@@ -346,19 +347,37 @@ public class Interface extends Application {
             ImageIO.write(bufferedImage, "png", tempImageFile);
 
             // Création du fichier HTML
-            File htmlFile = new File("output/diagramme.html");
+            File htmlFile = new File("output/export/diagramme.html");
             try (FileWriter writer = new FileWriter(htmlFile)) {
                 writer.write("<!DOCTYPE html>\n<html>\n<head>\n");
                 writer.write("<title>Exportation HTML</title>\n</head>\n<body>\n");
                 writer.write("<h1>Votre diagramme !</h1>\n");
-                writer.write("<img src=\"../output/temp_image.png\" alt=\"Diagramme\">\n");
+                writer.write("<img src=\"../../output/export/temp_image.png\" alt=\"Diagramme\">\n");
                 writer.write("</body>\n</html>");
             }
 
-            System.out.println("HTML exporté avec succès : output/diagramme.html");
+            System.out.println("HTML exporté avec succès : " + htmlFile.getAbsolutePath());
             Desktop.getDesktop().open(htmlFile);
         } catch (IOException e) {
             System.err.println("Erreur lors de l'export en HTML : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Créer les dossiers nécessaires au bon fonctionnement du projet
+     */
+    private void creerDossierOutput() {
+        File dossierOutput = new File("output");
+        if (!dossierOutput.exists()) {
+            dossierOutput.mkdir();
+        }
+        File dossierExport = new File("output/export");
+        if (!dossierExport.exists()) {
+            dossierExport.mkdir();
+        }
+        File dossierSave = new File("output/save");
+        if (!dossierSave.exists()) {
+            dossierSave.mkdir();
         }
     }
 }

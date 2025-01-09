@@ -15,11 +15,6 @@ public class SaveManager {
      * @param model model à sauvegarder
      */
     public static void save(Model model) {
-        File dossier = new File(SAVE_PATH);
-        if (!dossier.exists()) {
-            dossier.getParentFile().mkdirs();
-        }
-
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_PATH))) {
             oos.writeObject(model);
         } catch (IOException e) {
