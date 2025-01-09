@@ -34,7 +34,6 @@ public class Interface extends Application {
         // Initialisation
         creerDossierOutput();
         initialiserMVC();
-        configureDragAndDrop();
 
         // Panes
         BorderPane root = new BorderPane();
@@ -55,6 +54,18 @@ public class Interface extends Application {
         stage.setMaximized(true);
         stage.show();
 
+        scene.setOnScroll(e -> {
+            double zoomFactor = 1.05;
+            double deltaY = e.getDeltaY();
+
+            if (deltaY < 0){
+                zoomFactor = 0.95;
+            }
+            zoomDiagramme(zoomFactor);
+            e.consume();
+        });
+
+        configureDragAndDrop();
         splitPane.setDividerPositions(0.15);
     }
 
@@ -205,7 +216,7 @@ public class Interface extends Application {
      * Active le drap and drop vers le diagramme
      */
     private void configureDragAndDrop() {
-        vueDiagramme.setOnDragOver(event -> {
+        vueDiagramme.getParent().setOnDragOver(event -> {
             if (event.getGestureSource() != vueDiagramme &&
                     event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
@@ -213,15 +224,14 @@ public class Interface extends Application {
             event.consume();
         });
 
-        vueDiagramme.setOnDragEntered(event -> {
-            if (event.getGestureSource() != vueDiagramme &&
-                    event.getDragboard().hasString()) {
-                vueDiagramme.setStyle("-fx-opacity:.4;-fx-background-color: gray;");
+        vueDiagramme.getParent().setOnDragEntered(event -> {
+            if (event.getGestureSource() != vueDiagramme && event.getDragboard().hasString()) {
+                vueDiagramme.getParent().setStyle("-fx-opacity:.4;-fx-background-color: gray;");
             }
             event.consume();
         });
 
-        vueDiagramme.setOnDragDropped(event -> {
+        vueDiagramme.getParent().setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
@@ -235,11 +245,11 @@ public class Interface extends Application {
             }
             event.setDropCompleted(success);
             event.consume();
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
+            vueDiagramme.getParent().setStyle("-fx-opacity:1;-fx-background-color: transparent;");
         });
 
-        vueDiagramme.setOnDragExited(event -> {
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
+        vueDiagramme.getParent().setOnDragExited(event -> {
+            vueDiagramme.getParent().setStyle("-fx-opacity:1;-fx-background-color: transparent;");
             event.consume();
         });
     }
