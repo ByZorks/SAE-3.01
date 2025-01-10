@@ -121,7 +121,7 @@ public class ControllerContextMenu implements EventHandler<ContextMenuEvent> {
                 // Champ pour le type de classe
                 Label typeLabel = new Label("Type de classe :");
                 ComboBox<String> typeComboBox = new ComboBox<>();
-                typeComboBox.getItems().addAll("public", "abstract", "private");
+                typeComboBox.getItems().addAll("class", "abstract", "interface");
                 typeComboBox.setValue(classeAModifier.getType());
                 formulaire.add(typeLabel, 0, 0);
                 formulaire.add(typeComboBox, 1, 0);
