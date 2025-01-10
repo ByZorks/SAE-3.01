@@ -8,7 +8,7 @@ import javafx.util.Callback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-/**
+
 public class ClasseDialog extends Dialog<Classe> {
     private Classe classe;
 
@@ -20,7 +20,7 @@ public class ClasseDialog extends Dialog<Classe> {
     public ClasseDialog(String type, Classe classe) {
         super();
         this.setTitle(type + " à créer");
-        buildUI(type.equals("interface"));
+        buildUI();
         setResultConverter(new Callback<ButtonType, Classe>() {
             @Override
             public Classe call(ButtonType b) {
@@ -28,6 +28,13 @@ public class ClasseDialog extends Dialog<Classe> {
                     String nomCourt = nomClasseField.getText().split(" ")[0];
                     ArrayList<String> attributs = new ArrayList<>(Arrays.asList(attributsField.getText().split("\n")));
                     ArrayList<String> methodes = new ArrayList<>(Arrays.asList(methodesField.getText().split("\n")));
+                    if (type.equals("interface")) {
+                        for (int i = 0; i < methodes.size(); i++) {
+                            methodes.set(i, methodes.get(i).replaceAll("- |-", "- {abstract} "));
+                            methodes.set(i, methodes.get(i).replaceAll("# |#", "- {abstract} "));
+                            methodes.set(i, methodes.get(i).replaceAll("\\+ |\\+", "- {abstract} "));
+                        }
+                    }
                     return new Classe(
                             "<<"+type+">>",
                             nomCourt,
@@ -35,7 +42,7 @@ public class ClasseDialog extends Dialog<Classe> {
                             attributs,
                             methodes,
                             new double[]{0,0},
-                            new HashMap<>()
+                            Analyseur.getRelations(nomClasseField.getText(), attributs)
                             );
                 }
                 return null;
@@ -44,8 +51,8 @@ public class ClasseDialog extends Dialog<Classe> {
         this.classe = classe;
     }
 
-    private void buildUI(boolean isInterface) {
-        Pane pane = createGridPane(isInterface);
+    private void buildUI() {
+        Pane pane = createGridPane();
         getDialogPane().setContent(pane);
         getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         Button ok = (Button) getDialogPane().lookupButton(ButtonType.OK);
@@ -54,7 +61,7 @@ public class ClasseDialog extends Dialog<Classe> {
         cancel.setText("Annuler");
     }
 
-    private Pane createGridPane(boolean isInterface) {
+    private Pane createGridPane() {
         Label nomClasse = new Label("Nom : ");
         Label packageClasse = new Label("Package : ");
         Label attributs = new Label("Attributs : ");
@@ -75,4 +82,3 @@ public class ClasseDialog extends Dialog<Classe> {
         return grid;
     }
 }
-**/

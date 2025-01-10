@@ -1,0 +1,17 @@
+@startuml
+
+actor Utilisateur
+participant "Model" as Model
+participant "VueDiagramme" as VueDiagramme
+
+Utilisateur -> Model : supprimerToutesLesClasses()
+Model -> Model : this.classes.clear()
+Model -> VueDiagramme : getVueDiagramme().clear()
+VueDiagramme -> VueDiagramme : vuesClasses.clear()\n flechesRelations.clear()
+VueDiagramme -> Model
+Model -> Model : notifierObservateurs()
+Model -> VueDiagramme : actualiser(this)
+VueDiagramme -> Model
+Model -> Utilisateur : void
+
+@enduml
