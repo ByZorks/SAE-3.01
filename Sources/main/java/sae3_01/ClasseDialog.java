@@ -28,6 +28,13 @@ public class ClasseDialog extends Dialog<Classe> {
                     String nomCourt = nomClasseField.getText().split(" ")[0];
                     ArrayList<String> attributs = new ArrayList<>(Arrays.asList(attributsField.getText().split("\n")));
                     ArrayList<String> methodes = new ArrayList<>(Arrays.asList(methodesField.getText().split("\n")));
+                    if (type.equals("interface")) {
+                        for (int i = 0; i < methodes.size(); i++) {
+                            methodes.set(i, methodes.get(i).replaceAll("- |-", "- {abstract} "));
+                            methodes.set(i, methodes.get(i).replaceAll("# |#", "- {abstract} "));
+                            methodes.set(i, methodes.get(i).replaceAll("\\+ |\\+", "- {abstract} "));
+                        }
+                    }
                     return new Classe(
                             "<<"+type+">>",
                             nomCourt,

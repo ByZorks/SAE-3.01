@@ -291,7 +291,6 @@ public class Analyseur {
         }
         relations.put("associations", attributsNames);
 
-        System.out.println(relations);
         return relations;
     }
 
@@ -369,7 +368,6 @@ public class Analyseur {
         }
         relations.put("associations", associations);
 
-        System.out.println(relations);
         return relations;
     }
 
