@@ -118,7 +118,7 @@ public class Interface extends Application {
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(
                 createFicherMenu(stage),
-                createExportMenu(),
+                createExportMenu(stage),
                 createAddMenu()
         );
         return menuBar;
@@ -175,7 +175,7 @@ public class Interface extends Application {
      * Créer les items du menu d'exportation
      * @return Menu d'exportation
      */
-    private Menu createExportMenu() {
+    private Menu createExportMenu(Stage stage) {
         Menu menu = new Menu("Exporter");
 
         // PNG Export
@@ -184,7 +184,13 @@ public class Interface extends Application {
         pngIcon.setFitHeight(25);
         pngIcon.setFitWidth(25);
         pngItem.setGraphic(pngIcon);
-        pngItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.png"));
+        pngItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePane(vueDiagramme, selectedDirectory.getAbsolutePath() + "/diagramme.png");
+        });
 
         // JPG Export
         MenuItem jpgItem = new MenuItem("JPG");
@@ -192,7 +198,13 @@ public class Interface extends Application {
         jpgIcon.setFitHeight(25);
         jpgIcon.setFitWidth(25);
         jpgItem.setGraphic(jpgIcon);
-        jpgItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.jpg"));
+        jpgItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePane(vueDiagramme, selectedDirectory.getAbsolutePath() + "/diagramme.jpg");
+        });
 
         // HTML Export
         MenuItem htmlItem = new MenuItem("HTML");
@@ -200,7 +212,13 @@ public class Interface extends Application {
         htmlIcon.setFitHeight(25);
         htmlIcon.setFitWidth(25);
         htmlItem.setGraphic(htmlIcon);
-        htmlItem.setOnAction(e -> capturePaneAsHTML(vueDiagramme));
+        htmlItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePaneAsHTML(vueDiagramme, selectedDirectory.getAbsolutePath());
+        });
 
         // PUML Export
         MenuItem pumlItem = new MenuItem("PUML");
@@ -208,7 +226,13 @@ public class Interface extends Application {
         pumlIcon.setFitHeight(25);
         pumlIcon.setFitWidth(25);
         pumlItem.setGraphic(pumlIcon);
-        pumlItem.setOnAction(e -> exporterPlantUML());
+        pumlItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            exporterPlantUML(selectedDirectory.getAbsolutePath() + "/diagramme.puml");
+        });
 
         menu.getItems().addAll(pngItem, jpgItem, htmlItem, pumlItem);
         return menu;
@@ -345,10 +369,10 @@ public class Interface extends Application {
     /**
      * Exporte le code plantUML dans un fichier
      */
-    private void exporterPlantUML() {
+    private void exporterPlantUML(String path) {
         try {
             String plantUMLCode = model.genererPlantUML();
-            File fichierExport = new File("output/export/Model_PlantUML.puml");
+            File fichierExport = new File(path);
 
             try (FileWriter writer = new FileWriter(fichierExport)) {
                 writer.write(plantUMLCode);
@@ -364,14 +388,14 @@ public class Interface extends Application {
      * Exporte un pane au format HTML
      * @param pane Pane à exporter
      */
-    private void capturePaneAsHTML(Pane pane) {
+    private void capturePaneAsHTML(Pane pane, String path) {
         try {
             // Capture de l'image
             SnapshotParameters params = new SnapshotParameters();
             WritableImage fxImage = pane.snapshot(params, null);
 
             // Sauvegarde de l'image temporaire
-            File tempImageFile = new File("output/export/temp_image.png");
+            File tempImageFile = new File(path + "/temp_image.png");
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
                     (int) fxImage.getHeight(),
@@ -382,12 +406,12 @@ public class Interface extends Application {
             ImageIO.write(bufferedImage, "png", tempImageFile);
 
             // Création du fichier HTML
-            File htmlFile = new File("output/export/diagramme.html");
+            File htmlFile = new File(path + "/diagramme.html");
             try (FileWriter writer = new FileWriter(htmlFile)) {
                 writer.write("<!DOCTYPE html>\n<html>\n<head>\n");
                 writer.write("<title>Exportation HTML</title>\n</head>\n<body>\n");
                 writer.write("<h1>Votre diagramme !</h1>\n");
-                writer.write("<img src=\"../../output/export/temp_image.png\" alt=\"Diagramme\">\n");
+                writer.write("<img src=\"" + path + "/temp_image.png\" alt=\"Diagramme\">\n");
                 writer.write("</body>\n</html>");
             }
 
