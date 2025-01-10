@@ -1,0 +1,27 @@
+@startuml
+    Interface->>SaveManager: save(model)
+    activate SaveManager
+
+    SaveManager->>FileOutputStream: new FileOutputStream(SAVE_PATH)
+    activate FileOutputStream
+
+    SaveManager->>ObjectOutputStream: new ObjectOutputStream(fileOutputStream)
+    activate ObjectOutputStream
+
+    SaveManager->>ObjectOutputStream: writeObject(model)
+    ObjectOutputStream-->>Model: sérialisation
+    activate Model
+    Model-->>ObjectOutputStream: données de sérialisation
+    deactivate Model
+
+    ObjectOutputStream-->>FileOutputStream: données
+    FileOutputStream-->>SaveManager: données
+
+    SaveManager->>ObjectOutputStream: close()
+    deactivate ObjectOutputStream
+    SaveManager->>FileOutputStream: close()
+    deactivate FileOutputStream
+
+    deactivate SaveManager
+    SaveManager->>Interface : void
+@enduml
