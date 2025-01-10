@@ -149,13 +149,9 @@ public class VueClasse extends VBox implements Observateur {
 
     public void hideMethodes() {
         if (this.getChildren().getLast().isVisible()) {
-            this.getChildren().get(3).setVisible(false);
-            this.getChildren().get(3).setManaged(false);
             this.getChildren().getLast().setVisible(false);
             this.getChildren().getLast().setManaged(false);
         } else {
-            this.getChildren().get(3).setVisible(true);
-            this.getChildren().get(3).setManaged(true);
             this.getChildren().getLast().setVisible(true);
             this.getChildren().getLast().setManaged(true);
         }
@@ -165,16 +161,12 @@ public class VueClasse extends VBox implements Observateur {
     }
 
     public void hideAttributs() {
-        if (this.getChildren().get(2).isVisible()) {
+        if (this.getChildren().get(1).isVisible()) {
             this.getChildren().get(1).setVisible(false);
             this.getChildren().get(1).setManaged(false);
-            this.getChildren().get(2).setVisible(false);
-            this.getChildren().get(2).setManaged(false);
         } else {
             this.getChildren().get(1).setVisible(true);
             this.getChildren().get(1).setManaged(true);
-            this.getChildren().get(2).setVisible(true);
-            this.getChildren().get(2).setManaged(true);
         }
         for (Node node : this.getChildren()) {
             System.out.println("type : \t\t" + node.getClass() + "\t|\t visible : \t" + node.isVisible());
