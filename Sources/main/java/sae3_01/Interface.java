@@ -160,7 +160,7 @@ public class Interface extends Application {
         });
 
         MenuItem reset = new MenuItem("Réinitialiser");
-        reset.setStyle("-fx-text-fill: red;");
+        reset.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         reset.setOnAction(e -> {
             model.supprimerToutesLesClasses();
             System.out.println("Toutes les classes ont été supprimées du modèle.");
