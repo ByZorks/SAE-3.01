@@ -1,0 +1,226 @@
+@startuml
+abstract FileComposite {
+	# file : File
+	+ FileComposite(File)
+	+ toString() : String
+	+ getFile() : File
+	+ {abstract} isDirectory() : boolean
+	+ {abstract} getContenu() : List<FileComposite>
+	+ getParentFolderName() : String
+}
+class FlecheImplementation extends FlecheHeritage {
+	+ FlecheImplementation(VueClasse)
+}
+class VueClasse extends VBox implements Observateur {
+	- nom : String
+	- methodes : List<String>
+	- x : double
+	- y : double
+	- contextMenuShown : boolean
+	+ VueClasse()
+	+ actualiser(Sujet) : void
+	+ setNom(String) : void
+	+ isContextMenuShown() : boolean
+	+ <back:#A9DCDF>hideAttributs() : void</back>
+	+ hideMethodes() : void
+	+ setContextMenuShown(boolean) : void
+	+ activerDragAndDrop() : void
+	+ getNom() : String
+	- createVBox(ArrayList<String>) : VBox
+}
+class Repertoire extends FileComposite {
+	- contenu : List<FileComposite>
+	+ Repertoire(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List<FileComposite>
+}
+class VueArborescence extends TreeView<FileComposite> implements Observateur {
+	+ VueArborescence(TreeItem<FileComposite>, FileComposite)
+	+ <back:#A9DCDF>update(TreeItem<FileComposite>, FileComposite) : void</back>
+	+ actualiser(Sujet) : void
+	- buildTree(TreeItem<FileComposite>, FileComposite) : void
+	- activerDragAndDrop() : void
+}
+abstract FlecheRelation extends Group {
+	# line : Line
+	# head : Polyline
+	# x1 : SimpleDoubleProperty
+	# y1 : SimpleDoubleProperty
+	# x2 : SimpleDoubleProperty
+	# y2 : SimpleDoubleProperty
+	# destination : VueClasse
+	# ARROW_HEAD_ANGLE : double
+	# ARROW_HEAD_LENGTH : double
+	+ FlecheRelation(VueClasse)
+	{abstract} update() : void
+	# scale(double, double, double, double) : double[]
+	+ y2Property() : SimpleDoubleProperty
+	+ x2Property() : SimpleDoubleProperty
+	+ y1Property() : SimpleDoubleProperty
+	+ x1Property() : SimpleDoubleProperty
+	+ getX1() : double
+	+ getY1() : double
+}
+class Fichier extends FileComposite {
+	+ Fichier(File)
+	+ isDirectory() : boolean
+	+ getContenu() : List<FileComposite>
+}
+class VueDiagramme extends Pane implements Observateur {
+	- vuesClasses : Map<String, VueClasse>
+	- flechesRelations : Map<String, FlecheRelation>
+	+ VueDiagramme()
+	+ actualiser(Sujet) : void
+	+ getVueClasse(String) : VueClasse
+	+ afficherClasse(String) : void
+	+ retirerClasse(String) : void
+	+ <back:#A9DCDF>clearDiagram() : void</back>
+	- connecterFleche(FlecheRelation, VueClasse, VueClasse) : void
+	+ toggleAffichageClasse(String) : void
+}
+class VueDiagrammeConsole implements Observateur {
+	+ VueDiagrammeConsole()
+	+ actualiser(Sujet) : void
+}
+class SaveManager #A9DCDF {
+	- {static} SAVE_PATH : String
+	+ SaveManager()
+	+ {static} load() : Model
+	+ {static} save(Model) : void
+}
+class ControllerContextMenu implements EventHandler {
+	- model : Model
+	+ ControllerContextMenu(Model)
+	+ handle(ContextMenuEvent) : void
+}
+class ControllerArborescence implements EventHandler {
+	- model : Model
+	+ ControllerArborescence(Model)
+	+ handle(MouseEvent) : void
+}
+interface Observateur {
+	+ {abstract} actualiser(Sujet) : void
+}
+class ClasseDialog #A9DCDF extends Dialog<Classe> {
+	- classe : Classe
+	- nomClasseField : TextField
+	- packageField : TextField
+	- attributsField : TextArea
+	- methodesField : TextArea
+	+ ClasseDialog(String, Classe)
+	- buildUI() : void
+	- createGridPane() : Pane
+}
+class FlecheAssociation extends FlecheRelation {
+	- nom : Text
+	+ FlecheAssociation(VueClasse, String, boolean)
+	update() : void
+}
+class Model implements Sujet, Serializable {
+	- classes : Set<Classe>
+	- observateurs : ArrayList<Observateur>
+	+ Model()
+	+ getClasses() : Set<Classe>
+	+ <back:#A9DCDF>loadSave(Model) : void</back>
+	+ <back:#A9DCDF>analyserClasseHorsClassPath(File) : Classe</back>
+	+ ajouterClasse(Classe) : void
+	+ genererPlantUML() : String
+	+ analyserClasse(String) : Classe
+	+ notifierObservateurs() : void
+	+ enregistrerObservateur(Observateur) : void
+	+ <<back:#A9DCDF>supprimerToutesLesClasses() : void</back>
+	+ supprimerObservateur(Observateur) : void
+	+ getClasse(String) : Classe
+	+ getVueDiagramme() : VueDiagramme
+	+ <back:#A9DCDF>modifierClasse(Classe, Classe) : void</back>
+	+ supprimerClasse(Classe) : void
+	+ checkAssociation(Classe, Classe) : String
+}
+class Analyseur {
+	+ Analyseur()
+	- {static} getPackage(Class<>) : String
+	+ <back:#A9DCDF>{static} analyserClasseHorsClassPath(File) : Classe</back>
+	- {static} getClassModifier(Class<>) : String
+	- {static} getModifierString(int) : String
+	- <back:#A9DCDF>{static} getGenericTypes(ParameterizedType) : StringBuilder</back>
+	+ {static} analyseClasse(String) : Classe
+	- {static} getAttributs(Class<>) : ArrayList<String>
+	- {static} getMethodes(Class<>) : ArrayList<String>
+	+ {static} getRelations(String, ArrayList<String>) : HashMap<String, ArrayList<String>>
+	- {static} getRelations(Class<>) : HashMap<String, ArrayList<String>>
+	- {static} getModifierUMLSymbol(int) : String
+}
+class Classe implements Serializable {
+	- type : String
+	- nomSimple : String
+	- Package : String
+	- attributs : ArrayList<String>
+	- methodes : ArrayList<String>
+	- coordonnees : double[]
+	- relations : HashMap<String, ArrayList<String>>
+	+ Classe(String, String, String, ArrayList<String>, ArrayList<String>, double[], HashMap<String, ArrayList<String>>)
+	+ equals(Object) : boolean
+	+ toString() : String
+	+ hashCode() : int
+	+ getInterfaces() : ArrayList<String>
+	+ getPackage() : String
+	+ getParent() : String
+	+ getType() : String
+	+ getY() : double
+	+ getX() : double
+	+ setCoordonnees(double, double) : void
+	+ getNomSimple() : String
+	+ getAssociations() : ArrayList<String>
+	+ getAttributs() : ArrayList<String>
+	+ getMethodes() : ArrayList<String>
+	+ getNomExtended() : String
+	+ getRelations() : HashMap<String, ArrayList<String>>
+	+ getCoordonnees() : double[]
+}
+class FlecheHeritage extends FlecheRelation {
+	+ FlecheHeritage(VueClasse)
+	# update() : void
+}
+class Interface extends Application {
+	- <back:#A9DCDF>model : Model</back>
+	- <back:#A9DCDF>vueDiagramme : VueDiagramme</back>
+	- <back:#A9DCDF>vueArborescence : VueArborescence</back>
+	+ Interface()
+	+ {static} main(String[]) : void
+	+ start(Stage) : void
+	- <back:#A9DCDF>copyPixels(WritableImage, BufferedImage) : void</back>
+	- <back:#A9DCDF>configureDragAndDrop() : void</back>
+	- <back:#A9DCDF>configureZoomControls() : Button[]</back>
+	- <back:#A9DCDF>createFicherMenu(Stage) : Menu</back>
+	- <back:#A9DCDF>createExportMenu(Stage) : Menu</back>
+	- <back:#A9DCDF>creerDossierOutput() : void</back>
+	- <back:#A9DCDF>zoomDiagramme(double) : void</back>
+	- <back:#A9DCDF>addNewClass(String) : void</back>
+	- exporterPlantUML(String) : void
+	- capturePaneAsHTML(Pane, String) : void
+	- capturePane(Pane, String) : void
+	- <back:#A9DCDF>createAddMenu() : Menu</back>
+	- <back:#A9DCDF>createMenuBar(Stage) : MenuBar</back>
+	- <back:#A9DCDF>initialiserMVC() : void</back>
+}
+interface Sujet {
+	+ {abstract} notifierObservateurs() : void
+	+ {abstract} enregistrerObservateur(Observateur) : void
+	+ {abstract} supprimerObservateur(Observateur) : void
+}
+
+Repertoire --> "*" FileComposite : contenu
+TreeView --> "1" FileComposite : type générique
+FlecheRelation --> "1" VueClasse : destination
+VueDiagramme --> "*" VueClasse : vuesClasses
+VueDiagramme --> "*" FlecheRelation : flechesRelations
+ControllerContextMenu --> "1" Model : model
+ControllerArborescence --> "1" Model : model
+ClasseDialog --> "1" Classe : classe
+Dialog --> "1" Classe : type générique
+Model --> "*" Observateur : observateurs
+Model --> "*" Classe : classes
+Interface --> "1" VueArborescence : vueArborescence
+Interface --> "1" VueDiagramme : vueDiagramme
+Interface --> "1" Model : model
+@enduml
