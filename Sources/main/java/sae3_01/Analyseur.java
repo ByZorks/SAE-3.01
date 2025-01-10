@@ -254,6 +254,85 @@ public class Analyseur {
         }
         relations.put("associations", attributsNames);
 
+        System.out.println(relations);
+        return relations;
+    }
+
+    /**
+     * Retourne les relations d'une classe créée manuellement
+     * @param enTete String en-tête complète de la classe à créer
+     * @param attributs ArrayList<String> liste des attributs de la classe
+     * @return HashMap<String, ArrayList<String>> relations
+     */
+    public static HashMap<String, ArrayList<String>> getRelations(String enTete, ArrayList<String> attributs) {
+        /*
+         * Doit ensuite lire les différents attributs et ajouter les relations si ceux-ci sont des objets.
+         * (cardinalité pas nécessaire pour l'instant)
+         * {associations=[], parent=[FileComposite], interface=[]}
+         */
+        HashMap<String, ArrayList<String>> relations = new HashMap<>();
+
+        List<String> elementsEnTete = new ArrayList<>();
+        elementsEnTete = List.of(enTete.split(" "));
+        // partie héritage
+        if (elementsEnTete.size() == 1) {
+            relations.put("parent", new ArrayList<>(List.of("Object")));
+            relations.put("interface", new ArrayList<>());
+        } else {
+            // ajoute la classe parent si il y en a
+            if (elementsEnTete.contains("extends")) {
+                int i = 0;
+                while (i < elementsEnTete.size() && !elementsEnTete.get(i).equals("extends")) {
+                    i++;
+                }
+                relations.put("parent", new ArrayList<>(List.of(elementsEnTete.get(i+1))));
+            } else {
+                relations.put("parent", new ArrayList<>(List.of("Object")));
+            }
+
+            // ajoute les interfaces implémentées s'il y en a
+            if (elementsEnTete.contains("implements")) {
+                int i = 0;
+                while (i < elementsEnTete.size() && !elementsEnTete.get(i).equals("implements")) {
+                    i++;
+                }
+                ArrayList<String> interfaces = new ArrayList<>();
+                while (i < elementsEnTete.size() && !elementsEnTete.get(i).equals("extends")) {
+                    interfaces.add(elementsEnTete.get(i));
+                    i++;
+                }
+                relations.put("interface", interfaces);
+            } else {
+                relations.put("interface", new ArrayList<>());
+            }
+        }
+
+        // partie attributs
+        // associations=[Classe classes [*], Observateur observateurs [*]]
+        ArrayList<String> associations = new ArrayList<>();
+        for (String attribut: attributs) {
+            String[] attributDecoupe = attribut.split("( : )|(: )|( :)|(:)");
+            if (attributDecoupe.length > 1) {
+                if (!attributDecoupe[1].equals("int") || !attributDecoupe[1].equals("double") || !attributDecoupe[1].equals("float") || !attributDecoupe[1].equals("boolean") || !attributDecoupe[1].equals("String")) {
+                    String cardinalite;
+                    String type;
+                    if (attributDecoupe[1].contains("<")) {
+                        type = attributDecoupe[1].substring(attributDecoupe[1].indexOf('<')+1, attributDecoupe[1].indexOf('>'));
+                        cardinalite = "[*]";
+                    } else if (attributDecoupe[1].contains("[")) {
+                        type = attributDecoupe[1].replaceAll("\\[\\]", "");
+                        cardinalite = "[*]";
+                    } else {
+                        cardinalite = "[1]";
+                        type = attributDecoupe[1];
+                    }
+                    associations.add(type + " " + attributDecoupe[0].replaceAll("(- |\\+ |# )|(-|\\+|#)", "") + " " + cardinalite);
+                }
+            }
+        }
+        relations.put("associations", associations);
+
+        System.out.println(relations);
         return relations;
     }
 
