@@ -1,6 +1,10 @@
 package sae3_01;
 
+import java.io.File;
 import java.lang.reflect.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 
 /**
@@ -16,6 +20,39 @@ public class Analyseur {
      */
     public static Classe analyseClasse(String nomClasse) throws ClassNotFoundException {
         Class<?> c = Class.forName(nomClasse);
+
+        String type = getClassModifier(c);
+        String nomSimple = c.getSimpleName();
+        String packageName = getPackage(c);
+        ArrayList<String> attributs = getAttributs(c);
+        ArrayList<String> methodes = getMethodes(c);
+        HashMap<String, ArrayList<String>> relations = getRelations(c);
+
+        return new Classe(type, nomSimple, packageName, attributs, methodes, new double[]{0, 0}, relations);
+    }
+
+    /**
+     * Analyse une classe Java hors classPath et retourne un objet Classe
+     * @param classeFile le fichier de la classe à analyser
+     * @return Classe
+     * @throws ClassNotFoundException classe n'existe pas
+     * @throws MalformedURLException dossier invalide
+     */
+    public static Classe analyserClasseHorsClassPath(File classeFile) throws ClassNotFoundException, MalformedURLException {
+        // On récupère le dossier parent du package
+        File rootDir = classeFile.getParentFile().getParentFile();
+
+        // Créer le classloader
+        URL url = rootDir.toURI().toURL();
+        URLClassLoader classLoader = new URLClassLoader(new URL[]{url}, ClassLoader.getSystemClassLoader());
+
+        // Obtention du nom complet de la classe avec le package
+        String parentFolderName = classeFile.getParentFile().getName();
+        String className = classeFile.getName().replace(".class", "");
+        String classPath = parentFolderName + "." + className;
+
+        // Charger la classe
+        Class<?> c = Class.forName(classPath, true, classLoader);
 
         String type = getClassModifier(c);
         String nomSimple = c.getSimpleName();

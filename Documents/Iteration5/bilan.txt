@@ -1,0 +1,18 @@
+Bug(s):
+
+    Non réglé(s):
+    - Si deux fleches partent d'une d'un même classe et vont vers la même classe, une seul flèche s'affichera
+
+    Nouveaux bug(s):
+    - Le drap and drop ne drop pas au bon endroit lorsque l'on dézoom le diagramme
+
+Validation:
+
+- Affichage des types génériques
+- Affichage des associations avec des types génériques
+- Zoom / dézoom du diagramme
+- Modification des classes existantes
+- Suppression de toutes les classes du diagramme d'un coup
+- Affichage des cardinalités
+- Sauvegarde d'un diagramme
+- Choix du dossier de travail / sauvegarde / d'export par l'utilisateur

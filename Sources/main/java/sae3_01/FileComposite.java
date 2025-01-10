@@ -52,4 +52,11 @@ public abstract class FileComposite {
      */
     public abstract boolean isDirectory();
 
+    /**
+     * Retourne le fichier
+     * @return le fichier
+     */
+    public File getFile() {
+        return file;
+    }
 }

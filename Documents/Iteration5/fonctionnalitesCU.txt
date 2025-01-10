@@ -1,0 +1,3 @@
+Fonctionnalités des Cas d'Utilisation:
+
+- Modification des classes existantes

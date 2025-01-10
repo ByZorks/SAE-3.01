@@ -30,15 +30,18 @@ public class ControllerArborescence implements EventHandler<MouseEvent> {
     @Override
     public void handle(MouseEvent mouseEvent) {
         TreeView<FileComposite> treeView = (TreeView<FileComposite>) mouseEvent.getSource();
-        if (mouseEvent.getClickCount() == 2) {
-            TreeItem<FileComposite> selectedItem = treeView.getSelectionModel().getSelectedItem();
-            FileComposite file = selectedItem.getValue();
-            if (!selectedItem.getValue().isDirectory()) {
+        TreeItem<FileComposite> selectedItem = treeView.getSelectionModel().getSelectedItem();
+        FileComposite file = selectedItem.getValue();
+        if (mouseEvent.getClickCount() == 2 && !selectedItem.getValue().isDirectory()) {
+            Classe c;
+            if (!file.getFile().getAbsolutePath().contains("sae3_01")) {
+                c = model.analyserClasseHorsClassPath(file.getFile());
+            } else {
                 String nomFichier = file.toString().replace(".class", "");
                 String nomFichierAvecPackage = file.getParentFolderName() + "." + nomFichier; // On ajoute le nom du package
-                Classe c = model.analyserClasse(nomFichierAvecPackage);
-                model.ajouterClasse(c);
+                c = model.analyserClasse(nomFichierAvecPackage);
             }
+            model.ajouterClasse(c);
         }
     }
 }

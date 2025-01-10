@@ -199,10 +199,18 @@ public class Classe implements Serializable {
                 "\n}";
     }
 
+    /**
+     * Retourne les coordonnées de la classe sous forme d'un tableau de doubles.
+     * @return Un tableau contenant les coordonnées de la classe sous la forme [x, y].
+     */
     public double[] getCoordonnees() {
         return coordonnees;
     }
 
+    /**
+     * Retourne les relations de la classe sous forme d'une HashMap.
+     * @return Une HashMap
+     */
     public HashMap<String, ArrayList<String>> getRelations() {
         return relations;
     }

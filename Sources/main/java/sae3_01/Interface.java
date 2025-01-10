@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.Desktop;
@@ -34,15 +35,19 @@ public class Interface extends Application {
         // Initialisation
         creerDossierOutput();
         initialiserMVC();
-        configureDragAndDrop();
 
         // Panes
-        BorderPane root = new BorderPane();
-        Button[] zoomControls = configureZoomControls();
-        ToolBar toolBar = new ToolBar(createMenuBar(), createClearButton(), createSaveButton(), zoomControls[0], zoomControls[1], zoomControls[2]);
-
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(vueArborescence, vueDiagramme);
+
+        BorderPane root = new BorderPane();
+        Button[] zoomControls = configureZoomControls();
+        ToolBar toolBar = new ToolBar(
+                createMenuBar(stage),
+                zoomControls[0],
+                zoomControls[1],
+                zoomControls[2]
+        );
 
         // Placement dans la fenêtre
         root.setTop(toolBar);
@@ -55,6 +60,18 @@ public class Interface extends Application {
         stage.setMaximized(true);
         stage.show();
 
+        scene.setOnScroll(e -> {
+            double zoomFactor = 1.05;
+            double deltaY = e.getDeltaY();
+
+            if (deltaY < 0){
+                zoomFactor = 0.95;
+            }
+            zoomDiagramme(zoomFactor);
+            e.consume();
+        });
+
+        configureDragAndDrop();
         splitPane.setDividerPositions(0.15);
     }
 
@@ -97,20 +114,68 @@ public class Interface extends Application {
      * Créer le MenuBar
      * @return MenuBar
      */
-    private MenuBar createMenuBar() {
+    private MenuBar createMenuBar(Stage stage) {
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().addAll(
-                createExportMenu(),
+                createFicherMenu(stage),
+                createExportMenu(stage),
                 createAddMenu()
         );
         return menuBar;
     }
 
     /**
+     * Créer le menu fichier
+     * @return Menu fichier
+     */
+    private Menu createFicherMenu(Stage stage) {
+        Menu menu = new Menu("Fichier");
+
+        // Sauvegarde
+        MenuItem saveItem = new MenuItem("Sauvegarder");
+        saveItem.setOnAction(e -> {
+            // Sauvegarde la position des vuesClasses
+            for (Classe c : model.getClasses() ) {
+                VueClasse vc = vueDiagramme.getVueClasse(c.getNomSimple());
+                if (vc != null) {
+                    c.setCoordonnees(vc.getLayoutX(), vc.getLayoutY());
+                }
+            }
+            SaveManager.save(model);
+            System.out.println("Sauvegarde effectué avec succès");
+        });
+
+        MenuItem loadItem = new MenuItem("Ouvrir dossier");
+        loadItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File(vueArborescence.getRoot().getValue().getFile().getAbsolutePath()));
+            directoryChooser.setTitle("Ouvrir un dossier dans l'arborescence");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            if (selectedDirectory != null) {
+                Repertoire r = new Repertoire(selectedDirectory);
+                TreeItem<FileComposite> treeItem = new TreeItem<>(r);
+                vueArborescence.update(treeItem, r);
+                model.supprimerToutesLesClasses();
+            }
+        });
+
+        MenuItem reset = new MenuItem("Réinitialiser");
+        reset.setStyle("-fx-text-fill: red;");
+        reset.setOnAction(e -> {
+            model.supprimerToutesLesClasses();
+            System.out.println("Toutes les classes ont été supprimées du modèle.");
+        });
+
+        menu.getItems().addAll(saveItem, loadItem, reset);
+
+        return menu;
+    }
+
+    /**
      * Créer les items du menu d'exportation
      * @return Menu d'exportation
      */
-    private Menu createExportMenu() {
+    private Menu createExportMenu(Stage stage) {
         Menu menu = new Menu("Exporter");
 
         // PNG Export
@@ -119,7 +184,13 @@ public class Interface extends Application {
         pngIcon.setFitHeight(25);
         pngIcon.setFitWidth(25);
         pngItem.setGraphic(pngIcon);
-        pngItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.png"));
+        pngItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePane(vueDiagramme, selectedDirectory.getAbsolutePath() + "/diagramme.png");
+        });
 
         // JPG Export
         MenuItem jpgItem = new MenuItem("JPG");
@@ -127,7 +198,13 @@ public class Interface extends Application {
         jpgIcon.setFitHeight(25);
         jpgIcon.setFitWidth(25);
         jpgItem.setGraphic(jpgIcon);
-        jpgItem.setOnAction(e -> capturePane(vueDiagramme, "output/export/diagramme.jpg"));
+        jpgItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePane(vueDiagramme, selectedDirectory.getAbsolutePath() + "/diagramme.jpg");
+        });
 
         // HTML Export
         MenuItem htmlItem = new MenuItem("HTML");
@@ -135,7 +212,13 @@ public class Interface extends Application {
         htmlIcon.setFitHeight(25);
         htmlIcon.setFitWidth(25);
         htmlItem.setGraphic(htmlIcon);
-        htmlItem.setOnAction(e -> capturePaneAsHTML(vueDiagramme));
+        htmlItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            capturePaneAsHTML(vueDiagramme, selectedDirectory.getAbsolutePath());
+        });
 
         // PUML Export
         MenuItem pumlItem = new MenuItem("PUML");
@@ -143,7 +226,13 @@ public class Interface extends Application {
         pumlIcon.setFitHeight(25);
         pumlIcon.setFitWidth(25);
         pumlItem.setGraphic(pumlIcon);
-        pumlItem.setOnAction(e -> exporterPlantUML());
+        pumlItem.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(new File("output/export"));
+            directoryChooser.setTitle("Choisir un dossier de sauvegarde");
+            File selectedDirectory = directoryChooser.showDialog(stage);
+            exporterPlantUML(selectedDirectory.getAbsolutePath() + "/diagramme.puml");
+        });
 
         menu.getItems().addAll(pngItem, jpgItem, htmlItem, pumlItem);
         return menu;
@@ -169,43 +258,10 @@ public class Interface extends Application {
     }
 
     /**
-     * Créer les items du menu de suppression
-     * @return Menu de suppression
-     */
-    private Button createClearButton() {
-        Button reset = new Button("Réinitialiser");
-        reset.setOnAction(e -> {
-            model.supprimerToutesLesClasses();
-            System.out.println("Toutes les classes ont été supprimées du modèle.");
-        });
-        return reset;
-    }
-
-    /**
-     * Créer un bouton de sauvegarde
-     * @return Bouton de sauvegarde
-     */
-    private Button createSaveButton() {
-        Button save = new Button("Sauvegarder");
-        save.setOnAction(e -> {
-            // Sauvegarde la position des vuesClasses
-            for (Classe c : model.getClasses() ) {
-                VueClasse vc = vueDiagramme.getVueClasse(c.getNomSimple());
-                if (vc != null) {
-                    c.setCoordonnees(vc.getLayoutX(), vc.getLayoutY());
-                }
-            }
-            SaveManager.save(model);
-            System.out.println("Sauvegarde effectué avec succès");
-        });
-        return save;
-    }
-
-    /**
      * Active le drap and drop vers le diagramme
      */
     private void configureDragAndDrop() {
-        vueDiagramme.setOnDragOver(event -> {
+        vueDiagramme.getParent().setOnDragOver(event -> {
             if (event.getGestureSource() != vueDiagramme &&
                     event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
@@ -213,33 +269,37 @@ public class Interface extends Application {
             event.consume();
         });
 
-        vueDiagramme.setOnDragEntered(event -> {
-            if (event.getGestureSource() != vueDiagramme &&
-                    event.getDragboard().hasString()) {
-                vueDiagramme.setStyle("-fx-opacity:.4;-fx-background-color: gray;");
+        vueDiagramme.getParent().setOnDragEntered(event -> {
+            if (event.getGestureSource() != vueDiagramme && event.getDragboard().hasString()) {
+                vueDiagramme.getParent().setStyle("-fx-opacity:.4;-fx-background-color: gray;");
             }
             event.consume();
         });
 
-        vueDiagramme.setOnDragDropped(event -> {
+        vueDiagramme.getParent().setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                String nomFichier = db.getString().replace(".class", "");
                 TreeItem<FileComposite> selectedItem = vueArborescence.getSelectionModel().getSelectedItem();
-                String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
-                Classe c = model.analyserClasse(nomFichierAvecPackage);
+                Classe c;
+                if (!selectedItem.getValue().getFile().getAbsolutePath().contains("sae3_01")) {
+                    c = model.analyserClasseHorsClassPath(selectedItem.getValue().getFile());
+                } else {
+                    String nomFichier = db.getString().replace(".class", "");
+                    String nomFichierAvecPackage = selectedItem.getValue().getParentFolderName() + "." + nomFichier;
+                    c = model.analyserClasse(nomFichierAvecPackage);
+                }
                 c.setCoordonnees(event.getX(), event.getY());
                 model.ajouterClasse(c);
                 success = true;
             }
             event.setDropCompleted(success);
             event.consume();
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
+            vueDiagramme.getParent().setStyle("-fx-opacity:1;-fx-background-color: transparent;");
         });
 
-        vueDiagramme.setOnDragExited(event -> {
-            vueDiagramme.setStyle("-fx-opacity:1;-fx-background-color: transparent;");
+        vueDiagramme.getParent().setOnDragExited(event -> {
+            vueDiagramme.getParent().setStyle("-fx-opacity:1;-fx-background-color: transparent;");
             event.consume();
         });
     }
@@ -297,10 +357,10 @@ public class Interface extends Application {
     /**
      * Exporte le code plantUML dans un fichier
      */
-    private void exporterPlantUML() {
+    private void exporterPlantUML(String path) {
         try {
             String plantUMLCode = model.genererPlantUML();
-            File fichierExport = new File("output/export/Model_PlantUML.puml");
+            File fichierExport = new File(path);
 
             try (FileWriter writer = new FileWriter(fichierExport)) {
                 writer.write(plantUMLCode);
@@ -316,14 +376,14 @@ public class Interface extends Application {
      * Exporte un pane au format HTML
      * @param pane Pane à exporter
      */
-    private void capturePaneAsHTML(Pane pane) {
+    private void capturePaneAsHTML(Pane pane, String path) {
         try {
             // Capture de l'image
             SnapshotParameters params = new SnapshotParameters();
             WritableImage fxImage = pane.snapshot(params, null);
 
             // Sauvegarde de l'image temporaire
-            File tempImageFile = new File("output/export/temp_image.png");
+            File tempImageFile = new File(path + "/temp_image.png");
             BufferedImage bufferedImage = new BufferedImage(
                     (int) fxImage.getWidth(),
                     (int) fxImage.getHeight(),
@@ -334,12 +394,12 @@ public class Interface extends Application {
             ImageIO.write(bufferedImage, "png", tempImageFile);
 
             // Création du fichier HTML
-            File htmlFile = new File("output/export/diagramme.html");
+            File htmlFile = new File(path + "/diagramme.html");
             try (FileWriter writer = new FileWriter(htmlFile)) {
                 writer.write("<!DOCTYPE html>\n<html>\n<head>\n");
                 writer.write("<title>Exportation HTML</title>\n</head>\n<body>\n");
                 writer.write("<h1>Votre diagramme !</h1>\n");
-                writer.write("<img src=\"../../output/export/temp_image.png\" alt=\"Diagramme\">\n");
+                writer.write("<img src=\"" + path + "/temp_image.png\" alt=\"Diagramme\">\n");
                 writer.write("</body>\n</html>");
             }
 
